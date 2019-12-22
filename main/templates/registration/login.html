@@ -1,21 +1,23 @@
 {% extends 'base/base.html' %}
 
+{% load bootstrap4 %}
 
 {% block content %}
-    <h1>Авторизация (vasya-promprog)</h1>
+    <h1 class="mt-4">Авторизация (vasya-promprog)</h1>
     <hr>
 
-    <form action="/login/" method="POST">
-        {% csrf_token %}
+    <div class="row">
+        <div class="col-4 offset-4">
+            <form action="/login/" method="POST">
+                {% csrf_token %}
 
-        {% for item in form %}
-            <label>{{ item.label }}:</label><br>
-            {{ item }}
-        {% endfor %}
-
-        <input type="submit" value="Войти">
-
-    </form>
+                {% bootstrap_form form %}
+                {% buttons %}
+                    <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
 
     {% if form.errors %}
         {{ form.errors }}

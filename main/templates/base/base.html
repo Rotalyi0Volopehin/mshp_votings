@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 
+    {% load bootstrap4 %}
 
     <head>
         <meta charset="UTF-8">
         <title>{{ pagename }} - Simple votings</title>
+
+        {% bootstrap_css %}
+        <link href="https://getbootstrap.com/docs/4.1/examples/sticky-footer-navbar/sticky-footer-navbar.css"
+              rel="stylesheet">
         {% block extra_css %} {% endblock %}
     </head>
 
 
     <body>
+
         <header>
             {% include 'base/menu.html' %}
         </header>
 
-        <main>
+        <main role="main" class="container">
+            {% bootstrap_messages %}
             {% block content %} {% endblock %}
         </main>
 
-        <footer>
+        <footer class="footer">
             {% block footer %}
-                <span>&copy; ШП, {% now "Y" %}</span>
+                <div class="container text-right">
+                    <span class="text-muted">&copy; ШП, {% now "Y" %}</span>
+                </div>
             {% endblock %}
         </footer>
 
-        {% block extra_js %} {% endblock %}
+        {% block extra_js %}
+            {% bootstrap_javascript jquery='full' %}
+        {% endblock %}
     </body>
 
 
