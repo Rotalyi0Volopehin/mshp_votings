@@ -27,8 +27,8 @@ python manage.py migrate
 ```
 8. Создать суперпользователя
 ```bash
-$ python manage.py createsuperuser                                                                                                                                                                                                                                
-Username (leave blank to use 'prom'):
+$ python manage.py createsuperuser
+Username (leave blank to use 'prom'): vasya
 Email: 1@abc.net
 Password: promprog
 Password (repeat): promprog
