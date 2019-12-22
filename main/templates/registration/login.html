@@ -1,8 +1,11 @@
 {% extends 'base/base.html' %}
 
+
 {% load bootstrap4 %}
 
+
 {% block content %}
+
     <h1 class="mt-4">Авторизация (vasya-promprog)</h1>
     <hr>
 
@@ -18,9 +21,5 @@
             </form>
         </div>
     </div>
-
-    {% if form.errors %}
-        {{ form.errors }}
-    {% endif %}
 
 {% endblock %}
