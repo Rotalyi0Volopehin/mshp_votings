@@ -1,0 +1,29 @@
+<nav>
+
+    <a href="/">Simple votings</a>
+
+
+    <ul>
+        {% block menu %}
+            {% for item in menu %}
+                <li>
+                    <a href="{{ item.url }}">{{ item.name }}</a>
+                </li>
+            {% endfor %}
+        {% endblock %}
+    </ul>
+
+
+    <ul>
+        {% block usermenu %}
+            <li>
+                {% if request.user.is_authenticated %}
+                    <a href="/logout/">Выйти</a>
+                {% else %}
+                    <a href="/login/">Войти</a>
+                {% endif %}
+            </li>
+        {% endblock %}
+    </ul>
+
+</nav>
