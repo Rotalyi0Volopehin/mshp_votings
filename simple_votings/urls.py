@@ -25,11 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index_page),
     path('time/', views.time_page),
-    path('login/', auth_views.LoginView.as_view(extra_context={
-        'menu': get_menu_context(),
-        'pagename': 'Авторизация'
-    })),
+    path('login/', views.login_cloak), #из-за хэширования пароля необходима эта надстройка
     path('logout/', auth_views.LogoutView.as_view()),
     path('registration/', views.registration_page),
-    path('cul/', views.clear_user_list_page)
+    path('cul/', views.clear_user_list_page), #страница, удаляющая всех пользователей
 ]
