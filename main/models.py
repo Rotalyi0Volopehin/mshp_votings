@@ -21,7 +21,7 @@ class UserData(models.Model):
 
 
 class Voting(models.Model):
-    aut_hor = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
     title = models.TextField
     description = models.TextField
     type = models.IntegerField
@@ -38,7 +38,7 @@ class VoteVariant(models.Model):
 class VoteFact(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
-    answer = models.BigIntegerField #0 if user is anonym
+    answer = models.BigIntegerField
 
 
 class VotingAbuse(models.Model):
