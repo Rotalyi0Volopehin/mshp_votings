@@ -41,6 +41,7 @@ def is_email_valid(email):
 
 
 def calc_password_hash(password):
+    return password #временно
     if not isinstance(password, str):
         Exceptions.throw(Exceptions.argument_type)
     mul = 1

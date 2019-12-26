@@ -56,7 +56,7 @@ def login_cloak(request):
         password = request.POST["password"]
         if 0 < len(password) <= 32:
             request.POST = request.POST.copy()
-            request.POST["password"] = calc_password_hash(password)
+            #request.POST["password"] = calc_password_hash(password)
     return __login_view(request)
 
 
