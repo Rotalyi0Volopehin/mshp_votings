@@ -6,7 +6,7 @@ from django.shortcuts import render
 def get_menu_context():
     return [
         {'url': '/', 'name': 'Главная'},
-        {'url': '/time/', 'name': 'Текущее время'},
+        {'url': '/voting/', 'name': 'Опросы'},
     ]
 
 
