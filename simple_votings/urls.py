@@ -28,5 +28,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(extra_context={'menu': get_menu_context(), 'pagename': 'Авторизация'})),
     path('logout/', auth_views.LogoutView.as_view()),
     path('registration/', views.registration_page),
+    path('new_voting/', views.new_voting_page),
     path('cul/', views.clear_user_list_page), #страница, удаляющая всех пользователей
 ]

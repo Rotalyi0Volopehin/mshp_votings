@@ -19,7 +19,6 @@ class DB_UserTools:
             return False
         password_hash = password if password_as_hash else calc_password_hash(password)
         user = User(first_name=name, email=email, username=login, password=password_hash, date_joined=datetime.datetime.today())
-        #user.is_staff = True
         user.save()
         user_data = UserData()
         user_data.user = user

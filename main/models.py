@@ -27,6 +27,7 @@ class Voting(models.Model):
     type = models.IntegerField
     show_votes_before_end = models.BooleanField
     anonymous = models.BooleanField
+    started = models.BooleanField
     completed = models.BooleanField
 
 

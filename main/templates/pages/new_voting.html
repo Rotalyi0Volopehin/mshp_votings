@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация</title>
+    <title>Новое голосование</title>
 </head>
 <body>
     <form method="post"> {% csrf_token %}
@@ -11,7 +11,7 @@
             {{ item }}
             <br>
         {% endfor %}
-        <input type="submit" value="Зарегистрироваться">
+        <input type="submit" value="Создать новое голосование">
     </form>
     {% if not ok %}
         <p>Что-то пошло не так</p>
