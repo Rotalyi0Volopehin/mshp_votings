@@ -35,6 +35,7 @@ class Voting(models.Model):
 class VoteVariant(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
     description = models.TextField
+    vote_fact_count = models.IntegerField #значение увеличивается во время голосования; поле для оптимизации подсчёта голосов
 
 
 class VoteFact(models.Model):
