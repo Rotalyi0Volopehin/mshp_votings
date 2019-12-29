@@ -29,6 +29,7 @@ class Voting(models.Model):
     anonymous = models.BooleanField
     started = models.BooleanField
     completed = models.BooleanField
+    date_created = models.DateTimeField
 
 
 class VoteVariant(models.Model):

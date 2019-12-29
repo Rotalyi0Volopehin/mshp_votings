@@ -72,9 +72,12 @@ def new_voting_page(request):
         context["form"] = form
         if form.is_valid():
             author = request.user
-            data = form.data
-            ok = DB_VotingTools.try_create_voting(author, data["title"], data["discription"], data["type"],
-                    data["show_votes_before_end"], data["anonymous"])
+            title = form.data["title"]
+            description = form.data["description"]
+            type_ = int(form.data["type"])
+            show_votes_before_end = form.data.get("show_votes_before_end", 'off') == 'on'
+            anonymous = form.data.get("anonymous", 'off') == 'on'
+            ok = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
     else:
         context["form"] = main.forms.NewVotingForm()
         ok = True
