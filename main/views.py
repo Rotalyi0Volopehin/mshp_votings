@@ -38,15 +38,27 @@ def time_page(request):
 def registration_page(request): #временно
     context = {}
     ok = False
+    error = None
+    success = False
     if request.method == "POST":
         form = main.forms.RegistrationForm(request.POST)
         context["form"] = form
         if form.is_valid():
-            ok = DB_UserTools.try_register_user(form.data["login"], form.data["password1"], form.data["name"], form.data["email"])
+            password1 = form.data["password1"]
+            if password1 == form.data["password2"]:
+                ok, error = DB_UserTools.try_register_user(form.data["login"], password1, form.data["name"], form.data["email"])
+                if ok:
+                    success = True
+            else:
+                error = "Указанные пароли не совпадают!"
+        else:
+            error = "Здесь нет уязвимости!"
     else:
         context["form"] = main.forms.RegistrationForm()
         ok = True
     context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
     return render(request, 'registration/registration.html', context)
 
 
