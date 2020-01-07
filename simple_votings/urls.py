@@ -29,5 +29,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view()),
     path('registration/', views.registration_page),
     path('new_voting/', views.new_voting_page),
-    path('cul/', views.clear_user_list_page), #страница, удаляющая всех пользователей
+    path('cad/', views.clear_all_data_page), #страница, удаляющая всю информацию
 ]

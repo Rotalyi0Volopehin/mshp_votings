@@ -84,5 +84,6 @@ def new_voting_page(request):
     return render(request, "pages/new_voting.html", context)
 
 
-def clear_user_list_page(request): #временно
+def clear_all_data_page(request): #временно
     DB_UserTools.clear_user_list()
+    DB_VotingTools.clear_voting_list()

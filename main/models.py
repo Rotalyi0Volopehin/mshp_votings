@@ -16,35 +16,35 @@ def get_sentinel_user():
 
 class UserData(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-    activated = models.BooleanField
-    extra_info = models.TextField
+    activated = models.BooleanField()
+    extra_info = models.TextField()
 
 
 class Voting(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
-    title = models.TextField
-    description = models.TextField
-    type = models.IntegerField
-    show_votes_before_end = models.BooleanField
-    anonymous = models.BooleanField
-    started = models.BooleanField
-    completed = models.BooleanField
-    date_created = models.DateTimeField
+    title = models.TextField()
+    description = models.TextField()
+    type = models.IntegerField()
+    show_votes_before_end = models.BooleanField()
+    anonymous = models.BooleanField()
+    started = models.BooleanField()
+    completed = models.BooleanField()
+    date_created = models.DateTimeField()
 
 
 class VoteVariant(models.Model):
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
-    description = models.TextField
-    vote_fact_count = models.IntegerField #значение увеличивается во время голосования; поле для оптимизации подсчёта голосов
+    description = models.TextField()
+    vote_fact_count = models.IntegerField() #значение увеличивается во время голосования; поле для оптимизации подсчёта голосов
 
 
 class VoteFact(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
-    answer = models.BigIntegerField
+    answer = models.BigIntegerField()
 
 
 class VotingAbuse(models.Model):
     abuser = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
-    description = models.TextField
+    description = models.TextField()

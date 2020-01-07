@@ -20,15 +20,29 @@ class DB_VotingTools:
         author_data = UserData.objects.filter(user=author)
         if (len(author_data) != 1) or not author_data[0].activated:
             return False
-        if len(Voting.objects.filter(author=author, title=title)) > 0:
+        if DB_VotingTools.__does_user_have_voting_titled(author, title):
             return False
-        voting = Voting(author=author, title=title, description=description, type=type_,
-                show_votes_before_end=show_votes_before_end, anonymous=anonymous)
+        voting = Voting(author=author, title=title, description=description, type=type_)
+        voting.show_votes_before_end = show_votes_before_end
+        voting.anonymous = anonymous
         voting.started = voting.completed = False
         voting.save()
         voting.date_created = datetime.datetime.today()
         return True
 
+    @staticmethod
+    def clear_voting_list():
+        Voting.objects.all().delete()
+
+    @staticmethod
+    def __does_user_have_voting_titled(author, title):
+        votings = Voting.objects.filter(author=author)
+        for voting in votings:
+            if voting.title == title:
+                return True
+        return False
+
+    @staticmethod
     def try_add_vote_variant(self, voting, description):
         if not (isinstance(voting, Voting) and isinstance(description, str)):
             Exceptions.throw(Exceptions.argument_type)
