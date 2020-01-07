@@ -21,7 +21,7 @@ class DB_UserTools:
         user.save()
         user_data = UserData()
         user_data.user = user
-        user_data.activated = False
+        user_data.activated = True #must be False
         user_data.extra_info = ""
         user_data.save()
         return (True, None)
