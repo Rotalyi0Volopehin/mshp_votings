@@ -53,8 +53,12 @@ class DB_VotingTools:
             return False, "У вас нет голосования с указанным названием!"
         if voting.started:
             return False, "Нельзя изменять начатое голосование!"
+        neighbour_variants = VoteVariant.objects.filter(voting=voting)
+        for neighbour_variant in neighbour_variants:
+            if neighbour_variant.description == description:
+                return False, "В этом голосование уже есть вариант голоса с таким описанием!"
         if (len(description) == 0) or (len(description) > 4096):
             return False, "Здесь нет уязвимости!"
-        variant = VoteVariant(voting, description)
+        variant = VoteVariant(voting=voting, description=description)
         variant.save()
         return True, None
