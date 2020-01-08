@@ -1,10 +1,9 @@
 import datetime
+import main.forms
 
 from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
-from django.contrib.auth import views as auth_views
 from django.shortcuts import render
-import main.forms
 from django.contrib.auth.decorators import login_required
 
 
@@ -61,6 +60,12 @@ def registration_page(request): #временно
     return render(request, 'registration/registration.html', context)
 
 
+def clear_all_data_page(request): #Developer's tool
+    DB_UserTools.clear_user_list()
+    DB_VotingTools.clear_voting_list()
+    return render(request, 'pages/cad.html')
+
+
 @login_required
 def new_voting_page(request): #временно
     context = {}
@@ -87,10 +92,30 @@ def new_voting_page(request): #временно
     context["ok"] = ok
     context["error"] = error
     context["success"] = success
-    return render(request, "pages/new_voting.html", context)
+    return render(request, "pages/voting_management/new_voting.html", context)
 
 
-def clear_all_data_page(request): #Developer's tool
-    DB_UserTools.clear_user_list()
-    DB_VotingTools.clear_voting_list()
-    return render(request, 'pages/cad.html')
+@login_required
+def add_vote_variant(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.AddVoteVariantForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author = request.user
+            voting_title = form.data["voting_title"]
+            description = form.data["description"]
+            ok, error = DB_VotingTools.try_add_vote_variant(author, voting_title, description)
+            if ok:
+                success = True
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.AddVoteVariantForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    return render(request, "pages/voting_management/add_vote_variant.html", context)

@@ -15,3 +15,8 @@ class NewVotingForm(forms.Form):
     type = forms.ChoiceField(label="Тип голосования", choices=((1, "0"), (2, "1"), (3, "2")), required=True)
     show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False)
     anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников", required=False)
+
+
+class AddVoteVariantForm(forms.Form):
+    voting_title = forms.CharField(label="Название голосования", min_length=1, max_length=256, required=True)
+    description = forms.CharField(widget=forms.Textarea, label="Описание варианта", min_length=1, max_length=4096)

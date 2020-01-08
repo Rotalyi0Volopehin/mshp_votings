@@ -13,9 +13,9 @@ class DB_UserTools:
             Exceptions.throw(Exceptions.argument_type)
         if (len(User.objects.filter(username=login)) > 0) or not ((0 < len(login) <= 32) and (0 < len(name) <= 32) and
                 (0 < len(email) <= 32)):
-                return (False, "Пользователь с данным логином уже существует!")
+                return False, "Пользователь с данным логином уже существует!"
         if not is_email_valid(email):
-            return (False, "E-mail некорректен!")
+            return False, "E-mail некорректен!"
         user = User(first_name=name, email=email, username=login, date_joined=datetime.datetime.today())
         user.set_password(password)
         user.save()
@@ -24,7 +24,7 @@ class DB_UserTools:
         user_data.activated = True #must be False
         user_data.extra_info = ""
         user_data.save()
-        return (True, None)
+        return True, None
 
     @staticmethod
     def clear_user_list():
