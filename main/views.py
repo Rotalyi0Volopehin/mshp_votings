@@ -37,9 +37,8 @@ def time_page(request):
 
 def registration_page(request): #временно
     context = {}
-    ok = False
+    success = ok = False
     error = None
-    success = False
     if request.method == "POST":
         form = main.forms.RegistrationForm(request.POST)
         context["form"] = form
@@ -63,9 +62,10 @@ def registration_page(request): #временно
 
 
 @login_required
-def new_voting_page(request):
+def new_voting_page(request): #временно
     context = {}
-    ok = False
+    success = ok = False
+    error = None
     if (request.method == "POST") and request.POST:
         form = main.forms.NewVotingForm(request.POST)
         context["form"] = form
@@ -76,15 +76,21 @@ def new_voting_page(request):
             type_ = int(form.data["type"])
             show_votes_before_end = form.data.get("show_votes_before_end", 'off') == 'on'
             anonymous = form.data.get("anonymous", 'off') == 'on'
-            ok = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
+            ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
+            if ok:
+                success = True
+        else:
+            error = "Здесь нет уязвимости!"
     else:
         context["form"] = main.forms.NewVotingForm()
         ok = True
     context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
     return render(request, "pages/new_voting.html", context)
 
 
-def clear_all_data_page(request): #временно
+def clear_all_data_page(request): #Developer's tool
     DB_UserTools.clear_user_list()
     DB_VotingTools.clear_voting_list()
     return render(request, 'pages/cad.html')

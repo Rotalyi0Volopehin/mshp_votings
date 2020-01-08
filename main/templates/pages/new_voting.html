@@ -13,9 +13,19 @@
         {% endfor %}
         <input type="submit" value="Создать новое голосование">
     </form>
-    {% if not ok %}
-        <p>Что-то пошло не так</p>
-    {% endif %}
+    <p>
+        {% if not ok %}
+            {% if error %}
+                {{ error }}
+            {% else %}
+                Что-то пошло не так
+            {% endif %}
+        {% else %}
+            {% if success %}
+                Голосование успешно создано
+            {% endif %}
+        {% endif %}
+    </p>
 </body>
 </html>
 <!--
