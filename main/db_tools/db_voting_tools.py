@@ -56,7 +56,7 @@ class DB_VotingTools:
         neighbour_variants = VoteVariant.objects.filter(voting=voting)
         for neighbour_variant in neighbour_variants:
             if neighbour_variant.description == description:
-                return False, "В этом голосование уже есть вариант голоса с таким описанием!"
+                return False, "В этом голосование уже есть вариант голоса с указанным описанием!"
         if (len(description) == 0) or (len(description) > 4096):
             return False, "Здесь нет уязвимости!"
         variant = VoteVariant(voting=voting, description=description)
