@@ -87,3 +87,4 @@ def new_voting_page(request):
 def clear_all_data_page(request): #временно
     DB_UserTools.clear_user_list()
     DB_VotingTools.clear_voting_list()
+    return render(request, 'pages/cad.html')
