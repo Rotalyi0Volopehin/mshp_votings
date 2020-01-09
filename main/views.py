@@ -78,7 +78,7 @@ def new_voting_page(request): #временно
             author = request.user
             title = form.data["title"]
             description = form.data["description"]
-            type_ = int(form.data["type"])
+            type_ = int(form.data["type"]) - 1
             show_votes_before_end = form.data.get("show_votes_before_end", 'off') == 'on'
             anonymous = form.data.get("anonymous", 'off') == 'on'
             ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)

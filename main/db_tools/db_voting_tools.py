@@ -73,6 +73,8 @@ class DB_VotingTools:
             return False, "Указанное голосование уже завершено!"
         if voting.started:
             return False, "Указанное голосование уже начато!"
+        if (voting.type == 2) and (len(VoteVariant.objects.filter(voting=voting)) != 2):
+            return False, "Дискретное голосование должно иметь ровно 2 варианта голоса!"
         voting.started = True
         voting.date_started = datetime.datetime.now()
         voting.save()
