@@ -31,6 +31,7 @@ class Voting(models.Model):
     anonymous = models.BooleanField(default=True)
     started = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
+    date_created = models.DateTimeField(default=datetime.datetime.now(), blank=True)
     # TODO - add field date_created = models.DateTimeField() with default value
 
 

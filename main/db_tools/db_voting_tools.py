@@ -28,7 +28,6 @@ class DB_VotingTools:
         voting.show_votes_before_end = show_votes_before_end
         voting.anonymous = anonymous
         voting.started = voting.completed = False
-        # TODO - add next feature : voting.date_created = datetime.datetime.today()
         voting.save()
         return True, None
 
@@ -62,3 +61,11 @@ class DB_VotingTools:
         variant = VoteVariant(voting=voting, description=description)
         variant.save()
         return True, None
+
+    @staticmethod
+    def __try_start_voting(author, voting_title) -> (bool, str):
+        pass
+
+    @staticmethod
+    def __try_stop_voting(author, voting_title) -> (bool, str):
+        pass
