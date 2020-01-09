@@ -74,6 +74,7 @@ class DB_VotingTools:
         if voting.started:
             return False, "Указанное голосование уже начато!"
         voting.started = True
+        voting.date_started = datetime.datetime.now()
         voting.save()
         return True, None
 
@@ -89,5 +90,6 @@ class DB_VotingTools:
         if voting.completed:
             return False, "Указанное голосование уже завершено!"
         voting.completed = True
+        voting.date_stopped = datetime.datetime.now()
         voting.save()
         return True, None

@@ -141,7 +141,7 @@ def run_voting_page(request): #временно
         else:
             error = "Здесь нет уязвимости!"
     else:
-        context["form"] = main.forms.AddVoteVariantForm()
+        context["form"] = main.forms.RunVotingForm()
         ok = True
     context["ok"] = ok
     context["error"] = error
