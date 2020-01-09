@@ -30,5 +30,6 @@ urlpatterns = [
     path('registration/', views.registration_page),
     path('cad/', views.clear_all_data_page), #страница, удаляющая всю информацию
     path('vm/new_voting/', views.new_voting_page),
-    path('vm/add_vote_variant/', views.add_vote_variant),
+    path('vm/add_vote_variant/', views.add_vote_variant_page),
+    path('vm/run_voting/', views.run_voting_page),
 ]

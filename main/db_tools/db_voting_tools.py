@@ -63,12 +63,14 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def __try_start_voting(author, voting_title) -> (bool, str):
+    def try_start_voting(author, voting_title) -> (bool, str):
         if not (isinstance(author, User) and isinstance(voting_title, str)):
             Exceptions.throw(Exceptions.argument_type)
         voting = DB_VotingTools.find_voting(author, voting_title)
         if voting is None:
             return False, "У вас нет голосования с указанным названием!"
+        if voting.completed:
+            return False, "Указанное голосование уже завершено!"
         if voting.started:
             return False, "Указанное голосование уже начато!"
         voting.started = True
@@ -76,7 +78,7 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def __try_stop_voting(author, voting_title) -> (bool, str):
+    def try_stop_voting(author, voting_title) -> (bool, str):
         if not (isinstance(author, User) and isinstance(voting_title, str)):
             Exceptions.throw(Exceptions.argument_type)
         voting = DB_VotingTools.find_voting(author, voting_title)

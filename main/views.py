@@ -96,7 +96,7 @@ def new_voting_page(request): #временно
 
 
 @login_required
-def add_vote_variant(request): #временно
+def add_vote_variant_page(request): #временно
     context = {}
     success = ok = False
     error = None
@@ -119,3 +119,31 @@ def add_vote_variant(request): #временно
     context["error"] = error
     context["success"] = success
     return render(request, "pages/voting_management/add_vote_variant.html", context)
+
+
+@login_required
+def run_voting_page(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.RunVotingForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author = request.user
+            voting_title = form.data["voting_title"]
+            start_not_stop = int(form.data["action"]) == 1
+            ok, error = DB_VotingTools.try_start_voting(author, voting_title) if start_not_stop else\
+                    DB_VotingTools.try_stop_voting(author, voting_title)
+            if ok:
+                success = True
+                context["success_message"] = "Голосование успешно " + ("начато" if start_not_stop else "завершено")
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.AddVoteVariantForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    return render(request, "pages/voting_management/run_voting.html", context)
