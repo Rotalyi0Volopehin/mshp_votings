@@ -2,8 +2,9 @@ import datetime
 
 from main.models import Voting
 from main.models import VoteVariant
+from main.models import VoteFact
 from django.contrib.auth.models import User
-from main.models import UserData
+from main.db_tools.db_user_tools import DB_UserTools
 from exceptions import Exceptions
 
 
@@ -17,11 +18,9 @@ class DB_VotingTools:
             Exceptions.throw(Exceptions.argument, "argument \"type_\" must be integer from 0 to 2")
         if len(title) == 0:
             return False, "Здесь нет уязвимости!"
-        author_data = UserData.objects.filter(user=author)
-        if len(author_data) != 1:
-            return False, "Некорректная конфигурация пользовательских данных!"
-        if not author_data[0].activated:
-            return False, "Пользователь не активирован!"
+        ok, error = DB_UserTools.check_user_activation_required(author)
+        if not ok:
+            return False, error
         if DB_VotingTools.find_voting(author, title) != None:
             return False, "У вас уже существует голосование с таким названием!"
         voting = Voting(author=author, title=title, description=description, type=type_)
@@ -29,6 +28,11 @@ class DB_VotingTools:
         voting.anonymous = anonymous
         voting.started = voting.completed = False
         voting.save()
+        if type_ == 2:
+            yes_var = VoteVariant(voting=voting, description="Да")
+            no_var = VoteVariant(voting=voting, description="Нет")
+            yes_var.save()
+            no_var.save()
         return True, None
 
     @staticmethod
@@ -65,6 +69,8 @@ class DB_VotingTools:
             return False, "У вас нет голосования с указанным названием!"
         if voting.started:
             return False, "Нельзя изменять начатое голосование!"
+        if voting.type == 2:
+            return False, "Нельзя изменять варианты голоса дискретного голосования!"
         neighbour_variants = VoteVariant.objects.filter(voting=voting)
         for neighbour_variant in neighbour_variants:
             if neighbour_variant.description == description:
@@ -89,8 +95,6 @@ class DB_VotingTools:
         vote_variant_count = len(VoteVariant.objects.filter(voting=voting))
         if vote_variant_count == 0:
             return False, "Голосование не может не иметь вариантов голоса!"
-        if (voting.type == 2) and (vote_variant_count != 2):
-            return False, "Дискретное голосование должно иметь ровно 2 варианта голоса!"
         voting.started = True
         voting.date_started = datetime.datetime.now()
         voting.save()
@@ -143,3 +147,36 @@ class DB_VotingTools:
                 if show_votes:
                     info.append(str(vote_variant.vote_fact_count) + " голос(а/ов)")
         return info
+
+    @staticmethod
+    def try_vote(user, voting, answers) -> (bool, str):
+        if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
+            Exceptions.throw(Exceptions.argument_type)
+        yes_var = no_var = bin_answer = 0
+        for answer in answers[::-1]:
+            if not isinstance(answer, bool):
+                Exceptions.throw(Exceptions.argument_type)
+            bin_answer = (bin_answer << 1) | answer
+            if answer:
+                yes_var += 1
+            else:
+                no_var += 1
+        ok, error = DB_UserTools.check_user_activation_required(user)
+        if not ok:
+            return False, error
+        if voting.completed:
+            return False, "Голосование уже завершено!"
+        if not voting.started:
+            return False, "Голосование ещё не начато!"
+        if voting.type != 0:
+            if yes_var + no_var != 1:
+                return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(voting.type)
+        if len(VoteFact.objects.filter(user=user)) > 0:
+            return False, "Вы уже проголосовали!"
+        variants = VoteVariant.objects.filter(voting=voting)
+        # TODO - если 2 пользователя проголосуют одновременно, vote_fact_count увеличится лишь на 1 голос из-за наложения; надо починить
+        for var in variants:
+            var.vote_fact_count += 1
+            var.save()
+        vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
+        vote_fact.save()

@@ -27,6 +27,17 @@ class DB_UserTools:
         return True, None
 
     @staticmethod
+    def check_user_activation_required(user) -> (bool, str):
+        if not isinstance(user, User):
+            Exceptions.throw(Exceptions.argument_type)
+        user_data = UserData.objects.filter(user=user)
+        if len(user_data) != 1:
+            return False, "Некорректная конфигурация пользовательских данных!"
+        if not user_data[0].activated:
+            return False, "Пользователь не активирован!"
+        return True, None
+
+    @staticmethod
     def clear_user_list():
         User.objects.all().delete()
         UserData.objects.all().delete()

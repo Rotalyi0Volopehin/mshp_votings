@@ -5,7 +5,7 @@ from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+from django import forms
 
 
 def get_menu_context():
@@ -172,3 +172,41 @@ def voting_info_page(request): #временно
     context["error"] = error
     context["success"] = success
     return render(request, "pages/voting_management/voting_info.html", context)
+
+
+@login_required
+def vote_page(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.SearchVotingForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author_login = form.data["author_login"]
+            voting_title = form.data["voting_title"]
+            voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
+            if voting != None:
+                answers = []
+                #???
+                ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.SearchVotingForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    context["variants"] = [get_voting_variants_field(voting)]
+    return render(request, "pages/vote.html", context)
+
+
+def get_voting_variants_field(voting):
+    variants = main.models.VoteVariant.objects.filter(voting=voting)
+    choices = []
+    for i in range(len(variants)):
+        var = variants[i]
+        choices.append((i + 1, var.description))
+    widget = forms.Select() if voting.type == 0 else forms.RadioSelect()
+    return forms.BooleanField(label="Варианты голоса:", widget=widget, choices=choices, required=(voting.type != 0))
