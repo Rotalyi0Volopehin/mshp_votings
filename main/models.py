@@ -9,7 +9,7 @@ def get_sentinel_user():
 
 
 #class User:
-    # first_name - имя
+    # first_name - логин
     # email - email
     # username - логин
     # password - хэш пароля

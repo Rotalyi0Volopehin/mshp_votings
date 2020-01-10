@@ -2,14 +2,20 @@ from django import forms
 
 
 class CommonFields:
+    @staticmethod
     def get_voting_title_field(required, label="Название голосования"):
         return forms.CharField(label=label, min_length=1, max_length=256, required=required)
 
+    @staticmethod
     def get_description_field(required, label="Описание"):
         return forms.CharField(widget=forms.Textarea, label=label, min_length=1, max_length=4096, required=required)
 
+    @staticmethod
+    def get_login_field(required, label="Логин"):
+        return forms.CharField(label=label, min_length=1, max_length=32, required=required)
+
 class RegistrationForm(forms.Form):
-    login = forms.CharField(label="Логин", min_length=1, max_length=32, required=True)
+    login = CommonFields.get_login_field(True)
     password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль", min_length=1, max_length=32, required=True)
     password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль", min_length=1, max_length=32, required=True)
     name = forms.CharField(label="Имя", min_length=1, max_length=32, required=True)
@@ -32,3 +38,8 @@ class AddVoteVariantForm(forms.Form):
 class RunVotingForm(forms.Form):
     voting_title = CommonFields.get_voting_title_field(True)
     action = forms.ChoiceField(label="Запрос на", widget=forms.RadioSelect(), choices=[(1, "начало"), (2, "завершение")], required=True)
+
+
+class SearchVotingForm(forms.Form):
+    author_login = CommonFields.get_login_field(True, "Логин автора")
+    voting_title = CommonFields.get_voting_title_field(True)

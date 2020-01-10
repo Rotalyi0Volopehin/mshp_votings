@@ -147,3 +147,28 @@ def run_voting_page(request): #временно
     context["error"] = error
     context["success"] = success
     return render(request, "pages/voting_management/run_voting.html", context)
+
+
+def voting_info_page(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.SearchVotingForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author_login = form.data["author_login"]
+            voting_title = form.data["voting_title"]
+            voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
+            if voting != None:
+                ok = success = True
+                context["info"] = DB_VotingTools.get_voting_info(voting)
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.SearchVotingForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    return render(request, "pages/voting_management/voting_info.html", context)

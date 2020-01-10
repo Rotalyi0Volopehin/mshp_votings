@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о голосовании</title>
+</head>
+<body>
+    <form method="post"> {% csrf_token %}
+        {% for item in form %}
+            <label>{{ item.label }}</label>
+            {{ item }}
+            <br>
+        {% endfor %}
+        <input type="submit" value="Применить">
+    </form>
+    <p>
+        {% if not ok %}
+            {% if error %}
+                {{ error }}
+            {% else %}
+                Что-то пошло не так
+            {% endif %}
+        {% else %}
+            {% if success %}
+                {% for info_line in info %}
+                    {{ info_line }} <br>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </p>
+</body>
+</html>
+<!--
+#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->
