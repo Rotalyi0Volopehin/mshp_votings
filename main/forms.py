@@ -27,7 +27,7 @@ class NewVotingForm(forms.Form):
     description = CommonFields.get_description_field(False)
     type = forms.ChoiceField(label="Тип голосования", choices=((1, "0"), (2, "1"), (3, "2")), required=True)
     show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False)
-    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников", required=False)
+    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False)
 
 
 class AddVoteVariantForm(forms.Form):
