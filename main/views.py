@@ -5,7 +5,7 @@ from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django import forms
+from django.contrib.auth.models import AnonymousUser
 
 
 def get_menu_context():
@@ -164,7 +164,8 @@ def voting_info_page(request): #временно
             voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
             if voting != None:
                 ok = success = True
-                context["info"] = DB_VotingTools.get_voting_info(voting)
+                user = None if isinstance(request.user, AnonymousUser) else request.user
+                context["info"] = DB_VotingTools.get_voting_info(voting, user)
         else:
             error = "Здесь нет уязвимости!"
     else:
