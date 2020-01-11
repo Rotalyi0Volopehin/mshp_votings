@@ -201,6 +201,7 @@ def vote_page(request): #временно
                         break
                 if error is None:
                     ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
+                success = ok
         else:
             error = "Здесь нет уязвимости!"
     else:

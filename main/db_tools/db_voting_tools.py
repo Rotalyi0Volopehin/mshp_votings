@@ -54,11 +54,10 @@ class DB_VotingTools:
 
     @staticmethod
     def find_voting(author, title) -> Voting:
-        such_votings = Voting.objects.filter(author=author)
-        for voting in such_votings:
-            if voting.title == title:
-                return voting
-        return None
+        voting = Voting.objects.filter(author=author, title=title)
+        if len(voting) == 0:
+            return None
+        return voting[0]
 
     @staticmethod
     def try_add_vote_variant(author, voting_title, description) -> (bool, str):
@@ -153,7 +152,7 @@ class DB_VotingTools:
         return info
 
     @staticmethod
-    def try_vote(user, voting, answers) -> (bool, str):
+    def try_vote(user, voting, answers) -> (bool, str): #TODO - запретить голосовать в своём же опросе
         if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
             Exceptions.throw(Exceptions.argument_type)
         yes_var = bin_answer = 0
@@ -183,6 +182,8 @@ class DB_VotingTools:
             if answers[i]:
                 variants[i].vote_fact_count += 1
                 variants[i].save()
+        if voting.anonymous:
+            bin_answer = 0
         vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         vote_fact.save()
         return True, None
