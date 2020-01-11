@@ -152,15 +152,13 @@ class DB_VotingTools:
     def try_vote(user, voting, answers) -> (bool, str):
         if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
             Exceptions.throw(Exceptions.argument_type)
-        yes_var = no_var = bin_answer = 0
+        yes_var = bin_answer = 0
         for answer in answers[::-1]:
             if not isinstance(answer, bool):
                 Exceptions.throw(Exceptions.argument_type)
             bin_answer = (bin_answer << 1) | answer
             if answer:
                 yes_var += 1
-            else:
-                no_var += 1
         ok, error = DB_UserTools.check_user_activation_required(user)
         if not ok:
             return False, error
@@ -168,15 +166,19 @@ class DB_VotingTools:
             return False, "Голосование уже завершено!"
         if not voting.started:
             return False, "Голосование ещё не начато!"
-        if voting.type != 0:
-            if yes_var + no_var != 1:
-                return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(voting.type)
-        if len(VoteFact.objects.filter(user=user)) > 0:
-            return False, "Вы уже проголосовали!"
         variants = VoteVariant.objects.filter(voting=voting)
+        if len(variants) != len(answers):
+            return False, "Длина голоса не совпадает с количеством вариантов голоса!"
+        if voting.type != 0:
+            if yes_var != 1:
+                return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(voting.type)
+        if len(VoteFact.objects.filter(user=user, voting=voting)) > 0:
+            return False, "Вы уже проголосовали!"
         # TODO - если 2 пользователя проголосуют одновременно, vote_fact_count увеличится лишь на 1 голос из-за наложения; надо починить
-        for var in variants:
-            var.vote_fact_count += 1
-            var.save()
+        for i in range(len(answers)):
+            if answers[i]:
+                variants[i].vote_fact_count += 1
+                variants[i].save()
         vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         vote_fact.save()
+        return True, None

@@ -43,3 +43,7 @@ class RunVotingForm(forms.Form):
 class SearchVotingForm(forms.Form):
     author_login = CommonFields.get_login_field(True, "Логин автора")
     voting_title = CommonFields.get_voting_title_field(True)
+
+
+class VoteForm(SearchVotingForm):
+    answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)

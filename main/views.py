@@ -180,7 +180,7 @@ def vote_page(request): #временно
     success = ok = False
     error = None
     if (request.method == "POST") and request.POST:
-        form = main.forms.SearchVotingForm(request.POST)
+        form = main.forms.VoteForm(request.POST)
         context["form"] = form
         if form.is_valid():
             author_login = form.data["author_login"]
@@ -188,25 +188,23 @@ def vote_page(request): #временно
             voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
             if voting != None:
                 answers = []
-                #???
-                ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
+                text_answer = form.data["answer"]
+                for digit in text_answer:
+                    if digit == '0':
+                        answers.append(False)
+                    elif digit == '1':
+                        answers.append(True)
+                    else:
+                        error = "Голос не должен содержать других символов, кроме '0' или '1'!"
+                        break
+                if error is None:
+                    ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
         else:
             error = "Здесь нет уязвимости!"
     else:
-        context["form"] = main.forms.SearchVotingForm()
+        context["form"] = main.forms.VoteForm()
         ok = True
     context["ok"] = ok
     context["error"] = error
     context["success"] = success
-    context["variants"] = [get_voting_variants_field(voting)]
     return render(request, "pages/vote.html", context)
-
-
-def get_voting_variants_field(voting):
-    variants = main.models.VoteVariant.objects.filter(voting=voting)
-    choices = []
-    for i in range(len(variants)):
-        var = variants[i]
-        choices.append((i + 1, var.description))
-    widget = forms.Select() if voting.type == 0 else forms.RadioSelect()
-    return forms.BooleanField(label="Варианты голоса:", widget=widget, choices=choices, required=(voting.type != 0))
