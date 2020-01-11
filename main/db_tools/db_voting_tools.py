@@ -28,7 +28,7 @@ class DB_VotingTools:
         voting.anonymous = anonymous
         voting.started = voting.completed = False
         voting.save()
-        if type_ == 2:
+        if type_ == 2: #Дискретное голосование всегда обладает только этими двумя вариантами голоса
             yes_var = VoteVariant(voting=voting, description="Да")
             no_var = VoteVariant(voting=voting, description="Нет")
             yes_var.save()
@@ -80,6 +80,10 @@ class DB_VotingTools:
         variant = VoteVariant(voting=voting, description=description)
         variant.save()
         return True, None
+
+    @staticmethod
+    def clear_vote_variant_list():
+        VoteVariant.objects.all().delete()
 
     @staticmethod
     def try_start_voting(author, voting_title) -> (bool, str):
@@ -182,3 +186,7 @@ class DB_VotingTools:
         vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         vote_fact.save()
         return True, None
+
+    @staticmethod
+    def clear_vote_fact_list():
+        VoteFact.objects.all().delete()

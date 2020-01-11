@@ -61,8 +61,10 @@ def registration_page(request): #временно
 
 
 def clear_all_data_page(request): #Developer's tool
-    DB_UserTools.clear_user_list()
+    DB_VotingTools.clear_vote_variant_list()
     DB_VotingTools.clear_voting_list()
+    DB_VotingTools.clear_vote_fact_list()
+    DB_UserTools.clear_user_list()
     return render(request, 'pages/cad.html')
 
 
