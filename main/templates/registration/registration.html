@@ -11,9 +11,22 @@
     <div class="card w-50 mt-5 mx-auto">
         <div class="card-header">Registration</div>
         <div class="card-body">
-            <form action="/login/" method="POST">
+            <form action="/register/" method="POST">
                 {% csrf_token %}
                 <div class="container">
+                    {% for item in form %}
+                        <div class="row">
+                            <div class="col-4">
+                                <p class="mr-4 mt-1 text-right">{{ item.label }}</p>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ item }}
+                                    <!-- <input type="text" class="form-control" id="email" placeholder="Email"> -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                     <div class="row">
                         <div class="col-4">
                             <p class="mr-4 mt-1 text-right">Email</p>
@@ -55,6 +68,27 @@
             </form>
         </div>
     </div>
-    </div>
+
+    <p>
+        <div class="text-center">
+            {% if not ok %}
+                {% if error %}
+                    <div class="alert alert-danger mt-5 w-50 mx-auto" role="alert">
+                        {{ error }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger mt-5 w-50 mx-auto" role="alert">
+                        Что-то пошло не так
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if success %}
+                    <div class="alert alert-success mt-5 w-50 mx-auto" role="alert">
+                        Вы были успешно зарегистрированы
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </p>
 
 {% endblock %}
