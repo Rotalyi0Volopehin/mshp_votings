@@ -19,7 +19,7 @@ class RegistrationForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль", min_length=1, max_length=32, required=True)
     password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль", min_length=1, max_length=32, required=True)
     name = forms.CharField(label="Имя", min_length=1, max_length=32, required=True)
-    email = forms.CharField(label="Email", min_length=1, max_length=32, required=True)
+    email = forms.CharField(label="E-mail", min_length=1, max_length=32, required=True)
 
 
 class NewVotingForm(forms.Form):

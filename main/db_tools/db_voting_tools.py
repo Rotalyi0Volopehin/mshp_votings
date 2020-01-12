@@ -44,7 +44,7 @@ class DB_VotingTools:
     def try_find_voting(author_login, title) -> (Voting, str):
         if not (isinstance(author_login, str) and isinstance(title, str)):
             Exceptions.throw(Exceptions.argument_type)
-        author = User.objects.filter(first_name=author_login)
+        author = User.objects.filter(username=author_login)
         if len(author) == 0:
             return None, "Не существует пользователя с указанным логином!"
         author = author[0]
