@@ -11,7 +11,7 @@ from django.contrib.auth.models import AnonymousUser
 def get_menu_context():
     return [
         {'url': '/', 'name': 'Главная'},
-        {'url': '/time/', 'name': 'Текущее время'},
+        {'url': '/voting/', 'name': 'Опросы'},
     ]
 
 
@@ -212,3 +212,19 @@ def vote_page(request): #временно
     context["error"] = error
     context["success"] = success
     return render(request, "pages/vote.html", context)
+
+
+def vote_create_page(request):
+    context = {
+        'pagename': 'Создание голосование',
+        'menu': get_menu_context()
+    }
+    return render(request, 'pages/vote_create.html', context)
+
+
+def option_create_page(request):
+    context = {
+        'pagename': 'Добавление варианта',
+        'menu': get_menu_context()
+    }
+    return render(request, 'pages/option_create.html', context)
