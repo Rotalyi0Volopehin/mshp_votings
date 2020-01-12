@@ -29,5 +29,6 @@ urlpatterns = [
         'menu': get_menu_context(),
         'pagename': 'Авторизация'
     })),
+    path('registration/', views.registration_page),
     path('logout/', auth_views.LogoutView.as_view())
 ]

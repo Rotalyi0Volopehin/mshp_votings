@@ -27,3 +27,7 @@ def time_page(request):
         'menu': get_menu_context()
     }
     return render(request, 'pages/time.html', context)
+
+
+def registration_page(request):
+    return render(request, 'registration/registration.html')
