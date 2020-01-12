@@ -27,3 +27,19 @@ def time_page(request):
         'menu': get_menu_context()
     }
     return render(request, 'pages/time.html', context)
+
+
+def vote_create_page(request):
+    context = {
+        'pagename': 'Создание голосование',
+        'menu': get_menu_context()
+    }
+    return render(request, 'pages/vote_create.html', context)
+
+
+def option_create_page(request):
+    context = {
+        'pagename': 'Добавление варианта',
+        'menu': get_menu_context()
+    }
+    return render(request, 'pages/option_create.html', context)

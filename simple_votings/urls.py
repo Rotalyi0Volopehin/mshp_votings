@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index_page),
     path('time/', views.time_page),
+    path('vote_create/', views.vote_create_page),
+    path('option_create/', views.option_create_page),
     path('login/', auth_views.LoginView.as_view(extra_context={
         'menu': get_menu_context(),
         'pagename': 'Авторизация'
