@@ -2,15 +2,32 @@
 
 
 {% block content %}
-    <div class="row mt-3">
-        <div class="col">
-            <h1>Wellcome!</h1>
-            <hr>
-            <p>Это маленький и очень простой сайт</p>
-            <ul>
-                <li>Автор: {{ author }}</li>
-                <li>Количество страниц: {{ pages }}</li>
-            </ul>
+<div class="row mt-3">
+    <div class="col">
+        <h1>Find voting or create new</h1>
+        <hr>
+        <div class="input-group">
+            <input type="text" class="form-control">
+            <div class="input-group-append">
+                <select class="custom-select">
+                    <option selected="">All option</option>
+                    <option value="1">Multiple</option>
+                    <option value="2">Discrete of some</option>
+                    <option value="3">Discrete of two</option>
+                </select>
+            </div>
+            <span class="btn btn-info">Search</span>
         </div>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="customSwitch" onclick="to_expand();" value="1">
+            <label class="custom-control-label" for="customSwitch" >Advanced Search</label>
+        </div>
+                {% include 'pages/advanced_form.html' %}
     </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% load static %}
+<script src="{% static 'main.js' %}"></script>
 {% endblock %}

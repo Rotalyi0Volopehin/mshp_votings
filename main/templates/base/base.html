@@ -33,7 +33,9 @@
             {% endblock %}
         </footer>
 
-        {% block extra_js %}
+        {% block extra_js %}{% endblock %}
+
+        {% block base_extra_js %}
             {% bootstrap_javascript jquery='full' %}
         {% endblock %}
     </body>
