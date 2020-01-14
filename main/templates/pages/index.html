@@ -18,11 +18,23 @@
             </div>
             <span class="btn btn-info">Search</span>
         </div>
-        <div class="custom-control custom-switch">
+        <div class="custom-control custom-switch ">
             <input type="checkbox" class="custom-control-input" id="customSwitch" onclick="to_expand();" value="1">
-            <label class="custom-control-label" for="customSwitch" >Advanced Search</label>
+            <label class="custom-control-label" for="customSwitch">Advanced Search</label>
         </div>
-                {% include 'pages/advanced_form.html' %}
+        {% include 'pages/advanced_form.html' %}
+        {% include 'pages/voting_cards.html' %}
+        <!-- example -->
+        <div class="card mt-3" style="width: 18rem;">
+            <svg class="bd-placeholder-img card-img-top" width="100%" height="180"  preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Image cap"><title>Placeholder</title><rect fill="#868e96" width="100%" height="100%"></rect><text fill="#dee2e6" dy=".3em" x="50%" y="50%">Maybe picture</text></svg>
+            <!-- <img src="..." class="card-img-top" alt="..."> -->
+            <div class="card-body">
+                <h5 class="card-title">Vote name</h5>
+                <p class="card-text">Some example text about voting , the card content.</p>
+                <a href="#" class="btn btn-primary">More Information</a>
+            </div>
+        </div>
+        <!-- -- -->
     </div>
 </div>
 {% endblock %}
@@ -30,4 +42,5 @@
 {% block extra_js %}
 {% load static %}
 <script src="{% static 'main.js' %}"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 {% endblock %}

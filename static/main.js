@@ -1,3 +1,5 @@
+document.addEventListener('DOMContentLoaded', to_expand);
+
 function is_active() {
     'use strict';
     //let
@@ -5,7 +7,7 @@ function is_active() {
     //.innerHTML = String(c);
 }
 
-function to_expand() {
+ function to_expand() {
     'use strict';
     if (customSwitch.value == 1)
     {
@@ -14,5 +16,18 @@ function to_expand() {
     } else {
         document.getElementById("RadiosExpand").style.display = "block";
         customSwitch.value = 1
+    }
+}
+
+function card_creator() {
+    let container = document.getElementById("card_container");
+    for (let i = 0; i < array.length; i++) {
+           container.innerHTML += '<div class="card" style="width: 18rem;">';
+           container.innerHTML += '<div class="card-body">';
+           container.innerHTML += '<h5 class="card-title">Vote name</h5>';
+           container.innerHTML += '<p class="card-text">Some text on the card about vote content.</p>';
+           container.innerHTML += '<a href="#" class="btn btn-primary">More information</a>';
+           container.innerHTML += '</div>';
+           container.innerHTML += '</div>';
     }
 }
