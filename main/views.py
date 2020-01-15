@@ -34,6 +34,18 @@ def time_page(request):
     return render(request, 'pages/time.html', context)
 
 
+def profile_page(request):
+    context = {}
+    context['pagename'] = 'Профиль'
+    context['name'] = 'TEST'
+    context['email'] = 'TEST'
+    context['createdpolls'] = '100500'
+    context['votedpolls'] = '100500'
+    context['activated'] = False
+    context['about'] = 'С другой стороны дальнейшее развитие различных форм деятельности представляет собой интересный эксперимент проверки систем массового участия. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности способствует подготовки и реализации соответствующий условий активизации. Не следует, однако забывать, что постоянный количественный рост и сфера нашей активности представляет собой интересный эксперимент проверки дальнейших направлений развития. Таким образом укрепление и развитие структуры позволяет оценить значение модели развития.'
+    return render(request, 'pages/profile.html', context)
+
+
 def registration_page(request): #временно
     context = {}
     success = ok = False
