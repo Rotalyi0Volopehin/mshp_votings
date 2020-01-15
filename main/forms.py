@@ -14,12 +14,16 @@ class CommonFields:
     def get_login_field(required, label="Логин"):
         return forms.CharField(label=label, min_length=1, max_length=32, required=required)
 
+    @staticmethod
+    def get_password_field(required, label="Пароль"):
+        return forms.CharField(widget=forms.PasswordInput, label=label, min_length=1, max_length=64, required=required)
+
 class RegistrationForm(forms.Form):
     login = CommonFields.get_login_field(True)
-    password1 = forms.CharField(widget=forms.PasswordInput, label="Пароль", min_length=1, max_length=32, required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput, label="Повторите пароль", min_length=1, max_length=32, required=True)
-    name = forms.CharField(label="Имя", min_length=1, max_length=32, required=True)
-    email = forms.CharField(label="E-mail", min_length=1, max_length=32, required=True)
+    password1 = CommonFields.get_password_field(True)
+    password2 = CommonFields.get_password_field(True, "Повторите пароль")
+    name = forms.CharField(label="Имя", min_length=1, max_length=64, required=True)
+    email = forms.CharField(label="E-mail", min_length=1, max_length=64, required=True)
 
 
 class NewVotingForm(forms.Form):
