@@ -9,82 +9,104 @@
 
 
 {% block content %}
-    <form>
+<form class="container">
 
-      <div class="form-group">
-        <label for="Name">Имя</label>
-        <input type="text" class="form-control" id="Name" value="{{ name }}">
-      </div>
+    <br><br><br><br>
 
-      <div class="form-group">
-        <label for="Email">E-mail</label>
-        <input type="email" class="form-control" id="Email" value="{{ email }}">
-      </div>
+    <div class="row">
+        <div class="col-sm-4">
 
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button><br><br>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="Name">Имя</label>
+                <input type="text" class="form-control col-sm-9" id="Name" value="{{ name }}">
+            </div>
 
-        <div class="form-group">
-            <label>Создано опросов: {{ createdpolls }}</label>
-            <br>
-            <label>Принято участие: {{ votedpolls }}</label>
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="Email">E-mail</label>
+                <input type="email" class="form-control col-sm-9" id="Email" value="{{ email }}">
+            </div>
+
         </div>
 
-      {% if activated %}
-         <div class="alert alert-success" role="alert">
-             Аккаунт верифицирован
-         </div>
-      {% else %}
-         <div class="alert alert-danger" role="alert">
-             Аккаунт не верифицирован
-         </div>
-         <button type="button" class="btn btn-outline-primary">Верифицировать</button><br><br>
-      {% endif %}
+        <br><br>
 
-      <div class="form-group">
-          <label for="About">О себе</label>
-          <textarea class="form-control" id="About" rows="5">{{ about }}</textarea>
-      </div>
+        <div class="col-sm-4">
+            {% if activated %}
 
-      <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
+            <div class="alert alert-success" role="alert">
+                Аккаунт верифицирован
+            </div>
+            <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
 
-    </form>
+            {% else %}
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+            <div class="alert alert-danger text-center" role="alert">
+                Аккаунт не верифицирован
+            </div>
+
+            <button type="button" class="col-sm-6 btn btn-primary" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
+            <button type="button" class="col-sm-5.5 btn btn-outline-primary">Верифицировать</button>
+
+            {% endif %}
+        </div>
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Создано опросов: {{ createdpolls }}</label>
+                <br>
+                <label>Принято участие: {{ votedpolls }}</label>
+                <br>
+                <label>Дата регистрации: {{ regdate }}</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="About">О себе</label>
+        <textarea class="form-control" id="About" rows="5">{{ about }}</textarea>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
+
+</form>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
 
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Сменить пароль</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-
-          <div class="modal-body">
-
-            <div class="form-group">
-                <label for="OldPassword">Введите старый пароль</label>
-                <input type="text" class="form-control" id="OldPassword" value="{{ oldpassword }}">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Сменить пароль</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
 
-            <div class="form-group">
-                <label for="NewPassword">Введите новый пароль</label>
-                <input type="password" class="form-control" id="NewPassword" value="{{ newpassword }}">
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="OldPassword">Введите старый пароль</label>
+                    <input type="password" class="form-control" id="OldPassword" value="{{ oldpassword }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="NewPassword">Введите новый пароль</label>
+                    <input type="password" class="form-control" id="NewPassword" value="{{ newpassword }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="NewPassword2">Введите новый пароль повторно</label>
+                    <input type="password" class="form-control" id="NewPassword2" value="{{ newpassword2 }}">
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label for="NewPassword2">Введите новый пароль повторно</label>
-                <input type="password" class="form-control" id="NewPassword2" value="{{ newpassword2 }}">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary">Сохранить</button>
             </div>
-
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-primary">Сохранить</button>
-          </div>
 
         </div>
-      </div>
     </div>
+</div>
 {% endblock %}
