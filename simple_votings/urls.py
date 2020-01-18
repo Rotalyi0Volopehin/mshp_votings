@@ -24,7 +24,7 @@ from main.views import get_menu_context
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index_page),
-    path('time/', views.time_page),
+    path('vote/', views.vote_page),
     path('login/', auth_views.LoginView.as_view(extra_context={
         'menu': get_menu_context(),
         'pagename': 'Авторизация'
