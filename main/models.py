@@ -22,8 +22,22 @@ class UserData(models.Model):
     extra_info = models.TextField(default='')
 
 
+class VotingSet(models.Model):
+    author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    title = models.TextField(default='')
+    description = models.TextField(default='')
+    pause = models.BooleanField(default=False)
+    date_created = models.DateTimeField(default=datetime.datetime.now(), blank=True)
+
+
+class VotingSetAccess(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    set = models.ForeignKey(to=VotingSet, on_delete=models.CASCADE)
+
+
 class Voting(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    set = models.ForeignKey(to=VotingSet, on_delete=models.CASCADE)
     title = models.TextField(default='')
     description = models.TextField(default='')
     type = models.IntegerField(default=0)
