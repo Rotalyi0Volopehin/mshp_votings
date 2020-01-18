@@ -26,7 +26,6 @@ class VotingSet(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
     title = models.TextField(default='')
     description = models.TextField(default='')
-    pause = models.BooleanField(default=False)
     date_created = models.DateTimeField(default=datetime.datetime.now(), blank=True)
 
 
