@@ -11,11 +11,14 @@ class DB_UserTools:
     def try_register_user(login, password, name, email) -> (bool, str):
         if not (isinstance(login, str) and isinstance(password, str) and isinstance(name, str) and isinstance(email, str)):
             Exceptions.throw(Exceptions.argument_type)
-        if (len(User.objects.filter(username=login)) > 0) or not ((0 < len(login) <= 32) and (0 < len(name) <= 32) and
-                (0 < len(email) <= 32)):
-                return False, "Пользователь с данным логином уже существует!"
+        if not ((0 < len(login) <= 64) and (0 < len(name) <= 64) and (0 < len(email) <= 64) and (0 < len(password) <= 64)):
+            return False, "Здесь нет уязвимости!"
+        if len(User.objects.filter(username=login)) > 0:
+            return False, "Пользователь с данным логином уже существует!"
         if not is_email_valid(email):
             return False, "E-mail некорректен!"
+        if len(User.objects.filter(email=email)) > 0:
+            return False, "Пользователь с указанным E-mail уже существует!"
         user = User(first_name=name, email=email, username=login, date_joined=datetime.datetime.today())
         user.set_password(password)
         user.save()
