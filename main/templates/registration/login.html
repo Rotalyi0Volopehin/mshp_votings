@@ -1,26 +1,9 @@
 {% extends 'base/base.html' %}
 
-
 {% load bootstrap4 %}
 
 
 {% block content %}
-
-    <!--<h1 class="mt-4">Авторизация (vasya-promprog)</h1>
-    <hr>
-
-    <div class="row">
-        <div class="col-4 offset-4">
-            <form action="/login/" method="POST">
-                {% csrf_token %}
-
-                {% bootstrap_form form %}
-                {% buttons %}
-                    <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
-                {% endbuttons %}
-            </form>
-        </div>
-    </div>-->
     <div class="container">
 
         <div class="row pt-5">
@@ -32,7 +15,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <a href="#" class="btn btn-primary mt-3 w-50">Register</a>
+                    <a href="/registration/" class="btn btn-primary mt-3 w-50">Register</a>
                 </div>
             </div>
 
@@ -43,13 +26,18 @@
                         <form action="/login/" method="POST">
                             {% csrf_token %}
                             <div class="container">
+                                <!--{% bootstrap_form form %}
+                                {% buttons %}
+                                    <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
+                                {% endbuttons %}-->
                                 <div class="row">
                                     <div class="col-4">
                                         <p class="mr-4 mt-1 text-right">Email</p>
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="email" placeholder="Email">
+                                            <input type="text" class="form-control" id="email" placeholder="Email"
+                                                name="username" id="id_username">
                                         </div>
                                     </div>
                                 </div>
@@ -59,7 +47,8 @@
                                     </div>
                                     <div class="col">
                                         <div class="form-group">
-                                            <input type="password" class="form-control" id="password" placeholder="Password">
+                                            <input type="password" class="form-control" placeholder="Password"
+                                                   name="password" id="id_password">
                                         </div>
                                     </div>
                                 </div>
