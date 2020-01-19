@@ -24,6 +24,7 @@ class DB_VotingTools:
             return False, "Уже существует раздел голосований с таким названием!"
         voting_set = VotingSet(author=author, title=title, description=description)
         voting_set.save()
+        return True, None
 
     @staticmethod
     def clear_voting_set_list():
@@ -51,10 +52,13 @@ class DB_VotingTools:
             Exceptions.throw(Exceptions.argument_type)
         if voting_set.author != author:
             return False, "Вы не являетесь автором указанного раздела голосований!"
-        if len(VotingSetAccess.objects.filter(voting_set=voting_set, user=user_to_open_for)) > 0:
+        if user_to_open_for == author:
+            return False, "У вас и так есть доступ!"
+        if len(VotingSetAccess.objects.filter(set=voting_set, user=user_to_open_for)) > 0:
             return False, "Доступ уже выдан!"
-        voting_set_access = VotingSetAccess(voting_set=voting_set, user=user_to_open_for)
+        voting_set_access = VotingSetAccess(set=voting_set, user=user_to_open_for)
         voting_set_access.save()
+        return True, None
 
     @staticmethod
     def try_close_access_to_voting_set(author, voting_set, user_to_close_for):
@@ -62,10 +66,13 @@ class DB_VotingTools:
             Exceptions.throw(Exceptions.argument_type)
         if voting_set.author != author:
             return False, "Вы не являетесь автором указанного раздела голосований!"
-        if len(VotingSetAccess.objects.filter(voting_set=voting_set, user=user_to_close_for)) == 0:
-            return False, "Доступ и так нет!"
-        voting_set_access = VotingSetAccess(voting_set=voting_set, user=user_to_close_for)
+        if user_to_close_for == author:
+            return False, "Автор не может закрыть доступ самому себе!"
+        voting_set_access = VotingSetAccess.objects.filter(set=voting_set, user=user_to_close_for)
+        if len(voting_set_access) == 0:
+            return False, "Доступа и так нет!"
         voting_set_access.delete()
+        return True, None
 
     @staticmethod
     def clear_voting_set_access_list():
@@ -73,7 +80,7 @@ class DB_VotingTools:
 
     @staticmethod
     def check_user_voting_set_access_required(user, voting_set) -> (bool, str):
-        if (voting_set.author == user) or (len(VotingSetAccess.objects.filter(user=user, voting_set=voting_set)) == 1):
+        if (voting_set.author == user) or (len(VotingSetAccess.objects.filter(user=user, set=voting_set)) == 1):
             return True, None
         return False, "У вас нет доступа к указанному разделу голосований!"
 
@@ -94,7 +101,7 @@ class DB_VotingTools:
             return False, error
         if DB_VotingTools.find_voting(title, voting_set) != None:
             return False, "Указанный раздел голосований уже содержит голосование с таким названием!"
-        voting = Voting(author=author, title=title, description=description, type=type_, voting_set=voting_set,
+        voting = Voting(author=author, title=title, description=description, type=type_, set=voting_set,
                         show_votes_before_end=show_votes_before_end, anonymous=anonymous)
         voting.save()
         if type_ == 2: #Дискретное голосование всегда обладает только этими двумя вариантами голоса
@@ -119,7 +126,7 @@ class DB_VotingTools:
 
     @staticmethod
     def find_voting(title, voting_set) -> Voting:
-        voting = Voting.objects.filter(title=title, voting_set=voting_set)
+        voting = Voting.objects.filter(title=title, set=voting_set)
         if len(voting) == 0:
             return None
         return voting[0]

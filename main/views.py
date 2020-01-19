@@ -100,7 +100,7 @@ def manage_voting_set_access_page(request): #временно
     success = ok = False
     error = None
     if (request.method == "POST") and request.POST:
-        form = main.forms.NewVotingSetForm(request.POST)
+        form = main.forms.ManageVotingSetAccessForm(request.POST)
         context["form"] = form
         if form.is_valid():
             author = request.user
@@ -111,7 +111,8 @@ def manage_voting_set_access_page(request): #временно
             if error is None:
                 user, error = DB_UserTools.try_find_user(user_login)
                 if error is None:
-                    ok, error = DB_VotingTools.try_open_access_to_voting_set(author, voting_set, user)
+                    ok, error = DB_VotingTools.try_open_access_to_voting_set(author, voting_set, user) if open_not_close\
+                            else DB_VotingTools.try_close_access_to_voting_set(author, voting_set, user)
                     if ok:
                         success = True
                         context["success_message"] = "Доступ к разделу голосований успешно {} для указанного пользователя".\
@@ -119,12 +120,12 @@ def manage_voting_set_access_page(request): #временно
         else:
             error = "Здесь нет уязвимости!"
     else:
-        context["form"] = main.forms.NewVotingSetForm()
+        context["form"] = main.forms.ManageVotingSetAccessForm()
         ok = True
     context["ok"] = ok
     context["error"] = error
     context["success"] = success
-    return render(request, "pages/voting_management/new_voting_set.html", context)
+    return render(request, "pages/voting_management/manage_voting_set_access.html", context)
 
 
 @login_required

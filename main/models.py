@@ -23,7 +23,7 @@ class UserData(models.Model):
 
 
 class VotingSet(models.Model):
-    author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    author = models.ForeignKey(to=User, on_delete=models.CASCADE)
     title = models.TextField(default='')
     description = models.TextField(default='')
     date_created = models.DateTimeField(default=datetime.datetime.now(), blank=True)
