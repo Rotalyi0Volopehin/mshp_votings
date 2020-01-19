@@ -15,14 +15,14 @@ class CommonFields:
         return forms.CharField(label=label, min_length=1, max_length=32, required=required,
                                widget=forms.NumberInput(attrs={
                                    'class': 'form-control',
-                                   'type': 'password',
+                                   'type': 'text',
                                    'placeholder': 'Login'
                                }))
 
     @staticmethod
     def get_password_field(required, label="Пароль"):
         return forms.CharField(label=label, min_length=1, max_length=64, required=required,
-                               widget=forms.NumberInput(attrs={
+                               widget=forms.PasswordInput(attrs={
                                    'class': 'form-control',
                                    'type': 'password',
                                    'placeholder': 'Password'
