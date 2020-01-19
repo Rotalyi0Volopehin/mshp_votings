@@ -118,7 +118,7 @@ def add_vote_variant_page(request): #временно
             description = form.data["description"]
             voting_set, error = DB_VotingTools.try_find_voting_set(voting_set_title)
             if error is None:
-                voting, error = DB_VotingTools.try_find_voting_(voting_title, voting_set)
+                voting, error = DB_VotingTools.try_find_voting(voting_title, voting_set)
                 if error is None:
                     ok, error = DB_VotingTools.try_add_vote_variant(author, voting, description)
                     if ok:
@@ -149,7 +149,7 @@ def run_voting_page(request): #временно
             start_not_stop = int(form.data["action"]) == 1
             voting_set, error = DB_VotingTools.try_find_voting_set(voting_set_title)
             if error is None:
-                voting, error = DB_VotingTools.try_find_voting_(voting_title, voting_set)
+                voting, error = DB_VotingTools.try_find_voting(voting_title, voting_set)
                 if error is None:
                     ok, error = DB_VotingTools.try_start_voting(author, voting) if start_not_stop else\
                             DB_VotingTools.try_stop_voting(author, voting)
@@ -179,7 +179,7 @@ def voting_info_page(request): #временно
             voting_set_title = form.data["voting_set_title"]
             voting_set, error = DB_VotingTools.try_find_voting_set(voting_set_title)
             if error is None:
-                voting, error = DB_VotingTools.try_find_voting_(voting_title, voting_set)
+                voting, error = DB_VotingTools.try_find_voting(voting_title, voting_set)
                 if error is None:
                     ok = success = True
                     user = None if isinstance(request.user, AnonymousUser) else request.user
@@ -208,7 +208,7 @@ def vote_page(request): #временно
             voting_set_title = form.data["voting_set_title"]
             voting_set, error = DB_VotingTools.try_find_voting_set(voting_set_title)
             if error is None:
-                voting, error = DB_VotingTools.try_find_voting_(voting_title, voting_set)
+                voting, error = DB_VotingTools.try_find_voting(voting_title, voting_set)
                 if error is None:
                     answers = []
                     text_answer = form.data["answer"]

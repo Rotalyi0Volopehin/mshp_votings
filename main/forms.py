@@ -23,7 +23,7 @@ class CommonFields:
         return forms.CharField(widget=forms.PasswordInput, label=label, min_length=1, max_length=64, required=required)
 
 
-class SearchVotingForm_(forms.Form):
+class SearchVotingForm(forms.Form):
     voting_title = CommonFields.get_voting_title_field(True)
     voting_set_title = CommonFields.get_voting_set_title_field(True)
 
@@ -45,18 +45,13 @@ class NewVotingForm(forms.Form):
     anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False)
 
 
-class AddVoteVariantForm(SearchVotingForm_):
+class AddVoteVariantForm(SearchVotingForm):
     description = CommonFields.get_description_field(True, label="Описание варианта")
 
 
-class RunVotingForm(SearchVotingForm_):
+class RunVotingForm(SearchVotingForm):
     action = forms.ChoiceField(label="Запрос на", widget=forms.RadioSelect(), choices=[(1, "начало"), (2, "завершение")], required=True)
 
 
-class SearchVotingForm(forms.Form):
-    author_login = CommonFields.get_login_field(True, "Логин автора")
-    voting_title = CommonFields.get_voting_title_field(True)
-
-
-class VoteForm(SearchVotingForm_):
+class VoteForm(SearchVotingForm):
     answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)

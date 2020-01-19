@@ -92,7 +92,7 @@ class DB_VotingTools:
         ok, error = DB_VotingTools.check_user_voting_set_access_required(author, voting_set)
         if not ok:
             return False, error
-        if DB_VotingTools.find_voting_(title, voting_set) != None:
+        if DB_VotingTools.find_voting(title, voting_set) != None:
             return False, "Указанный раздел голосований уже содержит голосование с таким названием!"
         voting = Voting(author=author, title=title, description=description, type=type_, voting_set=voting_set,
                         show_votes_before_end=show_votes_before_end, anonymous=anonymous)
@@ -109,34 +109,16 @@ class DB_VotingTools:
         Voting.objects.all().delete()
 
     @staticmethod
-    def try_find_voting(author_login, title) -> (Voting, str):#------------
-        if not (isinstance(author_login, str) and isinstance(title, str)):
-            Exceptions.throw(Exceptions.argument_type)
-        author = User.objects.filter(username=author_login)
-        if len(author) == 0:
-            return None, "Не существует пользователя с указанным логином!"
-        author = author[0]
-        voting = DB_VotingTools.find_voting(author, title)
-        return voting, "Голосование не найдено!" if voting is None else None
-
-    @staticmethod
-    def try_find_voting_(title, voting_set) -> (Voting, str):
+    def try_find_voting(title, voting_set) -> (Voting, str):
         if not (isinstance(voting_set, VotingSet) and isinstance(title, str)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting_(title, voting_set)
+        voting = DB_VotingTools.find_voting(title, voting_set)
         if voting is None:
             return None, "Голосование не найдено!"
         return voting, None
 
     @staticmethod
-    def find_voting(author, title) -> Voting:#------------
-        voting = Voting.objects.filter(author=author, title=title)
-        if len(voting) == 0:
-            return None
-        return voting[0]
-
-    @staticmethod
-    def find_voting_(title, voting_set) -> Voting:
+    def find_voting(title, voting_set) -> Voting:
         voting = Voting.objects.filter(title=title, voting_set=voting_set)
         if len(voting) == 0:
             return None
