@@ -20,8 +20,8 @@ class DB_VotingTools:
         ok, error = DB_UserTools.check_user_activation_required(author)
         if not ok:
             return False, error
-        if len(VotingSet.objects.filter(author=author, title=title)) > 0:
-            return False, "У вас уже существует раздел голосований с таким названием!"
+        if len(VotingSet.objects.filter(title=title)) > 0:
+            return False, "Уже существует раздел голосований с таким названием!"
         voting_set = VotingSet(author=author, title=title, description=description)
         voting_set.save()
 
@@ -30,10 +30,8 @@ class DB_VotingTools:
         VotingSet.objects.all().delete()
 
     @staticmethod
-    def find_voting_set(title, author=None):
-        if author is None:
-            return VotingSet.objects.filter(title=title)
-        voting_set = VotingSet.objects.filter(author=author, title=title)
+    def find_voting_set(title) -> VotingSet:
+        voting_set = VotingSet.objects.filter(title=title)
         if len(voting_set) == 0:
             return None
         return voting_set[0]
@@ -65,6 +63,12 @@ class DB_VotingTools:
         VotingSetAccess.objects.all().delete()
 
     @staticmethod
+    def check_user_voting_set_access_required(user, voting_set) -> (bool, str):
+        if (voting_set.author == user) or (len(VotingSetAccess.objects.filter(user=user, voting_set=voting_set)) == 1):
+            return True, None
+        return False, "У вас нет доступа к указанному разделу голосований!"
+
+    @staticmethod
     def try_create_voting(author, voting_set, title, description, type_, show_votes_before_end, anonymous) -> (bool, str):
         if not (isinstance(author, User) and isinstance(voting_set, VotingSet) and isinstance(title, str) and isinstance(description, str)
                 and isinstance(type_, int) and isinstance(show_votes_before_end, bool) and isinstance(anonymous, bool)):
@@ -76,8 +80,9 @@ class DB_VotingTools:
         ok, error = DB_UserTools.check_user_activation_required(author)
         if not ok:
             return False, error
-        if len(VotingSetAccess.objects.filter(voting_set=voting_set, user=author)) != 1:
-            return False, "У вас нет доступа к указанному разделу голосований!"
+        ok, error = DB_VotingTools.check_user_voting_set_access_required(author, voting_set)
+        if not ok:
+            return False, error
         if DB_VotingTools.find_voting_(title, voting_set) != None:
             return False, "Указанный раздел голосований уже содержит голосование с таким названием!"
         voting = Voting(author=author, title=title, description=description, type=type_, voting_set=voting_set,
@@ -105,7 +110,6 @@ class DB_VotingTools:
         voting = DB_VotingTools.find_voting(author, title)
         return voting, "Голосование не найдено!" if voting is None else None
 
-
     @staticmethod
     def find_voting(author, title) -> Voting:#------------
         voting = Voting.objects.filter(author=author, title=title)
@@ -121,12 +125,13 @@ class DB_VotingTools:
         return voting[0]
 
     @staticmethod
-    def try_add_vote_variant(author, voting_title, description) -> (bool, str):#------------
-        if not (isinstance(author, User), isinstance(voting_title, str) and isinstance(description, str)):
+    def try_add_vote_variant(author, voting, description) -> (bool, str):
+        if not (isinstance(author, User), isinstance(voting, Voting) and isinstance(description, str)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        if len(description) == 0:
+            return False, "Здесь нет уязвимости!"
+        if author != voting.author:
+            return False, "У вас нет доступа к указанному голосованию!"
         if voting.started:
             return False, "Нельзя изменять {} голосование!".format("законченное" if voting.completed else "начатое")
         if voting.type == 2:
@@ -135,8 +140,6 @@ class DB_VotingTools:
         for neighbour_variant in neighbour_variants:
             if neighbour_variant.description == description:
                 return False, "В этом голосование уже есть вариант голоса с указанным описанием!"
-        if (len(description) == 0) or (len(description) > 4096):
-            return False, "Здесь нет уязвимости!"
         variant = VoteVariant(voting=voting, description=description)
         variant.save()
         return True, None
@@ -146,12 +149,11 @@ class DB_VotingTools:
         VoteVariant.objects.all().delete()
 
     @staticmethod
-    def try_start_voting(author, voting_title) -> (bool, str):#------------
-        if not (isinstance(author, User) and isinstance(voting_title, str)):
+    def try_start_voting(author, voting) -> (bool, str):
+        if not (isinstance(author, User) and isinstance(voting, Voting)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        if author != voting.author:
+            return False, "У вас нет доступа к указанному голосованию!"
         if voting.completed:
             return False, "Указанное голосование уже завершено!"
         if voting.started:
@@ -165,12 +167,11 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def try_stop_voting(author, voting_title) -> (bool, str):#------------
-        if not (isinstance(author, User) and isinstance(voting_title, str)):
+    def try_stop_voting(author, voting) -> (bool, str):
+        if not (isinstance(author, User) and isinstance(voting, Voting)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        if author != voting.author:
+            return False, "У вас нет доступа к указанному голосованию!"
         if not voting.started:
             return False, "Указанное голосование ещё не начато!"
         if voting.completed:
@@ -181,10 +182,13 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def get_voting_info(voting, user=None) -> [str]:#------------
+    def get_voting_info(voting, user=None) -> [str]:
         if not (isinstance(voting, Voting) and (user is None or isinstance(user, User))):
             Exceptions.throw(Exceptions.argument_type)
         info = ["Информация о голосовании:"]
+        info.append("Название : " + voting.title)
+        info.append("Логин автора : " + voting.author.login)
+        info.append("Раздел голосований : " + voting.set.title)
         info.append("Дата и время создания : " + str(voting.date_created))
         info.append("Тип : " + str(voting.type))
         info.append("Статус : ")
@@ -227,8 +231,8 @@ class DB_VotingTools:
                     bin_answer >>= 1
         return info
 
-    @staticmethod#------------
-    def try_vote(user, voting, answers) -> (bool, str): #TODO - запретить голосовать в своём же опросе
+    @staticmethod
+    def try_vote(user, voting, answers) -> (bool, str):
         if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
             Exceptions.throw(Exceptions.argument_type)
         yes_var = bin_answer = 0
