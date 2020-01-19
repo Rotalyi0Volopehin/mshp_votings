@@ -6,19 +6,20 @@
 <div class="row mt-8 text-centre" >
     <div class = "card px-3 py-3 pt-md-5 pb-md-6 mx-auto col-xl-9 col-md-9">
 
-    <div class="card-header text-center font-weight-bolder lead ">Добавление варианта голоса</div>
+    <div class="card-header text-center font-weight-bolder lead px-3 py-3 mb-5">Добавление варианта голоса</div>
     <form method="post"> {% csrf_token %}
         {% for item in form %}
             <label class="font-weight-bold">{{ item.label }}</label>
             {{ item }}
             <br>
         {% endfor %}
-        <button type="submit" class="btn btn-outline-primary pb-md-6" value="Добавить вариант голоса"> </button>
-    </form>
+        <button type="submit" class="btn btn-outline-primary pb-md-6" value="Добавить вариант голоса">Добавить вариант голоса </button>
     <p>
         {% if not ok %}
             {% if error %}
-                {{ error }}
+        <div class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
             {% else %}
                 Что-то пошло не так
             {% endif %}
@@ -28,6 +29,7 @@
             {% endif %}
         {% endif %}
     </p>
+    </form>
     </div>
 </div>
 
