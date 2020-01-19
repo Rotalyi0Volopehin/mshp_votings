@@ -102,11 +102,14 @@ def new_voting_page(request): #временно
 @login_required
 def add_vote_variant_page(request): #временно
     def body(form, context) -> (bool, str, bool):
+        ok = success = False
         author = request.user
         voting_title = form.data["voting_title"]
         description = form.data["description"]
-        ok, error = DB_VotingTools.try_add_vote_variant(author, voting_title, description)
-        success = ok
+        voting, error = DB_VotingTools.try_find_voting(author, voting_title)
+        if error is None:
+            ok, error = DB_VotingTools.try_add_vote_variant(author, voting, description)
+            success = ok
         return ok, error, success
     return view_func_template(request, "pages/voting_management/add_vote_variant.html", main.forms.AddVoteVariantForm, body)
 
@@ -118,11 +121,13 @@ def run_voting_page(request): #временно
         author = request.user
         voting_title = form.data["voting_title"]
         start_not_stop = int(form.data["action"]) == 1
-        ok, error = DB_VotingTools.try_start_voting(author, voting_title) if start_not_stop else\
-                DB_VotingTools.try_stop_voting(author, voting_title)
-        if ok:
-            success = True
-            context["success_message"] = "Голосование успешно " + ("начато" if start_not_stop else "завершено")
+        voting, error = DB_VotingTools.try_find_voting(author, voting_title)
+        if error is None:
+            ok, error = DB_VotingTools.try_start_voting(author, voting) if start_not_stop else\
+                    DB_VotingTools.try_stop_voting(author, voting)
+            if ok:
+                success = True
+                context["success_message"] = "Голосование успешно " + ("начато" if start_not_stop else "завершено")
         return ok, error, success
     return view_func_template(request, "pages/voting_management/run_voting.html", main.forms.RunVotingForm, body)
 
@@ -132,11 +137,13 @@ def voting_info_page(request): #временно
         success = ok = False
         author_login = form.data["author_login"]
         voting_title = form.data["voting_title"]
-        voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
-        if voting != None:
-            ok = success = True
-            user = None if isinstance(request.user, AnonymousUser) else request.user
-            context["info"] = DB_VotingTools.get_voting_info(voting, user)
+        author, error = DB_UserTools.try_find_user(author_login)
+        if error is None:
+            voting, error = DB_VotingTools.try_find_voting(author, voting_title)
+            if error is None:
+                ok = success = True
+                user = None if isinstance(request.user, AnonymousUser) else request.user
+                context["info"] = DB_VotingTools.get_voting_info(voting, user)
         return ok, error, success
     return view_func_template(request, "pages/voting_management/voting_info.html", main.forms.SearchVotingForm, body)
 
@@ -147,20 +154,22 @@ def vote_page(request): #временно
         success = ok = False
         author_login = form.data["author_login"]
         voting_title = form.data["voting_title"]
-        voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
-        if voting != None:
-            answers = []
-            text_answer = form.data["answer"]
-            for digit in text_answer:
-                if digit == '0':
-                    answers.append(False)
-                elif digit == '1':
-                    answers.append(True)
-                else:
-                    error = "Голос не должен содержать других символов, кроме '0' или '1'!"
-                    break
+        author, error = DB_UserTools.try_find_user(author_login)
+        if error is None:
+            voting, error = DB_VotingTools.try_find_voting(author, voting_title)
             if error is None:
-                ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
-            success = ok
+                answers = []
+                text_answer = form.data["answer"]
+                for digit in text_answer:
+                    if digit == '0':
+                        answers.append(False)
+                    elif digit == '1':
+                        answers.append(True)
+                    else:
+                        error = "Голос не должен содержать других символов, кроме '0' или '1'!"
+                        break
+                if error is None:
+                    ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
+                success = ok
         return ok, error, success
     return view_func_template(request, "pages/vote.html", main.forms.VoteForm, body)
