@@ -30,6 +30,15 @@ class DB_VotingTools:
         VotingSet.objects.all().delete()
 
     @staticmethod
+    def try_find_voting_set(title) -> (VotingSet, str):
+        if not isinstance(title, str):
+            Exceptions.throw(Exceptions.argument_type)
+        voting_set = DB_VotingTools.find_voting_set(title)
+        if voting_set is None:
+            return None, "Раздела голосований с указанным названием не существует!"
+        return voting_set, None
+
+    @staticmethod
     def find_voting_set(title) -> VotingSet:
         voting_set = VotingSet.objects.filter(title=title)
         if len(voting_set) == 0:
@@ -109,6 +118,15 @@ class DB_VotingTools:
         author = author[0]
         voting = DB_VotingTools.find_voting(author, title)
         return voting, "Голосование не найдено!" if voting is None else None
+
+    @staticmethod
+    def try_find_voting_(title, voting_set) -> (Voting, str):
+        if not (isinstance(voting_set, VotingSet) and isinstance(title, str)):
+            Exceptions.throw(Exceptions.argument_type)
+        voting = DB_VotingTools.find_voting_(title, voting_set)
+        if voting is None:
+            return None, "Голосование не найдено!"
+        return voting, None
 
     @staticmethod
     def find_voting(author, title) -> Voting:#------------
