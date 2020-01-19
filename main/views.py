@@ -213,11 +213,22 @@ def vote_page(request): #временно
     return render(request, "pages/vote.html", context)
 
 
+@login_required
 def report_page(request):
     context = {}
-    if request.GET:
-        a = int(request.GET.get('1', 0))
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.AbuseForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            pass
+        else:
+            error = "Здесь нет уязвимости!"
     else:
-        a = 0
-    context["yes"] = a
+        context["form"] = main.forms.VoteForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
     return render(request, 'pages/report.html', context)

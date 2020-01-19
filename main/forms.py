@@ -75,3 +75,7 @@ class SearchVotingForm(forms.Form):
 
 class VoteForm(SearchVotingForm):
     answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)
+
+
+class AbuseForm(SearchVotingForm):
+    description = CommonFields.get_description_field(True)
