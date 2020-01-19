@@ -9,9 +9,7 @@
 
 
 {% block content %}
-<form class="container">
-
-    <br><br><br><br>
+<form class="container pt-5">
 
     <div class="row">
         <div class="col-sm-4">
@@ -27,9 +25,9 @@
             </div>
 
         </div>
+    </div>
 
-        <br><br>
-
+    <div class="row pt-3">
         <div class="col-sm-4">
             {% if activated %}
 
@@ -49,7 +47,9 @@
 
             {% endif %}
         </div>
+    </div>
 
+    <div class="row pt-4">
         <div class="col-sm-4">
             <div class="form-group">
                 <label>Создано опросов: {{ createdpolls }}</label>
