@@ -41,6 +41,15 @@ class DB_UserTools:
         return True, None
 
     @staticmethod
+    def try_find_user(login) -> (User, str):
+        if not isinstance(login, str):
+            Exceptions.throw(Exceptions.argument_type)
+        user = User.objects.filter(username=login)
+        if len(user) != 1:
+            return None, "Пользователь не найден!"
+        return user[0], None
+
+    @staticmethod
     def clear_user_list():
         User.objects.all().delete()
         UserData.objects.all().delete()

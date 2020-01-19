@@ -34,4 +34,6 @@ urlpatterns = [
     path('vm/run_voting/', views.run_voting_page),
     path('vm/voting_info/', views.voting_info_page),
     path('vote/', views.vote_page),
+    path('vm/new_voting_set/', views.new_voting_set_page),
+    path('vm/manage_voting_set_access/', views.manage_voting_set_access_page),
 ]

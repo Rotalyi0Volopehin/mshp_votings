@@ -187,7 +187,7 @@ class DB_VotingTools:
             Exceptions.throw(Exceptions.argument_type)
         info = ["Информация о голосовании:"]
         info.append("Название : " + voting.title)
-        info.append("Логин автора : " + voting.author.login)
+        info.append("Логин автора : " + voting.author.username)
         info.append("Раздел голосований : " + voting.set.title)
         info.append("Дата и время создания : " + str(voting.date_created))
         info.append("Тип : " + str(voting.type))

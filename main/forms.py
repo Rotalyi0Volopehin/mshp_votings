@@ -36,6 +36,11 @@ class RegistrationForm(forms.Form):
     email = forms.CharField(label="E-mail", min_length=1, max_length=64, required=True)
 
 
+class NewVotingSetForm(forms.Form):
+    title = CommonFields.get_voting_set_title_field(True, label="Название")
+    description = CommonFields.get_description_field(False)
+
+
 class NewVotingForm(forms.Form):
     title = CommonFields.get_voting_title_field(True, label="Название")
     voting_set_title = CommonFields.get_voting_set_title_field(True)
@@ -47,6 +52,12 @@ class NewVotingForm(forms.Form):
 
 class AddVoteVariantForm(SearchVotingForm):
     description = CommonFields.get_description_field(True, label="Описание варианта")
+
+
+class ManageVotingSetAccessForm(forms.Form):
+    voting_set_title = CommonFields.get_voting_set_title_field(True)
+    user_login = CommonFields.get_login_field(True, label="Логин пользователя, для которого применяется запрос")
+    action = forms.ChoiceField(label="Запрос на", widget=forms.RadioSelect(), choices=[(1, "открытие доступа"), (2, "закрытие доступа")], required=True)
 
 
 class RunVotingForm(SearchVotingForm):

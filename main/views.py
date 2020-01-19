@@ -45,8 +45,7 @@ def registration_page(request): #временно
             password1 = form.data["password1"]
             if password1 == form.data["password2"]:
                 ok, error = DB_UserTools.try_register_user(form.data["login"], password1, form.data["name"], form.data["email"])
-                if ok:
-                    success = True
+                success = ok
             else:
                 error = "Указанные пароли не совпадают!"
         else:
@@ -71,6 +70,64 @@ def clear_all_data_page(request): #Developer's tool
 
 
 @login_required
+def new_voting_set_page(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.NewVotingSetForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author = request.user
+            title = form.data["title"]
+            description = form.data["description"]
+            ok, error = DB_VotingTools.try_create_voting_set(author, title, description)
+            success = ok
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.NewVotingSetForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    return render(request, "pages/voting_management/new_voting_set.html", context)
+
+
+@login_required
+def manage_voting_set_access_page(request): #временно
+    context = {}
+    success = ok = False
+    error = None
+    if (request.method == "POST") and request.POST:
+        form = main.forms.NewVotingSetForm(request.POST)
+        context["form"] = form
+        if form.is_valid():
+            author = request.user
+            voting_set_title = form.data["voting_set_title"]
+            open_not_close = int(form.data["action"]) == 1
+            user_login = form.data["user_login"]
+            voting_set, error = DB_VotingTools.try_find_voting_set(voting_set_title)
+            if error is None:
+                user, error = DB_UserTools.try_find_user(user_login)
+                if error is None:
+                    ok, error = DB_VotingTools.try_open_access_to_voting_set(author, voting_set, user)
+                    if ok:
+                        success = True
+                        context["success_message"] = "Доступ к разделу голосований успешно {} для указанного пользователя".\
+                                format("открыт" if open_not_close else "закрыт")
+        else:
+            error = "Здесь нет уязвимости!"
+    else:
+        context["form"] = main.forms.NewVotingSetForm()
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    context["success"] = success
+    return render(request, "pages/voting_management/new_voting_set.html", context)
+
+
+@login_required
 def new_voting_page(request): #временно
     context = {}
     success = ok = False
@@ -90,8 +147,7 @@ def new_voting_page(request): #временно
             if error is None:
                 ok, error = DB_VotingTools.try_create_voting(author, voting_set, title, description, type_,
                         show_votes_before_end, anonymous)
-                if ok:
-                    success = True
+                success = ok
         else:
             error = "Здесь нет уязвимости!"
     else:
@@ -121,8 +177,7 @@ def add_vote_variant_page(request): #временно
                 voting, error = DB_VotingTools.try_find_voting(voting_title, voting_set)
                 if error is None:
                     ok, error = DB_VotingTools.try_add_vote_variant(author, voting, description)
-                    if ok:
-                        success = True
+                    success = ok
         else:
             error = "Здесь нет уязвимости!"
     else:
