@@ -12,9 +12,13 @@ function is_active() {
     if (customSwitch.value == 1)
     {
         document.getElementById("RadiosExpand").style.display = "none";
+        document.getElementById("Search_by_name").style.display = "none";
+        document.getElementById("Search_by_user").style.display = "none";
         customSwitch.value = 0
     } else {
         document.getElementById("RadiosExpand").style.display = "block";
+        document.getElementById("Search_by_name").style.display = "block";
+        document.getElementById("Search_by_user").style.display = "block";
         customSwitch.value = 1
     }
 }
