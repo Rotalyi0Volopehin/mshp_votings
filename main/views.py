@@ -211,3 +211,13 @@ def vote_page(request): #временно
     context["error"] = error
     context["success"] = success
     return render(request, "pages/vote.html", context)
+
+
+def report_page(request):
+    context = {}
+    if request.GET:
+        a = int(request.GET.get('1', 0))
+    else:
+        a = 0
+    context["yes"] = a
+    return render(request, 'pages/report.html', context)

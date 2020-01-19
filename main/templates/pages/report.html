@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <meta charset="utf-8">
+    <title>Жалоба</title>
 </head>
 <body>
-$END$
+    <form method="post"> {% csrf_token %}
+        {% for item in form %}
+            <label>{{ item.label }}</label>
+            {{ item }}
+            <br>
+        {% endfor %}
+    </form>
+<form action="/report">
+    <p><b>Выберите причины жалобы</b></p>
+    <p><input name="1" type="radio" value="11">Материалы сексуального характера</p>
+    <p><input name="1" type="radio" value="22">Жестокие или отталкивающие сцены</p>
+    <p><input name="1" type="radio" value="33">Оскорбления или проявления нетерпимости</p>
+    <p><input name="1" type="radio" value="44">Вредные или опасные действия</p>
+    <p><input name="1" type="radio" value="55">Жестокое обращение с детьми</p>
+	<p><input name="1" type="radio" value="66">Пропаганда терроризма</p>
+    <p><input name="1" type="radio" value="77">Спам или введение в заблуждение</p>
+    <p><input name="1" type="radio" value="88">Нарушение моих прав</p>
+    <p><input type="submit" value="Выбрать"></p>
+</form>
+<p> Команда ms103 рассматривает жалобы на ролики и пользователей, а также проверяет, соответствует ли контент принципам сообщества.
+<p> Если в ходе проверки выясняется, что нарушения есть, специалисты принимают необходимые меры.
+<p> Если пользователь часто нарушает правила, его аккаунт может быть заблокирован.
+
+    <p>
+
+        {% if yes != 0 %}
+            Жалоба отправлена!
+        {% else %}
+            Выберите вариант
+        {% endif %}
+    </p>
+
 </body>
 </html>
