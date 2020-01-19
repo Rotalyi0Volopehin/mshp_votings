@@ -42,8 +42,8 @@ class DB_UserTools:
 
     @staticmethod
     def clear_user_list():
-        User.objects.all().delete()
         UserData.objects.all().delete()
+        User.objects.all().delete()
 
 
 __email_re = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
