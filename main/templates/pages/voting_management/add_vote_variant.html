@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Добавление варианта голоса</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+
+<div class="row mt-8 text-centre" >
+    <div class = "card px-3 py-3 pt-md-5 pb-md-6 mx-auto col-xl-9 col-md-9">
+
+    <div class="card-header text-center font-weight-bolder lead ">Добавление варианта голоса</div>
     <form method="post"> {% csrf_token %}
         {% for item in form %}
-            <label>{{ item.label }}</label>
+            <label class="font-weight-bold">{{ item.label }}</label>
             {{ item }}
             <br>
         {% endfor %}
-        <input type="submit" value="Добавить вариант голоса">
+        <button type="submit" class="btn btn-outline-primary pb-md-6" value="Добавить вариант голоса"> </button>
     </form>
     <p>
         {% if not ok %}
@@ -26,8 +28,7 @@
             {% endif %}
         {% endif %}
     </p>
-</body>
-</html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->
+    </div>
+</div>
+
+{% endblock %}
