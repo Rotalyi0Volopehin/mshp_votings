@@ -45,7 +45,7 @@ def view_func_template(request, html_path, form_class, body):
         if form.is_valid():
             ok, error, success = body(form, context)
         else:
-            error = "Здесь нет уязвимости!"
+            error = "Неверный формат отосланных данных!"
     else:
         context["form"] = form_class()
         ok = True
