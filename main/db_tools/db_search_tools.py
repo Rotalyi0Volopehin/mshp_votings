@@ -4,7 +4,7 @@ from exceptions import Exceptions
 
 
 class SearchFilterOption:
-    def __init__(self, type_): #private
+    def __init__(self, type_):
         if not isinstance(type_, int):
             Exceptions.throw(Exceptions.argument_type)
         if (type_ < -1) or (type_ > 1):
