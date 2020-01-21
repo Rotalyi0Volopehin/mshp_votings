@@ -51,3 +51,12 @@ class SearchVotingForm(forms.Form):
 
 class VoteForm(SearchVotingForm):
     answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)
+
+
+class SearchVotingForm_(forms.Form):
+    author_login = CommonFields.get_login_field(False, "Логин автора")
+    voting_title = CommonFields.get_voting_title_field(False)
+    exclude_not_started = forms.BooleanField(label="Исключить неначатые", required=False)
+    exclude_not_completed = forms.BooleanField(label="Исключить незавершённые", required=False)
+    exclude_started = forms.BooleanField(label="Исключить начатые", required=False)
+    exclude_completed = forms.BooleanField(label="Исключить завершённые", required=False)

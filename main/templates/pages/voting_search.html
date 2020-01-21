@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск голосований</title>
+</head>
+<body>
+    <form method="post"> {% csrf_token %}
+        {% for item in form %}
+            <label>{{ item.label }}</label>
+            {{ item }}
+            <br>
+        {% endfor %}
+        <input type="submit" value="Искать">
+    </form>
+    <p>
+        {% if not ok %}
+            {% if error %}
+                {{ error }}
+            {% else %}
+                Что-то пошло не так
+            {% endif %}
+        {% else %}
+            {% if success %}
+                {% if result %}
+                    {% for pair in result %}
+                        <a href={{ pair.1 }}> {{ pair.0 }} </a>
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    Ничего не найдено
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </p>
+</body>
+</html>
+<!--
+#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-->

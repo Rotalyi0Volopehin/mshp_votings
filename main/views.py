@@ -1,5 +1,6 @@
 import datetime
 import main.forms
+import main.db_tools.db_search_tools
 
 from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
@@ -63,7 +64,7 @@ def __demo_for_view_func_template(request):
     return view_func_template(request, '~html path~', '~form class~', body)
 
 
-def registration_page(request): #временно
+def registration_page(request):
     def body(form, context) -> (bool, str, bool):
         success = ok = False
         password1 = form.data["password1"]
@@ -85,7 +86,7 @@ def clear_all_data_page(request): #Developer's tool
 
 
 @login_required
-def new_voting_page(request): #временно
+def new_voting_page(request):
     def body(form, context) -> (bool, str, bool):
         author = request.user
         title = form.data["title"]
@@ -100,7 +101,7 @@ def new_voting_page(request): #временно
 
 
 @login_required
-def add_vote_variant_page(request): #временно
+def add_vote_variant_page(request):
     def body(form, context) -> (bool, str, bool):
         ok = success = False
         author = request.user
@@ -115,9 +116,9 @@ def add_vote_variant_page(request): #временно
 
 
 @login_required
-def run_voting_page(request): #временно
+def run_voting_page(request):
     def body(form, context) -> (bool, str, bool):
-        success = False
+        ok = success = False
         author = request.user
         voting_title = form.data["voting_title"]
         start_not_stop = int(form.data["action"]) == 1
@@ -132,7 +133,7 @@ def run_voting_page(request): #временно
     return view_func_template(request, "pages/voting_management/run_voting.html", main.forms.RunVotingForm, body)
 
 
-def voting_info_page(request): #временно
+def voting_info_page(request):
     def body(form, context) -> (bool, str, bool):
         success = ok = False
         author_login = form.data["author_login"]
@@ -149,7 +150,7 @@ def voting_info_page(request): #временно
 
 
 @login_required
-def vote_page(request): #временно
+def vote_page(request):
     def body(form, context) -> (bool, str, bool):
         success = ok = False
         author_login = form.data["author_login"]
@@ -173,3 +174,28 @@ def vote_page(request): #временно
                 success = ok
         return ok, error, success
     return view_func_template(request, "pages/vote.html", main.forms.VoteForm, body)
+
+
+def voting_search_page(request):
+    def body(form, context) -> (bool, str, bool):
+        author_login = form.data["author_login"]
+        voting_title = form.data["voting_title"]
+        if len(author_login) == 0:
+            author_login = None
+        if len(voting_title) == 0:
+            voting_title = None
+        if (author_login is None) and (voting_title is None):
+            return True, None, False
+        exclude_not_started = form.data.get("exclude_not_started", 'off') == 'on'
+        exclude_not_completed = form.data.get("exclude_not_completed", 'off') == 'on'
+        exclude_started = form.data.get("exclude_started", 'off') == 'on'
+        exclude_completed = form.data.get("exclude_completed", 'off') == 'on'
+        filter = main.db_tools.db_search_tools.VotingSearchFilter(exclude_not_started, exclude_not_completed, exclude_started, exclude_completed)
+        votings = main.db_tools.db_search_tools.DB_SearchTools.search_for_voting(voting_title, author_login, filter)
+        result = []
+        for voting in votings:
+            result.append(("'{}', созанное '{}' ({})".format(voting.title, voting.author.username, voting.date_created),
+                    "/voting_info/{}/".format(voting.id)))
+        context["result"] = result
+        return True, None, True
+    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm_, body)
