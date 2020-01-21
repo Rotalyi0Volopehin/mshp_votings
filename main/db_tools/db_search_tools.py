@@ -63,7 +63,7 @@ class DB_SearchTools:
         if voting_title != None:
             votings = votings.filter(title=voting_title)
         if author_login != None:
-            author, _ = DB_UserTools.try_find_user(author_login)
+            author = DB_UserTools.find_user(author_login)
             if author is None:
                 return []
             votings = votings.filter(author=author)
