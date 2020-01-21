@@ -3,38 +3,53 @@ from main.db_tools.db_user_tools import DB_UserTools
 from exceptions import Exceptions
 
 
-class VotingSearchFilter:
-    def __init__(self, exclude_not_started=False, exclude_not_completed=False, exclude_started=False, exclude_completed=False):
-        if not (isinstance(exclude_not_started, bool) and isinstance(exclude_not_completed, bool) and
-                isinstance(exclude_started, bool) and isinstance(exclude_completed, bool)):
+class SearchFilterOption:
+    def __init__(self, type_): #private
+        if not isinstance(type_, int):
             Exceptions.throw(Exceptions.argument_type)
-        self.exclude_not_started = exclude_not_started
-        self.exclude_not_completed = exclude_not_completed
-        self.exclude_started = exclude_started
-        self.exclude_completed = exclude_completed
+        if (type_ < -1) or (type_ > 1):
+            Exceptions.throw(Exceptions.argument, "argument 'type_' must be contained by segment [-1; 1]")
+        self.__type = type_
 
-    def does_voting_match(self, voting) -> bool:
-        if not isinstance(voting, Voting):
+    @property
+    def type(self):
+        return self.__type
+
+    @staticmethod
+    def empty():
+        return SearchFilterOption(0)
+
+    @staticmethod
+    def exclude():
+        return SearchFilterOption(1)
+
+    @staticmethod
+    def exclude_all_other():
+        return SearchFilterOption(-1)
+
+
+class VotingSearchFilter:
+    __default_option = SearchFilterOption.empty()
+
+    def __init__(self, started_option=__default_option, completed_option=__default_option,
+            show_votes_before_end_option=__default_option, anonymous_option=__default_option):
+        if not (isinstance(anonymous_option, SearchFilterOption) and isinstance(completed_option, SearchFilterOption) and
+                isinstance(show_votes_before_end_option, SearchFilterOption) and isinstance(started_option, SearchFilterOption)):
             Exceptions.throw(Exceptions.argument_type)
-        if self.exclude_not_started and not voting.started:
-            return False
-        if self.exclude_not_completed and not voting.completed:
-            return False
-        if self.exclude_started and voting.started:
-            return False
-        if self.exclude_completed and voting.completed:
-            return False
-        return True
+        self.started_option = started_option
+        self.completed_option = completed_option
+        self.show_votes_before_end_option = show_votes_before_end_option
+        self.anonymous_option = anonymous_option
 
     def filter(self, votings):
-        if self.exclude_not_started:
-            votings = votings.filter(started=True)
-        if self.exclude_not_completed:
-            votings = votings.filter(completed=True)
-        if self.exclude_started:
-            votings = votings.filter(started=False)
-        if self.exclude_completed:
-            votings = votings.filter(completed=False)
+        if self.started_option.type != 0:
+            votings = votings.filter(started=(self.started_option.type == -1))
+        if self.completed_option.type != 0:
+            votings = votings.filter(completed=(self.completed_option.type == -1))
+        if self.show_votes_before_end_option.type != 0:
+            votings = votings.filter(show_votes_before_end=(self.show_votes_before_end_option.type == -1))
+        if self.anonymous_option.type != 0:
+            votings = votings.filter(anonymous=(self.anonymous_option.type == -1))
         return votings
 
 

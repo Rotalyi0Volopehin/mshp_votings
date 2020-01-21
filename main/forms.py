@@ -18,6 +18,11 @@ class CommonFields:
     def get_password_field(required, label="Пароль"):
         return forms.CharField(widget=forms.PasswordInput, label=label, min_length=1, max_length=64, required=required)
 
+    @staticmethod
+    def get_filter_option_field(label):
+        return forms.ChoiceField(label=label, required=False,
+                choices=[(0, "--- (0)"), (1, "исключение (1)"), (-1, "исключение иных (-1)")])
+
 class RegistrationForm(forms.Form):
     login = CommonFields.get_login_field(True)
     password1 = CommonFields.get_password_field(True)
@@ -56,7 +61,7 @@ class VoteForm(SearchVotingForm):
 class SearchVotingForm_(forms.Form):
     author_login = CommonFields.get_login_field(False, "Логин автора")
     voting_title = CommonFields.get_voting_title_field(False)
-    exclude_not_started = forms.BooleanField(label="Исключить неначатые", required=False)
-    exclude_not_completed = forms.BooleanField(label="Исключить незавершённые", required=False)
-    exclude_started = forms.BooleanField(label="Исключить начатые", required=False)
-    exclude_completed = forms.BooleanField(label="Исключить завершённые", required=False)
+    started_option = CommonFields.get_filter_option_field("Фильтр начатых")
+    completed_option = CommonFields.get_filter_option_field("Фильтр законченных")
+    show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтр показывающих статистику до завершения")
+    anonymous_option = CommonFields.get_filter_option_field("Фильтр анонимных")
