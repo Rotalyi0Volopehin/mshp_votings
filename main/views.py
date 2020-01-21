@@ -1,5 +1,6 @@
 import datetime
 import main.forms
+import main.models
 import main.db_tools.db_search_tools
 
 from main.db_tools.db_user_tools import DB_UserTools
@@ -200,3 +201,20 @@ def voting_search_page(request):
         context["result"] = result
         return True, None, True
     return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm_, body)
+
+
+def voting_info_page_ext(request, id):
+    context = {}
+    ok = False
+    error = None
+    voting = main.models.Voting.objects.filter(id=id)
+    if len(voting) == 0:
+        error = "Голосование не найдено!"
+    else:
+        voting = voting[0]
+        user = None if isinstance(request.user, AnonymousUser) else request.user
+        context["info"] = DB_VotingTools.get_voting_info(voting, user)
+        ok = True
+    context["ok"] = ok
+    context["error"] = error
+    return render(request, "pages/voting_info.html", context)
