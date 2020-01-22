@@ -65,3 +65,4 @@ class SearchVotingForm_(forms.Form):
     completed_option = CommonFields.get_filter_option_field("Фильтр законченных")
     show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтр показывающих статистику до завершения")
     anonymous_option = CommonFields.get_filter_option_field("Фильтр анонимных")
+    offset = forms.IntegerField(label="", widget=forms.HiddenInput(attrs={ "id": "offset_tag", "value": '0' }))

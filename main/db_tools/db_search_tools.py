@@ -55,7 +55,7 @@ class VotingSearchFilter:
 
 class DB_SearchTools:
     @staticmethod
-    def search_for_voting(voting_title=None, author_login=None, filter=VotingSearchFilter()) -> [Voting]:
+    def search_for_voting(voting_title=None, author_login=None, filter=VotingSearchFilter(), offset=0, count=16) -> ([Voting], bool):
         if not ((isinstance(voting_title, str) or (voting_title is None)) and
                 ((isinstance(author_login, str) or (author_login is None))) and isinstance(filter, VotingSearchFilter)):
             Exceptions.throw(Exceptions.argument_type)
@@ -68,4 +68,6 @@ class DB_SearchTools:
                 return []
             votings = votings.filter(author=author)
         votings = filter.filter(votings)
-        return votings[:]
+        until = min(offset + count, len(votings))
+        end = until == len(votings)
+        return votings[offset:until], end

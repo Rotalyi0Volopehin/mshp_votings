@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Поиск голосований</title>
+    <script>
+        function goto_prev_page() {
+            offset_tag.value = Number(offset_tag.value) - {{ page_size }};
+            send_tag.click();
+        }
+        function goto_next_page() {
+            offset_tag.value = Number(offset_tag.value) + {{ page_size }};
+            send_tag.click();
+        }
+    </script>
 </head>
 <body>
     <form method="post"> {% csrf_token %}
@@ -11,7 +21,7 @@
             {{ item }}
             <br>
         {% endfor %}
-        <input type="submit" value="Искать">
+        <input type="submit" value="Искать" id="send_tag">
     </form>
     <p>
         {% if not ok %}
@@ -27,6 +37,13 @@
                         <a href={{ pair.1 }}> {{ pair.0 }} </a>
                         <br>
                     {% endfor %}
+                    {% if prev_page %}
+                        <span onclick="goto_prev_page()">Назад</span>
+                        <br>
+                    {% endif %}
+                    {% if next_page %}
+                        <span onclick="goto_next_page()">Вперёд</span>
+                    {% endif %}
                 {% else %}
                     Ничего не найдено
                 {% endif %}
