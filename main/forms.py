@@ -34,7 +34,7 @@ class RegistrationForm(forms.Form):
 class NewVotingForm(forms.Form):
     title = CommonFields.get_voting_title_field(True, label="Название")
     description = CommonFields.get_description_field(False)
-    type = forms.ChoiceField(label="Тип голосования", choices=((1, "0"), (2, "1"), (3, "2")), required=True)
+    type = forms.ChoiceField(label="Тип голосования", choices=((0, "0"), (1, "1"), (2, "2")), required=True)
     show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False)
     anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False)
 

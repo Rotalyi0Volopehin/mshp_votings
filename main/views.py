@@ -92,7 +92,7 @@ def new_voting_page(request):
         author = request.user
         title = form.data["title"]
         description = form.data["description"]
-        type_ = int(form.data["type"]) - 1
+        type_ = int(form.data["type"])
         show_votes_before_end = form.data.get("show_votes_before_end", 'off') == 'on'
         anonymous = form.data.get("anonymous", 'off') == 'on'
         ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
@@ -185,10 +185,14 @@ def voting_search_page(request):
             author_login = None
         if len(voting_title) == 0:
             voting_title = None
-        started_option = main.db_tools.db_search_tools.SearchFilterOption(int(form.data["started_option"]))
-        completed_option = main.db_tools.db_search_tools.SearchFilterOption(int(form.data["completed_option"]))
-        show_votes_before_end_option = main.db_tools.db_search_tools.SearchFilterOption(int(form.data["show_votes_before_end_option"]))
-        anonymous_option = main.db_tools.db_search_tools.SearchFilterOption(int(form.data["anonymous_option"]))
+        started_option = int(form.data["started_option"])
+        started_option = main.db_tools.db_search_tools.SearchFilterOption(started_option)
+        completed_option = int(form.data["completed_option"])
+        completed_option = main.db_tools.db_search_tools.SearchFilterOption(completed_option)
+        show_votes_before_end_option = int(form.data["show_votes_before_end_option"])
+        show_votes_before_end_option = main.db_tools.db_search_tools.SearchFilterOption(show_votes_before_end_option)
+        anonymous_option = int(form.data["anonymous_option"])
+        anonymous_option = main.db_tools.db_search_tools.SearchFilterOption(anonymous_option)
         if (author_login is None) and (voting_title is None) and\
                 (0 == started_option.type == completed_option.type == show_votes_before_end_option.type == anonymous_option.type):
             return True, None, False
@@ -196,7 +200,7 @@ def voting_search_page(request):
         votings = main.db_tools.db_search_tools.DB_SearchTools.search_for_voting(voting_title, author_login, filter)
         result = []
         for voting in votings:
-            result.append(("'{}', созанное '{}' ({})".format(voting.title, voting.author.username, voting.date_created),
+            result.append(("'{}' создано '{}' ({})".format(voting.title, voting.author.username, voting.date_created),
                     "/voting_info/{}/".format(voting.id)))
         context["result"] = result
         return True, None, True
