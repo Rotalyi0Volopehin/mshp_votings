@@ -9,6 +9,12 @@
                         <a class="nav-link" href="{{ item.url }}">{{ item.name }}</a>
                     </li>
                 {% endfor %}
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/profile/">Профиль</a>
+                    </li>
+                {% endif %}
             {% endblock %}
         </ul>
 

@@ -36,6 +36,7 @@ def time_page(request):
 
 def profile_page(request):
     context = {}
+    context['menu'] = get_menu_context()
     context['pagename'] = 'Профиль'
     context['name'] = 'TEST'
     context['email'] = 'TEST'
