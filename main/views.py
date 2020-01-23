@@ -7,6 +7,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
 
+from main.models import UserData
+
 
 def get_menu_context():
     return [
@@ -35,16 +37,17 @@ def time_page(request):
 
 
 def profile_page(request):
-    context = {}
-    context['menu'] = get_menu_context()
-    context['pagename'] = 'Профиль'
-    context['name'] = 'TEST'
-    context['email'] = 'TEST'
-    context['createdpolls'] = '100500'
-    context['votedpolls'] = '100500'
-    context['regdate'] = '00.00.0000'
-    context['activated'] = False
-    context['about'] = 'С другой стороны дальнейшее развитие различных форм деятельности представляет собой интересный эксперимент проверки систем массового участия. Значимость этих проблем настолько очевидна, что новая модель организационной деятельности способствует подготовки и реализации соответствующий условий активизации. Не следует, однако забывать, что постоянный количественный рост и сфера нашей активности представляет собой интересный эксперимент проверки дальнейших направлений развития. Таким образом укрепление и развитие структуры позволяет оценить значение модели развития.'
+    context = {
+        'menu': get_menu_context(),
+        'pagename': 'Профиль',
+        'name': str(request.user),
+        'email': request.user.email,
+        'createdpolls': '100500',
+        'votedpolls': '100500',
+        'regdate': request.user.date_joined,
+        'activated': UserData.activated,
+        'about': UserData.extra_info
+    }
     return render(request, 'pages/profile.html', context)
 
 
