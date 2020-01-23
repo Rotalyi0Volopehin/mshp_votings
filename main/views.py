@@ -238,5 +238,5 @@ def activate(request, uid, token):
         if (user != None) and account_activation_token.check_token(user, token):
             if DB_UserTools.try_activate_user(user):
                 login(request, user)
-            return render(request, 'pages/activation.html')
+            return render(request, 'pages/registration/activation.html')
         return HttpResponse('Activation link is invalid!')
