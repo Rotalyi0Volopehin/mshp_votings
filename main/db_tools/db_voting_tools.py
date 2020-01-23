@@ -54,6 +54,20 @@ class DB_VotingTools:
         return voting[0]
 
     @staticmethod
+    def get_votings_of_user(user) -> [Voting]:
+        if not isinstance(user, User):
+            Exceptions.throw(Exceptions.argument_type)
+        votings = Voting.objects.filter(author=user)
+        return votings[:]
+
+    @staticmethod
+    def form_voting_ref(voting, url) -> (str, str, str, datetime.datetime):
+        if not isinstance(voting, Voting):
+            Exceptions.throw(Exceptions.argument_type)
+        url = "/{}/{}/".format(url, voting.id)
+        return url, voting.title, voting.author.username, voting.date_created
+
+    @staticmethod
     def try_add_vote_variant(author, voting, description) -> (bool, str):
         if not (isinstance(author, User), isinstance(voting, Voting) and isinstance(description, str)):
             Exceptions.throw(Exceptions.argument_type)

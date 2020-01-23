@@ -134,22 +134,6 @@ def run_voting_page(request):
     return view_func_template(request, "pages/voting_management/run_voting.html", main.forms.RunVotingForm, body)
 
 
-def voting_info_page(request):
-    def body(form, context) -> (bool, str, bool):
-        success = ok = False
-        author_login = form.data["author_login"]
-        voting_title = form.data["voting_title"]
-        author, error = DB_UserTools.try_find_user(author_login)
-        if error is None:
-            voting, error = DB_VotingTools.try_find_voting(author, voting_title)
-            if error is None:
-                ok = success = True
-                user = None if isinstance(request.user, AnonymousUser) else request.user
-                context["info"] = DB_VotingTools.get_voting_info(voting, user)
-        return ok, error, success
-    return view_func_template(request, "pages/voting_management/voting_info.html", main.forms.SearchVotingForm, body)
-
-
 @login_required
 def vote_page(request):
     def body(form, context) -> (bool, str, bool):
@@ -201,8 +185,7 @@ def voting_search_page(request):
         votings, end = main.db_tools.db_search_tools.DB_SearchTools.search_for_voting(voting_title, author_login, filter, offset, page_size)
         result = []
         for voting in votings:
-            result.append(("'{}' создано '{}' ({})".format(voting.title, voting.author.username, voting.date_created),
-                    "/voting_info/{}/".format(voting.id)))
+            result.append(DB_VotingTools.form_voting_ref(voting, "voting_info"))
         context["result"] = result
         context["prev_page"] = offset > 0
         context["next_page"] = not end
@@ -225,3 +208,13 @@ def voting_info_page_ext(request, id):
     context["ok"] = ok
     context["error"] = error
     return render(request, "pages/voting_info.html", context)
+
+
+@login_required
+def my_votings_page(request):
+    votings = DB_VotingTools.get_votings_of_user(request.user)
+    refs = []
+    for voting in votings:
+        refs.append(DB_VotingTools.form_voting_ref(voting, "manage_voting"))
+    context = { "refs": refs, "ok": True }
+    return render(request, "pages/voting_management/my_votings.html", context)

@@ -23,35 +23,40 @@
         {% endfor %}
         <input type="submit" value="Искать" id="send_tag">
     </form>
-    <p>
-        {% if not ok %}
-            {% if error %}
-                {{ error }}
-            {% else %}
-                Что-то пошло не так
-            {% endif %}
+    {% if not ok %}
+        {% if error %}
+            {{ error }}
         {% else %}
-            {% if success %}
-                {% if result %}
-                    {% for pair in result %}
-                        <a href={{ pair.1 }}> {{ pair.0 }} </a>
-                        <br>
+            <p>Что-то пошло не так</p>
+        {% endif %}
+    {% else %}
+        {% if success %}
+            {% if result %}
+                <table border="1">
+                    <tr>
+                        <th>Название</th>
+                        <th>Автор</th>
+                        <th>Дата создания</th>
+                    </tr>
+                    {% for ref in result %}
+                        <tr>
+                            <td> <a href={{ ref.0 }}> {{ ref.1 }} </a> </td>
+                            <td> {{ ref.2 }} </td>
+                            <td> {{ ref.3 }} </td>
+                        </tr>
                     {% endfor %}
-                    {% if prev_page %}
-                        <span onclick="goto_prev_page()">Назад</span>
-                        <br>
-                    {% endif %}
-                    {% if next_page %}
-                        <span onclick="goto_next_page()">Вперёд</span>
-                    {% endif %}
-                {% else %}
-                    Ничего не найдено
+                </table>
+                {% if prev_page %}
+                    <span onclick="goto_prev_page()">Назад</span>
+                    {% if next_page %} | {% endif %}
                 {% endif %}
+                {% if next_page %}
+                    <span onclick="goto_next_page()">Вперёд</span>
+                {% endif %}
+            {% else %}
+                <p>Ничего не найдено</p>
             {% endif %}
         {% endif %}
-    </p>
+    {% endif %}
 </body>
 </html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->

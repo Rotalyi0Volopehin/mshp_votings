@@ -23,6 +23,10 @@ class CommonFields:
         return forms.ChoiceField(label=label, required=False,
                 choices=[(0, "--- (0)"), (1, "исключение (1)"), (-1, "исключение иных (-1)")])
 
+    @staticmethod
+    def get_invisible_field(type_, id, value=''):
+        return type_(label="", widget=forms.HiddenInput(attrs={ "id": id, "value": value }))
+
 class RegistrationForm(forms.Form):
     login = CommonFields.get_login_field(True)
     password1 = CommonFields.get_password_field(True)
@@ -61,8 +65,8 @@ class VoteForm(SearchVotingForm):
 class SearchVotingForm_(forms.Form):
     author_login = CommonFields.get_login_field(False, "Логин автора")
     voting_title = CommonFields.get_voting_title_field(False)
-    started_option = CommonFields.get_filter_option_field("Фильтр начатых")
-    completed_option = CommonFields.get_filter_option_field("Фильтр законченных")
-    show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтр показывающих статистику до завершения")
-    anonymous_option = CommonFields.get_filter_option_field("Фильтр анонимных")
-    offset = forms.IntegerField(label="", widget=forms.HiddenInput(attrs={ "id": "offset_tag", "value": '0' }))
+    started_option = CommonFields.get_filter_option_field("Фильтрация начатых")
+    completed_option = CommonFields.get_filter_option_field("Фильтрация законченных")
+    show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтрация показывающих статистику до завершения")
+    anonymous_option = CommonFields.get_filter_option_field("Фильтрация анонимных")
+    offset = CommonFields.get_invisible_field(forms.IntegerField, "offset_tag", 0)
