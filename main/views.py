@@ -79,7 +79,6 @@ def registration_page(request):
             login_ = form.data["login"]
             ok, error = DB_UserTools.try_register_user(login_, password1, form.data["name"], form.data["email"], request)
             success = ok
-            login(User.objects.filter(username=login_))
         else:
             error = "Указанные пароли не совпадают!"
         return ok, error, success
