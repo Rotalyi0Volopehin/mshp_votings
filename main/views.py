@@ -42,14 +42,14 @@ def view_func_template(request, html_path, form_class, body):
     error = None
     if request.method == "POST":
         form = form_class(request.POST)
-        context["form"] = form
         if form.is_valid():
             ok, error, success = body(form, context)
         else:
             error = "Неверный формат отосланных данных!"
     else:
-        context["form"] = form_class()
+        form = form_class()
         ok = True
+    context["form"] = form
     context["ok"] = ok
     context["error"] = error
     context["success"] = success
