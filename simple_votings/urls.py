@@ -15,10 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
 from main import views
 from django.contrib.auth import views as auth_views
-
 from main.views import get_menu_context
 
 urlpatterns = [
@@ -36,4 +34,5 @@ urlpatterns = [
     path('vote/', views.vote_page),
     path('search_v/', views.voting_search_page),
     path('voting_info/<int:id>/', views.voting_info_page_ext),
+    path('activate/<str:uid>/<str:token>/', views.activate, name='activate'),
 ]

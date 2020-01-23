@@ -7,7 +7,13 @@ from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import AnonymousUser, User
+# for email confirmation vvv
+from django.contrib.auth import login
+from django.http import HttpResponse
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+from main.db_tools.tokens import account_activation_token
 
 
 def get_menu_context():
@@ -70,8 +76,10 @@ def registration_page(request):
         success = ok = False
         password1 = form.data["password1"]
         if password1 == form.data["password2"]:
-            ok, error = DB_UserTools.try_register_user(form.data["login"], password1, form.data["name"], form.data["email"])
+            login_ = form.data["login"]
+            ok, error = DB_UserTools.try_register_user(login_, password1, form.data["name"], form.data["email"], request)
             success = ok
+            login(User.objects.filter(username=login_))
         else:
             error = "Указанные пароли не совпадают!"
         return ok, error, success
@@ -218,3 +226,18 @@ def my_votings_page(request):
         refs.append(DB_VotingTools.form_voting_ref(voting, "manage_voting"))
     context = { "refs": refs, "ok": True }
     return render(request, "pages/voting_management/my_votings.html", context)
+
+
+def activate(request, uid, token):
+    uidb64 = uid
+    if request.method == "GET":
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if (user != None) and account_activation_token.check_token(user, token):
+            if DB_UserTools.try_activate_user(user):
+                login(request, user)
+            return render(request, 'pages/activation.html')
+        return HttpResponse('Activation link is invalid!')
