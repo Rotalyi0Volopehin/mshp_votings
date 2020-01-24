@@ -20,6 +20,7 @@ def get_menu_context():
     return [
         {'url': '/', 'name': 'Главная'},
         {'url': '/time/', 'name': 'Текущее время'},
+        {'url': '/search_v/', 'name': 'Поиск голосований'}
     ]
 
 
