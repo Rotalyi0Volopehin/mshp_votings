@@ -19,6 +19,8 @@ def get_sentinel_user():
 class UserData(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     activated = models.BooleanField(default=False)
+    created_votings_count = models.IntegerField(default=0)
+    vote_count = models.IntegerField(default=0)
     extra_info = models.TextField(default='')
 
 
