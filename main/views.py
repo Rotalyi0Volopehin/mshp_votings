@@ -15,8 +15,6 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from main.db_tools.tokens import account_activation_token
 
-from main.models import UserData
-
 
 def get_menu_context():
     return [
