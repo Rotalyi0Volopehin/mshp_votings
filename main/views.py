@@ -201,7 +201,7 @@ def voting_search_page(request):
     return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm_, body)
 
 
-def voting_info_page_ext(request, id):
+def voting_info_page(request, id):
     context = {}
     ok = False
     error = None

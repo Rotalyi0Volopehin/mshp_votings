@@ -33,7 +33,7 @@ urlpatterns = [
     path('vm/run_voting/', views.run_voting_page),
     path('vote/', views.vote_page),
     path('search_v/', views.voting_search_page),
-    path('voting_info/<int:id>/', views.voting_info_page_ext),
+    path('voting_info/<int:id>/', views.voting_info_page),
     path('activate/<str:uid>/<str:token>/', views.activate, name='activate'),
     path('profile/<int:id>/', views.profile_page),
     path('my_profile/', views.my_profile_page),
