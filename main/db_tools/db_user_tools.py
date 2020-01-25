@@ -29,9 +29,9 @@ class DB_UserTools:
         user.set_password(password)
         user.save()
         user_data = UserData(user=user)
-        user_data.activated = True
+        user_data.activated = False
         user_data.save()
-        #DB_UserTools.__ask_for_email_confirmation(user, request)
+        DB_UserTools.__ask_for_email_confirmation(user, request)
         return True, None
 
     @staticmethod
