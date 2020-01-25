@@ -26,17 +26,30 @@ class RegistrationForm(forms.Form):
 
 class NewVotingForm(forms.Form):
     title = CommonFields.get_voting_title_field(True, label="Название")
-    description = CommonFields.get_description_field(forms.Textarea, False)
+    description = CommonFields.get_description_field(forms.Textarea(attrs={
+        'class': 'form-control'
+    }), False)
     type = forms.ChoiceField(label="Тип голосования", choices=((1, "0"), (2, "1"), (3, "2")), required=True)
-    show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False)
-    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False)
+    show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False,
+                                               widget=forms.CheckboxInput(
+                                                   attrs={
+                                                       'class': 'custom-checkbox'
+                                                   }
+                                               ))
+
+    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False,
+                                   widget=forms.CheckboxInput(
+                                       attrs={
+                                           'class': 'custom-checkbox'
+                                       }
+                                   ))
 
 
 class AddVoteVariantForm(forms.Form):
     voting_title = CommonFields.get_voting_title_field(True)
     description = CommonFields.get_description_field(
         forms.Textarea(attrs={
-            'class' : 'form-control'
+            'class': 'form-control'
         })
         , True, label="Описание варианта")
 

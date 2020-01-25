@@ -21,11 +21,15 @@
           {{ error }}
         </div>
             {% else %}
+            <div class="alert alert-warning" role="alert">
                 Что-то пошло не так
+            </div>
             {% endif %}
         {% else %}
             {% if success %}
+            <div class="alert alert-success" role="alert">
                 Вариант голоса успешно создан
+            </div>
             {% endif %}
         {% endif %}
     </p>

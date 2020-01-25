@@ -1,33 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Новое голосование</title>
-</head>
-<body>
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+<div class="row mt-8 text-centre" >
+    <div class = "card px-3 py-3 pt-md-5 pb-md-6 mx-auto col-xl-9 col-md-9">
+
+        <div class="card-header text-center font-weight-bolder lead px-3 py-3 mb-5">Создание голосования </div>
     <form method="post"> {% csrf_token %}
         {% for item in form %}
-            <label>{{ item.label }}</label>
+            <label class="font-weight-bold">{{ item.label }}</label>
             {{ item }}
             <br>
         {% endfor %}
-        <input type="submit" value="Создать новое голосование">
+         <button type="submit" class="btn btn-outline-primary pb-md-6" value="Создать новое голосование">Создать новое голосование </button>
     </form>
     <p>
         {% if not ok %}
             {% if error %}
+        <div class="alert alert-danger" role="alert">
                 {{ error }}
+        </div>
             {% else %}
+        <div class="alert alert-warning" role="alert">
                 Что-то пошло не так
+        </div>
             {% endif %}
         {% else %}
             {% if success %}
+        <div class="alert alert-success" role="alert">
                 Голосование успешно создано
+        </div>
             {% endif %}
         {% endif %}
     </p>
-</body>
-</html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->
+    </div>
+    </div>
+{% endblock %}
