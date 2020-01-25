@@ -44,7 +44,7 @@ def time_page(request):
 
 
 def view_func_template(request, html_path, form_class, body):
-    context = {}
+    context = { "menu": get_menu_context() }
     success = ok = False
     error = None
     if request.method == "POST":
