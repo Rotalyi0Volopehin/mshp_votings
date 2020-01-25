@@ -1,5 +1,8 @@
 {% extends 'base/base.html' %}
 
+{% if error %}
+{{ error }}
+{% else %}
 
 <script>
     $('#myModal').on('shown.bs.modal', function () {
@@ -14,41 +17,39 @@
         <div class="col-sm-4">
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="Name">Логин</label>
-                <input type="text" class="form-control col-sm-9" value="{{ login }}" readonly="1">
+                <input type="text" class="form-control col-sm-9" value="{{ login }}" readonly>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="Name">Имя</label>
-                <input type="text" class="form-control col-sm-9" id="name_tag" value="{{ name }}">
+                <input type="text" class="form-control col-sm-9" id="name_tag" value="{{ name }}" {% if not self %} readonly {% endif %}>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="Email">E-mail</label>
-                <input type="email" class="form-control col-sm-9" value="{{ email }}" readonly="1">
+                <input type="email" class="form-control col-sm-9" value="{{ email }}" readonly>
             </div>
         </div>
     </div>
 
     <div class="row pt-3">
         <div class="col-sm-4">
-            <div class="text-center alert alert-success" role="alert">
-                {% if activated %}
-                Аккаунт верифицирован
-                {% else %}
-                Аккаунт не верифицирован
-                {% endif %}
-            </div>
-            <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
+            {% if activated %}
+            <div class="text-center alert alert-success" role="alert">Аккаунт верифицирован</div>
+            {% else %}
+            <div class="text-center alert alert-warning" role="alert">Аккаунт не верифицирован</div>
+            {% endif %}
+            {% if self %}
+                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
+            {% endif %}
         </div>
     </div>
 
     <div class="row pt-4">
         <div class="col-sm-4">
             <div class="form-group">
-                <label>Создано опросов: {{ createdpolls }}</label>
-                <br>
-                <label>Принято участие: {{ votedpolls }}</label>
-                <br>
+                <label>Создано опросов: {{ createdpolls }}</label> <br>
+                <label>Принято участие: {{ votedpolls }}</label> <br>
                 <label>Дата регистрации: {{ regdate }}</label>
             </div>
         </div>
@@ -56,11 +57,11 @@
 
     <div class="form-group">
         <label for="About">О себе</label>
-        <textarea class="form-control" id="About" rows="5">{{ about }}</textarea>
+        <textarea class="form-control" id="About" rows="5" {% if not self %} readonly {% endif %}> {{ about }} </textarea>
     </div>
-
-    <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
-
+    {% if self %}
+        <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
+    {% endif %}
 </form>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -101,3 +102,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% endif %}

@@ -239,25 +239,33 @@ def activate(request, uid, token):
         if (user != None) and account_activation_token.check_token(user, token):
             if DB_UserTools.try_activate_user(user):
                 login(request, user)
-            return render(request, 'pages/registration/activation.html')
+            return render(request, 'registration/activation.html')
         return HttpResponse('Ссылка для верификации невалидна!')
+
+
+def profile_page(request, id):
+    context = {'menu': get_menu_context()}
+    user = User.objects.filter(id=id)
+    if len(user) == 0:
+        error = "Пользователь не найден!"
+    else:
+        user = user[0]
+        self = context['self'] = not isinstance(request.user, AnonymousUser) and (user.id == request.user.id)
+        context['pagename'] = "Мой профиль" if self else "Профиль"
+        context['login'] = user.username
+        context['name'] = user.first_name
+        context['email'] = user.email
+        context['regdate'] = user.date_joined
+        user_data, error = DB_UserTools.try_get_user_data(user)
+        if error is None:
+            context['createdpolls'] = '100500'
+            context['votedpolls'] = '100500'
+            context['activated'] = user_data.activated
+            context['about'] = user_data.extra_info
+    context['error'] = error
+    return render(request, 'pages/profile.html', context)
 
 
 @login_required
 def my_profile_page(request):
-    context = {
-        'menu': get_menu_context(),
-        'pagename': 'Мой профиль',
-        'login': request.user.username,
-        'name': request.user.first_name,
-        'email': request.user.email,
-        'regdate': request.user.date_joined, }
-    user_data, error = DB_UserTools.try_get_user_data(request.user)
-    if error is None:
-        context['createdpolls'] = '100500'
-        context['votedpolls'] = '100500'
-        context['activated'] = user_data.activated
-        context['about'] = user_data.extra_info
-    else:
-        context['error'] = error
-    return render(request, 'pages/my_profile.html', context)
+    return profile_page(request, request.user.id)
