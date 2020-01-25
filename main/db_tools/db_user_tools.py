@@ -46,6 +46,15 @@ class DB_UserTools:
         email.send()
 
     @staticmethod
+    def try_get_user_data(user) -> (UserData, str):
+        if not isinstance(user, User):
+            Exceptions.throw(Exceptions.argument_type)
+        user_data = UserData.objects.filter(user=user)
+        if len(user_data) != 1:
+            return None, "Некорректная конфигурация пользовательских данных!"
+        return user_data[0], None
+
+    @staticmethod
     def try_activate_user(user) -> bool:
         if not isinstance(user, User):
             Exceptions.throw(Exceptions.argument_type)
