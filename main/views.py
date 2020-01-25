@@ -250,7 +250,8 @@ def my_profile_page(request):
     context = {
         'menu': get_menu_context(),
         'pagename': 'Мой профиль',
-        'name': request.user.username,
+        'login': request.user.username,
+        'name': request.user.first_name,
         'email': request.user.email,
         'regdate': request.user.date_joined, }
     user_data, error = DB_UserTools.try_get_user_data(request.user)
