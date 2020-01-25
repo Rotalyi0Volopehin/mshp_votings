@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Поиск голосований</title>
     <script>
-        function goto_prev_page() {
+        function dec_offset() {
+            "usestrict";
             offset_tag.value = Number(offset_tag.value) - {{ page_size }};
-            send_tag.click();
         }
-        function goto_next_page() {
+        function inc_offset() {
+            "usestrict";
             offset_tag.value = Number(offset_tag.value) + {{ page_size }};
-            send_tag.click();
         }
     </script>
 </head>
@@ -21,42 +21,42 @@
             {{ item }}
             <br>
         {% endfor %}
-        <input type="submit" value="Искать" id="send_tag">
-    </form>
-    {% if not ok %}
-        {% if error %}
-            {{ error }}
-        {% else %}
-            <p>Что-то пошло не так</p>
-        {% endif %}
-    {% else %}
-        {% if success %}
-            {% if result %}
-                <table border="1">
-                    <tr>
-                        <th>Название</th>
-                        <th>Автор</th>
-                        <th>Дата создания</th>
-                    </tr>
-                    {% for ref in result %}
-                        <tr>
-                            <td> <a href={{ ref.0 }}> {{ ref.1 }} </a> </td>
-                            <td> {{ ref.2 }} </td>
-                            <td> {{ ref.3 }} </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                {% if prev_page %}
-                    <span onclick="goto_prev_page()">Назад</span>
-                    {% if next_page %} | {% endif %}
-                {% endif %}
-                {% if next_page %}
-                    <span onclick="goto_next_page()">Вперёд</span>
-                {% endif %}
+        <input type="submit" value="Искать">
+        {% if not ok %}
+            {% if error %}
+                {{ error }}
             {% else %}
-                <p>Ничего не найдено</p>
+                <p>Что-то пошло не так</p>
+            {% endif %}
+        {% else %}
+            {% if success %}
+                {% if result %}
+                    <table border="1">
+                        <tr>
+                            <th>Название</th>
+                            <th>Автор</th>
+                            <th>Дата создания</th>
+                        </tr>
+                        {% for ref in result %}
+                            <tr>
+                                <td> <a href={{ ref.0 }}> {{ ref.1 }} </a> </td>
+                                <td> {{ ref.2 }} </td>
+                                <td> {{ ref.3 }} </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if prev_page %}
+                        <input type="submit" value="Назад" onclick="dec_offset()">
+                    {% else %} Назад {% endif %}
+                    |
+                    {% if next_page %}
+                        <input type="submit" value="Вперёд" onclick="inc_offset()">
+                    {% else %} Вперёд {% endif %}
+                {% else %}
+                    <p>Ничего не найдено</p>
+                {% endif %}
             {% endif %}
         {% endif %}
-    {% endif %}
+    </form>
 </body>
 </html>
