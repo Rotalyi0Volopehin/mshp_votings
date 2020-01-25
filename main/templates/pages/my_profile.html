@@ -16,12 +16,12 @@
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="Name">Имя</label>
-                <input type="text" class="form-control col-sm-9" id="Name" value="{{ name }}">
+                <input type="text" class="form-control col-sm-9" id="Name" value="{{ name }}" readonly="1">
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="Email">E-mail</label>
-                <input type="email" class="form-control col-sm-9" id="Email" value="{{ email }}">
+                <input type="email" class="form-control col-sm-9" id="Email" value="{{ email }}" readonly="1">
             </div>
 
         </div>
@@ -29,23 +29,14 @@
 
     <div class="row pt-3">
         <div class="col-sm-4">
-            {% if activated %}
-
-            <div class="alert alert-success" role="alert">
+            <div class="text-center alert alert-success" role="alert">
+                {% if activated %}
                 Аккаунт верифицирован
+                {% else %}
+                Аккаунт не верифицирован
+                {% endif %}
             </div>
             <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
-
-            {% else %}
-
-            <div class="alert alert-danger text-center" role="alert">
-                Аккаунт не верифицирован
-            </div>
-
-            <button type="button" class="col-sm-6 btn btn-primary" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
-            <button type="button" class="col-sm-5.5 btn btn-outline-primary">Верифицировать</button>
-
-            {% endif %}
         </div>
     </div>
 
@@ -74,7 +65,6 @@
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Сменить пароль</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -105,7 +95,6 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
                 <button type="button" class="btn btn-primary">Сохранить</button>
             </div>
-
         </div>
     </div>
 </div>

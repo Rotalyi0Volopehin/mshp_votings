@@ -242,7 +242,7 @@ def activate(request, uid, token):
             if DB_UserTools.try_activate_user(user):
                 login(request, user)
             return render(request, 'pages/registration/activation.html')
-        return HttpResponse('Activation link is invalid!')
+        return HttpResponse('Ссылка для верификации невалидна!')
 
 
 @login_required
@@ -250,12 +250,15 @@ def my_profile_page(request):
     context = {
         'menu': get_menu_context(),
         'pagename': 'Мой профиль',
-        'name': str(request.user),
+        'name': request.user.username,
         'email': request.user.email,
-        'createdpolls': '100500',
-        'votedpolls': '100500',
-        'regdate': request.user.date_joined,
-        'activated': UserData.activated,
-        'about': UserData.extra_info,
-    }
+        'regdate': request.user.date_joined, }
+    user_data, error = DB_UserTools.try_get_user_data(request.user)
+    if error is None:
+        context['createdpolls'] = '100500'
+        context['votedpolls'] = '100500'
+        context['activated'] = user_data.activated
+        context['about'] = user_data.extra_info
+    else:
+        context['error'] = error
     return render(request, 'pages/my_profile.html', context)
