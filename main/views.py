@@ -246,16 +246,16 @@ def activate(request, uid, token):
 
 
 @login_required
-def profile_page(request):
+def my_profile_page(request):
     context = {
         'menu': get_menu_context(),
-        'pagename': 'Профиль',
+        'pagename': 'Мой профиль',
         'name': str(request.user),
         'email': request.user.email,
         'createdpolls': '100500',
         'votedpolls': '100500',
         'regdate': request.user.date_joined,
         'activated': UserData.activated,
-        'about': UserData.extra_info
+        'about': UserData.extra_info,
     }
-    return render(request, 'pages/profile.html', context)
+    return render(request, 'pages/my_profile.html', context)
