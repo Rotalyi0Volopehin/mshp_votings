@@ -35,4 +35,5 @@ urlpatterns = [
     path('search_v/', views.voting_search_page),
     path('voting_info/<int:id>/', views.voting_info_page_ext),
     path('activate/<str:uid>/<str:token>/', views.activate, name='activate'),
+    path('my_profile/', views.profile_page),
 ]

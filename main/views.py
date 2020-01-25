@@ -15,6 +15,8 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from main.db_tools.tokens import account_activation_token
 
+from main.models import UserData
+
 
 def get_menu_context():
     return [
@@ -241,3 +243,19 @@ def activate(request, uid, token):
                 login(request, user)
             return render(request, 'pages/registration/activation.html')
         return HttpResponse('Activation link is invalid!')
+
+
+@login_required
+def profile_page(request):
+    context = {
+        'menu': get_menu_context(),
+        'pagename': 'Профиль',
+        'name': str(request.user),
+        'email': request.user.email,
+        'createdpolls': '100500',
+        'votedpolls': '100500',
+        'regdate': request.user.date_joined,
+        'activated': UserData.activated,
+        'about': UserData.extra_info
+    }
+    return render(request, 'pages/profile.html', context)
