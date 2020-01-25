@@ -170,7 +170,7 @@ def vote_page(request):
 
 
 def voting_search_page(request):
-    page_size = 3
+    page_size = 16
     def body(form, context) -> (bool, str, bool):
         context["page_size"] = page_size
         offset = form.data["offset"]
