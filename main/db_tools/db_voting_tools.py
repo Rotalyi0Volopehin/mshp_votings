@@ -61,11 +61,12 @@ class DB_VotingTools:
         return votings[:]
 
     @staticmethod
-    def form_voting_ref(voting, url) -> (str, str, str, datetime.datetime):
+    def form_voting_ref(voting, url) -> (str, str, str, str, datetime.datetime):
         if not isinstance(voting, Voting):
             Exceptions.throw(Exceptions.argument_type)
         url = "/{}/{}/".format(url, voting.id)
-        return url, voting.title, voting.author.username, voting.date_created
+        author_ref = "/profile/{}/".format(voting.author.id)
+        return url, voting.title, author_ref, voting.author.username, voting.date_created
 
     @staticmethod
     def try_add_vote_variant(author, voting, description) -> (bool, str):
