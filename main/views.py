@@ -261,3 +261,49 @@ def profile_page(request, id):
 @login_required
 def my_profile_page(request):
     return profile_page(request, request.user.id)
+
+
+@login_required
+def manage_voting_page(request, id):
+    context = {'menu': get_menu_context(), 'pagename': "Работа над голосованием"}
+    voting, error = DB_VotingTools.try_find_voting_with_id(id)
+    if error is None:
+        if voting.author == request.user:
+            addv_lock = voting.started or (voting.type == 2)
+            if (request.method == "POST") and request.POST:
+                form = main.forms.ManageVotingForm(request.POST)
+                ferr = False
+                if form.is_valid():
+                    action = form.data["action"]
+                    if action == "addv":
+                        ok, error = DB_VotingTools.try_add_vote_variant(request.user, voting, form.data["description"])
+                    elif action == "start":
+                        ok, error = DB_VotingTools.try_start_voting(request.user, voting)
+                        if ok:
+                            addv_lock = True
+                    elif action == "stop":
+                        ok, error = DB_VotingTools.try_stop_voting(request.user, voting)
+                    else:
+                        ferr = True
+                else:
+                    ferr = True
+                if ferr:
+                    error = "Неверный формат отосланных данных!"
+            else:
+                form = main.forms.ManageVotingForm()
+            if error is None:
+                if addv_lock:
+                    form.fields["description"].widget.attrs["readonly"] = True
+                context["form"] = form
+                vars = main.models.VoteVariant.objects.filter(voting=voting)[:]
+                variants = []
+                for i in range(len(vars)):
+                    variants.append((i, vars[i].description))
+                context["variants"] = variants
+            context["addv_lock"] = addv_lock
+            context["started"] = voting.started
+            context["completed"] = voting.completed
+        else:
+            error = "У вас нет доступа к этому голосования!"
+    context["error"] = error
+    return render(request, 'pages/voting_management/manage_voting.html', context)

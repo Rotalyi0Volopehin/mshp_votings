@@ -70,3 +70,9 @@ class SearchVotingForm_(forms.Form):
     show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтрация показывающих статистику до завершения")
     anonymous_option = CommonFields.get_filter_option_field("Фильтрация анонимных")
     offset = CommonFields.get_invisible_field(forms.IntegerField, "offset_tag", 0)
+
+
+class ManageVotingForm(forms.Form):
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "w-100", "rows": "20"}), label="Описание варианта",
+            min_length=1, max_length=4096, required=False)
+    action = CommonFields.get_invisible_field(forms.CharField, "action_tag", '')

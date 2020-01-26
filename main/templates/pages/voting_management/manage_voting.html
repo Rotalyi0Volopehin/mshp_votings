@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %}
+
+{% if error %}
+{{ error }}
+{% else %}
+
+<script>
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
+</script>
+
+
+{% block content %}
+<form class="container pt-5" method="post"> {% csrf_token %}
+    <div class="row">
+        <div class="card col-sm-4">
+            <div class="card=header">Варианты</div>
+            <div class="card-body">
+                {% for var in variants %}
+                    <div class="form-group row">
+                        <label>#{{ var.0 }} .</label>
+                        <input class="form-control col-sm-9" value={{ var.1 }} readonly>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card col-sm-4 h-100">
+            <div class="card=header">Описание варианта</div>
+            <div class="card-body">
+                {% for item in form %} {{ item }} {% endfor %}
+                <button type="submit" {% if addv_lock %} disabled {% endif %} class="btn btn-primary btn-block" onclick="action_tag.value = 'addv'">Добавить вариант</button>
+            </div>
+        </div>
+        <div class="card col-sm-4">
+            <div class="card=header">Проведение</div>
+            <div class="card-body">
+                {% if completed %}
+                    <div class="text-center alert alert-success" role="alert">Голосование завершено</div>
+                {% else %}
+                    {% if started %}
+                        <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'stop'">Завершить</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'start'">Начать</button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script> action_tag.value = "" </script>
+</form>
+{% endblock %}
+
+{% endif %}

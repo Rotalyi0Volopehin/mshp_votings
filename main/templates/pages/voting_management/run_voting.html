@@ -8,8 +8,7 @@
     <form method="post"> {% csrf_token %}
         {% for item in form %}
             <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
+            {{ item }} <br>
         {% endfor %}
         <input type="submit" value="Отправить">
     </form>

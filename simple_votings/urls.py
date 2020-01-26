@@ -37,4 +37,5 @@ urlpatterns = [
     path('activate/<str:uid>/<str:token>/', views.activate, name='activate'),
     path('profile/<int:id>/', views.profile_page),
     path('my_profile/', views.my_profile_page),
+    path('manage_voting/<int:id>/', views.manage_voting_page),
 ]
