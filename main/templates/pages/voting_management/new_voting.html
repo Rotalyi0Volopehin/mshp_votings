@@ -1,16 +1,27 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-    <div class="container">
+    {% load bootstrap4 %}
+    <div class="card">
+        <div class="card-header">
+            Создание нового опроса
+        </div>
+         <div class="card-body">
         <form method="post"> {% csrf_token %}
             {% for item in form %}
-                <div class="row">
-                    <label>{{ item.label }}</label>
+                <div class="form-group row">
+
+                    <label align = "middle">{{ item.label }}</label>
+
+                    <div class="col-sm-8">
                     {{ item }}
+                    </div>
                 </div>
             {% endfor %}
+
             <input type="submit" value="Создать новое голосование">
         </form>
+         </div>
     </div>
     <p>
         {% if not ok %}
