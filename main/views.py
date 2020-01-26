@@ -258,8 +258,8 @@ def profile_page(request, id):
         context['regdate'] = user.date_joined
         user_data, error = DB_UserTools.try_get_user_data(user)
         if error is None:
-            context['createdpolls'] = '100500'
-            context['votedpolls'] = '100500'
+            context['createdpolls'] = user_data.created_votings_count
+            context['votedpolls'] = user_data.vote_count
             context['activated'] = user_data.activated
             context['about'] = user_data.extra_info
     context['error'] = error
