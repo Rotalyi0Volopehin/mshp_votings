@@ -205,10 +205,7 @@ def voting_info_page(request, id):
         user = None if isinstance(request.user, AnonymousUser) else request.user
         context["info"] = DB_VotingTools.get_voting_info(voting, user)
         ok = True
-        running = not voting.completed and voting.started
-        if (user != None) and running:
-            vars = main.models.VoteFact.objects.filter(user=user, voting=voting)
-        can_vote = context["can_vote"] = (user != None) and running and (len(vars) == 0)
+        can_vote = context["can_vote"] = (user != None) and DB_UserTools.can_vote(user, voting)
         if can_vote:
             context["vote_ref"] = "/vote/{}/".format(voting.id)
     context["ok"] = ok
