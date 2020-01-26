@@ -29,7 +29,7 @@
             <div class="card=header">Проведение</div>
             <div class="card-body">
                 {% if completed %}
-                    <div class="text-center alert alert-success" role="alert">Голосование завершено</div>
+                    <div class="text-center alert alert-info" role="alert">Голосование завершено</div>
                 {% else %}
                     {% if started %}
                         <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'stop'">Завершить</button>
