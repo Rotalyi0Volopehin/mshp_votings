@@ -1,18 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Новое голосование</title>
-</head>
-<body>
-    <form method="post"> {% csrf_token %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
-        {% endfor %}
-        <input type="submit" value="Создать новое голосование">
-    </form>
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form method="post"> {% csrf_token %}
+            {% for item in form %}
+                <div class="row">
+                    <label>{{ item.label }}</label>
+                    {{ item }}
+                </div>
+            {% endfor %}
+            <input type="submit" value="Создать новое голосование">
+        </form>
+    </div>
     <p>
         {% if not ok %}
             {% if error %}
@@ -26,8 +25,7 @@
             {% endif %}
         {% endif %}
     </p>
-</body>
-</html>
+{% endblock %}
 <!--
 #временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 -->

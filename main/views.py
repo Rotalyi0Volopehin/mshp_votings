@@ -96,6 +96,8 @@ def clear_all_data_page(request): #Developer's tool
 
 @login_required
 def new_voting_page(request):
+    context = {}
+    context['pagename'] = "Новое голосование"
     def body(form, context) -> (bool, str, bool):
         author = request.user
         title = form.data["title"]
