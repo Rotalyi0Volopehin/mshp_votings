@@ -5,14 +5,6 @@
     <title>Информация о голосовании</title>
 </head>
 <body>
-    <form method="post"> {% csrf_token %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
-        {% endfor %}
-        <input type="submit" value="Обновить информацию">
-    </form>
     <p>
         {% if not ok %}
             {% if error %}
@@ -21,7 +13,7 @@
                 Что-то пошло не так
             {% endif %}
         {% else %}
-            {% if success %}
+            {% if info %}
                 {% for info_line in info %}
                     {{ info_line }} <br>
                 {% endfor %}
@@ -30,6 +22,3 @@
     </p>
 </body>
 </html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->

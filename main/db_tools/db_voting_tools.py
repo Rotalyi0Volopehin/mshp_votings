@@ -23,34 +23,31 @@ class DB_VotingTools:
             return False, error
         if DB_VotingTools.find_voting(author, title) != None:
             return False, "У вас уже существует голосование с таким названием!"
-        voting = Voting(author=author, title=title, description=description, type=type_)
-        voting.show_votes_before_end = show_votes_before_end
-        voting.anonymous = anonymous
-        voting.started = voting.completed = False
+        voting = Voting(author=author, title=title, description=description, type=type_,
+                show_votes_before_end=show_votes_before_end, anonymous=anonymous)
         voting.save()
         if type_ == 2: #Дискретное голосование всегда обладает только этими двумя вариантами голоса
             yes_var = VoteVariant(voting=voting, description="Да")
             no_var = VoteVariant(voting=voting, description="Нет")
             yes_var.save()
             no_var.save()
+        user_data, _ = DB_UserTools.try_get_user_data(author)
+        user_data.created_votings_count += 1
+        user_data.save()
         return True, None
 
     @staticmethod
     def clear_voting_list():
         Voting.objects.all().delete()
 
-
     @staticmethod
-    def try_find_voting(author_login, title) -> (Voting, str):
-        if not (isinstance(author_login, str) and isinstance(title, str)):
+    def try_find_voting(author, title) -> (Voting, str):
+        if not (isinstance(author, User) and isinstance(title, str)):
             Exceptions.throw(Exceptions.argument_type)
-        author = User.objects.filter(username=author_login)
-        if len(author) == 0:
-            return None, "Не существует пользователя с указанным логином!"
-        author = author[0]
         voting = DB_VotingTools.find_voting(author, title)
-        return voting, "Голосование не найдено!" if voting is None else None
-
+        if voting is None:
+            return None, "Голосование не найдено!"
+        return voting, None
 
     @staticmethod
     def find_voting(author, title) -> Voting:
@@ -60,12 +57,33 @@ class DB_VotingTools:
         return voting[0]
 
     @staticmethod
-    def try_add_vote_variant(author, voting_title, description) -> (bool, str):
-        if not (isinstance(author, User), isinstance(voting_title, str) and isinstance(description, str)):
+    def try_find_voting_with_id(id) -> (Voting, str):
+        voting = Voting.objects.filter(id=id)
+        if len(voting) == 0:
+            return None, "Голосование не найдено!"
+        return voting[0], None
+
+    @staticmethod
+    def get_votings_of_user(user) -> [Voting]:
+        if not isinstance(user, User):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        votings = Voting.objects.filter(author=user)
+        return votings[:]
+
+    @staticmethod
+    def form_voting_ref(voting, url) -> (str, str, str, str, datetime.datetime):
+        if not isinstance(voting, Voting):
+            Exceptions.throw(Exceptions.argument_type)
+        url = "/{}/{}/".format(url, voting.id)
+        author_ref = "/profile/{}/".format(voting.author.id)
+        return url, voting.title, author_ref, voting.author.username, voting.date_created
+
+    @staticmethod
+    def try_add_vote_variant(author, voting, description) -> (bool, str):
+        if not (isinstance(author, User), isinstance(voting, Voting) and isinstance(description, str)):
+            Exceptions.throw(Exceptions.argument_type)
+        if author != voting.author:
+            return False, "Вы не являетесь автором указанного голосования!"
         if voting.started:
             return False, "Нельзя изменять {} голосование!".format("законченное" if voting.completed else "начатое")
         if voting.type == 2:
@@ -85,12 +103,11 @@ class DB_VotingTools:
         VoteVariant.objects.all().delete()
 
     @staticmethod
-    def try_start_voting(author, voting_title) -> (bool, str):
-        if not (isinstance(author, User) and isinstance(voting_title, str)):
+    def try_start_voting(author, voting) -> (bool, str):
+        if not (isinstance(author, User) and isinstance(voting, Voting)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        if author != voting.author:
+            return False, "Вы не являетесь автором указанного голосования!"
         if voting.completed:
             return False, "Указанное голосование уже завершено!"
         if voting.started:
@@ -104,12 +121,11 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def try_stop_voting(author, voting_title) -> (bool, str):
-        if not (isinstance(author, User) and isinstance(voting_title, str)):
+    def try_stop_voting(author, voting) -> (bool, str):
+        if not (isinstance(author, User) and isinstance(voting, Voting)):
             Exceptions.throw(Exceptions.argument_type)
-        voting = DB_VotingTools.find_voting(author, voting_title)
-        if voting is None:
-            return False, "У вас нет голосования с указанным названием!"
+        if author != voting.author:
+            return False, "Вы не являетесь автором указанного голосования!"
         if not voting.started:
             return False, "Указанное голосование ещё не начато!"
         if voting.completed:
@@ -124,6 +140,8 @@ class DB_VotingTools:
         if not (isinstance(voting, Voting) and (user is None or isinstance(user, User))):
             Exceptions.throw(Exceptions.argument_type)
         info = ["Информация о голосовании:"]
+        info.append("Логин автора : " + voting.author.username)
+        info.append("Название : " + voting.title)
         info.append("Дата и время создания : " + str(voting.date_created))
         info.append("Тип : " + str(voting.type))
         info.append("Статус : ")
@@ -147,7 +165,7 @@ class DB_VotingTools:
                 info.append("Вы принимали участие в этом голосовании")
         info.append("Открытая статистика голосов до окончания голосования : " +
                     ("вкл." if voting.show_votes_before_end else "выкл."))
-        info.append("Анонимность голосования : " + ("вкл." if voting.show_votes_before_end else "выкл."))
+        info.append("Анонимность голосования : " + ("вкл." if voting.anonymous else "выкл."))
         if len(vote_variants) == 0:
             info.append("Вариантов голоса нет")
         else:
@@ -167,7 +185,7 @@ class DB_VotingTools:
         return info
 
     @staticmethod
-    def try_vote(user, voting, answers) -> (bool, str): #TODO - запретить голосовать в своём же опросе
+    def try_vote(user, voting, answers) -> (bool, str):
         if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
             Exceptions.throw(Exceptions.argument_type)
         yes_var = bin_answer = 0
@@ -201,6 +219,9 @@ class DB_VotingTools:
             bin_answer = 0
         vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         vote_fact.save()
+        user_data, _ = DB_UserTools.try_get_user_data(user)
+        user_data.vote_count += 1
+        user_data.save()
         return True, None
 
     @staticmethod

@@ -128,3 +128,10 @@ STATICFILES_DIRS = [
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'simplevoting103@gmail.com'
+EMAIL_HOST_PASSWORD = '%sc5V|xBzzmSnsOng~Gd8EkOsnhR5%DcK|1%40KINA'
+EMAIL_PORT = 587
