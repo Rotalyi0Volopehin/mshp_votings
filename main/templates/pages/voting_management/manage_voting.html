@@ -4,13 +4,6 @@
 {{ error }}
 {% else %}
 
-<script>
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
-    })
-</script>
-
-
 {% block content %}
 <form class="container pt-5" method="post"> {% csrf_token %}
     <div class="row">

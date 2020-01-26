@@ -97,6 +97,8 @@ def clear_all_data_page(request): #Developer's tool
 @login_required
 def new_voting_page(request):
     def body(form, context) -> (bool, str, bool):
+        context["menu"] = get_menu_context()
+        context["pagename"] = "Новое голосование"
         author = request.user
         title = form.data["title"]
         description = form.data["description"]
@@ -107,6 +109,7 @@ def new_voting_page(request):
         success = ok
         return ok, error, success
     return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, body)
+
 
 
 @login_required
