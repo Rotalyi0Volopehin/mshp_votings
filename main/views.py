@@ -208,7 +208,8 @@ def my_votings_page(request):
     refs = []
     for voting in votings:
         refs.append(DB_VotingTools.form_voting_ref(voting, "manage_voting"))
-    return render(request, "pages/voting_management/my_votings.html", { "refs": refs })
+    context = {"menu": get_menu_context(), "pagename": "Мои голосования", "refs": refs}
+    return render(request, "pages/voting_management/my_votings.html", context)
 
 
 def activate(request, uid, token):
