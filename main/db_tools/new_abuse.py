@@ -10,16 +10,15 @@ from exceptions import Exceptions
 
 class DB_AbuseTools:
     @staticmethod
-    def try_create_abuse(author, title, description) -> (bool, str):
-        if not (isinstance(author, User) and isinstance(title, str) and isinstance(description, str)):
+    def try_create_abuse(author, title, description, voting) -> (bool, str):
+        if not(isinstance(author, User) and isinstance(title, str) and isinstance(description, str) and isinstance(voting, Voting)):
             Exceptions.throw(Exceptions.argument_type)
         if len(title) == 0:
             return False, "Здесь нет уязвимости!"
-        if DB_VotingTools.find_voting(author, title) != None:
-            return False, "Голосование не найдено!"
-        ok, error = DB_UserTools.check_user_activation_required(author)
+        #ok, error = DB_UserTools.check_user_activation_required(author)
+        ok = True
         if not ok:
-            return False, error
-        abuse = VotingAbuse(abuser=author, voting=title, description=description)
+            return False, "Пользователь не активировал почту"
+        abuse = VotingAbuse(abuser=author, voting=voting, description=description)
         abuse.save()
         return True, None

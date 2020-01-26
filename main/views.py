@@ -226,9 +226,14 @@ def report_page(request):
             author_login = form.data["author_login"]
             voting_title = form.data["voting_title"]
             description = form.data["description"]
-            ok, error = DB_AbuseTools.try_create_abuse(author_login, voting_title, description)
-            if ok:
-                success = True
+            voting, error = DB_VotingTools.try_find_voting(author_login, voting_title)
+            if voting != None:
+
+                ok, error = DB_AbuseTools.try_create_abuse(request.user, voting_title, description, voting)
+                print(ok, error)
+                if ok:
+                    success = True
+
         else:
             error = "Здесь нет уязвимости!"
     else:
