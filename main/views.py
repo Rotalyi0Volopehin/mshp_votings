@@ -230,7 +230,6 @@ def report_page(request):
             if voting != None:
 
                 ok, error = DB_AbuseTools.try_create_abuse(request.user, voting_title, description, voting)
-                print(ok, error)
                 if ok:
                     success = True
 
