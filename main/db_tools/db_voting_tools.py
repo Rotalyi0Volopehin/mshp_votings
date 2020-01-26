@@ -31,6 +31,9 @@ class DB_VotingTools:
             no_var = VoteVariant(voting=voting, description="Нет")
             yes_var.save()
             no_var.save()
+        user_data, _ = DB_UserTools.try_get_user_data(author)
+        user_data.created_votings_count += 1
+        user_data.save()
         return True, None
 
     @staticmethod
@@ -209,6 +212,9 @@ class DB_VotingTools:
             bin_answer = 0
         vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         vote_fact.save()
+        user_data, _ = DB_UserTools.try_get_user_data(user)
+        user_data.vote_count += 1
+        user_data.save()
         return True, None
 
     @staticmethod
