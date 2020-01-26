@@ -2,7 +2,7 @@ import re
 import datetime
 
 from django.contrib.auth.models import User
-from main.models import UserData
+from main.models import UserData, VoteFact
 from exceptions import Exceptions
 # for email confirmation vvv
 from main.db_tools.tokens import account_activation_token
@@ -100,6 +100,17 @@ class DB_UserTools:
         if not user_data[0].activated:
             return False, "Пользователь не активирован!"
         return True, None
+
+    @staticmethod
+    def can_vote(user, voting) -> bool:
+        running = not voting.completed and voting.started
+        if not running:
+            return False
+        ok, _ = DB_UserTools.check_user_activation_required(user)
+        if not ok:
+            return False
+        vars = VoteFact.objects.filter(user=user, voting=voting)
+        return len(vars) == 0
 
     @staticmethod
     def clear_user_list():
