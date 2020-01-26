@@ -3,6 +3,7 @@ import main.forms
 
 from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
+from main.db_tools.new_abuse import DB_AbuseTools
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser
@@ -222,13 +223,18 @@ def report_page(request):
         form = main.forms.AbuseForm(request.POST)
         context["form"] = form
         if form.is_valid():
-            pass
+            author_login = form.data["author_login"]
+            voting_title = form.data["voting_title"]
+            description = form.data["description"]
+            ok, error = DB_AbuseTools.try_create_abuse(author_login, voting_title, description)
+            if ok:
+                success = True
         else:
             error = "Здесь нет уязвимости!"
     else:
-        context["form"] = main.forms.VoteForm()
+        context["form"] = main.forms.AbuseForm()
         ok = True
     context["ok"] = ok
     context["error"] = error
     context["success"] = success
-    return render(request, 'pages/report.html', context)
+    return render(request, "pages/report.html", context)
