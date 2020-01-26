@@ -53,16 +53,11 @@ class RunVotingForm(forms.Form):
     action = forms.ChoiceField(label="Запрос на", widget=forms.RadioSelect(), choices=[(1, "начало"), (2, "завершение")], required=True)
 
 
-class SearchVotingForm(forms.Form):
-    author_login = CommonFields.get_login_field(True, "Логин автора")
-    voting_title = CommonFields.get_voting_title_field(True)
-
-
-class VoteForm(SearchVotingForm):
+class VoteForm(forms.Form):
     answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)
 
 
-class SearchVotingForm_(forms.Form):
+class SearchVotingForm(forms.Form):
     author_login = CommonFields.get_login_field(False, "Логин автора")
     voting_title = CommonFields.get_voting_title_field(False)
     started_option = CommonFields.get_filter_option_field("Фильтрация начатых")

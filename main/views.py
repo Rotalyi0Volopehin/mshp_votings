@@ -143,28 +143,24 @@ def run_voting_page(request):
 
 
 @login_required
-def vote_page(request):
+def vote_page(request, id):
     def body(form, context) -> (bool, str, bool):
         success = ok = False
-        author_login = form.data["author_login"]
-        voting_title = form.data["voting_title"]
-        author, error = DB_UserTools.try_find_user(author_login)
+        voting, error = DB_VotingTools.try_find_voting_with_id(id)
         if error is None:
-            voting, error = DB_VotingTools.try_find_voting(author, voting_title)
+            answers = []
+            text_answer = form.data["answer"]
+            for digit in text_answer:
+                if digit == '0':
+                    answers.append(False)
+                elif digit == '1':
+                    answers.append(True)
+                else:
+                    error = "Голос не должен содержать других символов, кроме '0' или '1'!"
+                    break
             if error is None:
-                answers = []
-                text_answer = form.data["answer"]
-                for digit in text_answer:
-                    if digit == '0':
-                        answers.append(False)
-                    elif digit == '1':
-                        answers.append(True)
-                    else:
-                        error = "Голос не должен содержать других символов, кроме '0' или '1'!"
-                        break
-                if error is None:
-                    ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
-                success = ok
+                ok, error = DB_VotingTools.try_vote(request.user, voting, answers)
+            success = ok
         return ok, error, success
     return view_func_template(request, "pages/vote.html", main.forms.VoteForm, body)
 
@@ -198,7 +194,7 @@ def voting_search_page(request):
         context["prev_page"] = offset > 0
         context["next_page"] = not end
         return True, None, True
-    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm_, body)
+    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm, body)
 
 
 def voting_info_page(request, id):
