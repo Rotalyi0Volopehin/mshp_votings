@@ -84,6 +84,13 @@ class DB_UserTools:
         return user[0]
 
     @staticmethod
+    def try_find_user_with_id(id) -> (User, str):
+        user = User.objects.filter(id=id)
+        if len(user) == 0:
+            return None, "Пользователь не найден!"
+        return user[0], None
+
+    @staticmethod
     def check_user_activation_required(user) -> (bool, str):
         if not isinstance(user, User):
             Exceptions.throw(Exceptions.argument_type)

@@ -57,6 +57,13 @@ class DB_VotingTools:
         return voting[0]
 
     @staticmethod
+    def try_find_voting_with_id(id) -> (Voting, str):
+        voting = Voting.objects.filter(id=id)
+        if len(voting) == 0:
+            return None, "Голосование не найдено!"
+        return voting[0], None
+
+    @staticmethod
     def get_votings_of_user(user) -> [Voting]:
         if not isinstance(user, User):
             Exceptions.throw(Exceptions.argument_type)
