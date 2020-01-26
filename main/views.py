@@ -133,7 +133,25 @@ def add_vote_variant_page(request):
 
 @login_required
 def vote_page(request, id):
+    voting, error = DB_VotingTools.try_find_voting_with_id(id)
+    if error is None:
+        variants = main.models.VoteVariant.objects.filter(voting=voting)[:]
+        vars = []
+        for i in range(len(variants)):
+            vars.append((i, variants[i].description))
+    if request.method == "GET":
+        form = main.forms.VoteForm()
+        context = { "menu": get_menu_context(), "pagename": "Голосование", "form": form }
+        form.fields["answer"].widget.attrs["value"] = "0" * len(vars)
+        context["vars"] = vars
+        context["error"] = error
+        context["ok"] = error is None
+        return render(request, "pages/vote.html", context)
     def body(form, context) -> (bool, str, bool):
+        form.fields["answer"].widget.attrs["value"] = "0" * len(vars)
+        context["menu"] = get_menu_context()
+        context["pagename"] = "Голосование"
+        context["vars"] = vars
         success = ok = False
         voting, error = DB_VotingTools.try_find_voting_with_id(id)
         if error is None:

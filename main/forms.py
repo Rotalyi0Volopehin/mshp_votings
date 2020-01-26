@@ -54,7 +54,7 @@ class AddVoteVariantForm(forms.Form):
 
 
 class VoteForm(forms.Form):
-    answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)
+    answer = forms.CharField(label="", min_length=1, required=True, widget=forms.HiddenInput(attrs={ "id": "answer_tag" }))
 
 
 class SearchVotingForm(forms.Form):
