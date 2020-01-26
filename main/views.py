@@ -128,24 +128,6 @@ def add_vote_variant_page(request):
 
 
 @login_required
-def run_voting_page(request):
-    def body(form, context) -> (bool, str, bool):
-        ok = success = False
-        author = request.user
-        voting_title = form.data["voting_title"]
-        start_not_stop = int(form.data["action"]) == 1
-        voting, error = DB_VotingTools.try_find_voting(author, voting_title)
-        if error is None:
-            ok, error = DB_VotingTools.try_start_voting(author, voting) if start_not_stop else\
-                    DB_VotingTools.try_stop_voting(author, voting)
-            if ok:
-                success = True
-                context["success_message"] = "Голосование успешно " + ("начато" if start_not_stop else "завершено")
-        return ok, error, success
-    return view_func_template(request, "pages/voting_management/run_voting.html", main.forms.RunVotingForm, body)
-
-
-@login_required
 def vote_page(request, id):
     def body(form, context) -> (bool, str, bool):
         success = ok = False

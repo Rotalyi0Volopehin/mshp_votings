@@ -53,11 +53,6 @@ class AddVoteVariantForm(forms.Form):
     description = CommonFields.get_description_field(True, label="Описание варианта")
 
 
-class RunVotingForm(forms.Form):
-    voting_title = CommonFields.get_voting_title_field(True)
-    action = forms.ChoiceField(label="Запрос на", widget=forms.RadioSelect(), choices=[(1, "начало"), (2, "завершение")], required=True)
-
-
 class VoteForm(forms.Form):
     answer = forms.CharField(label="Голос (последовательность нулей и единиц)", min_length=1, required=True)
 
