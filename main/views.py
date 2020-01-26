@@ -204,12 +204,8 @@ def voting_search_page(request):
 def voting_info_page(request, id):
     context = {}
     ok = False
-    error = None
-    voting = main.models.Voting.objects.filter(id=id)
-    if len(voting) == 0:
-        error = "Голосование не найдено!"
-    else:
-        voting = voting[0]
+    voting, error = DB_VotingTools.try_find_voting_with_id(id)
+    if error is None:
         user = None if isinstance(request.user, AnonymousUser) else request.user
         context["info"] = DB_VotingTools.get_voting_info(voting, user)
         ok = True
@@ -229,10 +225,9 @@ def my_votings_page(request):
 
 
 def activate(request, uid, token):
-    uidb64 = uid
     if request.method == "GET":
         try:
-            uid = force_text(urlsafe_base64_decode(uidb64))
+            uid = force_text(urlsafe_base64_decode(uid))
             user = User.objects.get(pk=uid)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
@@ -245,11 +240,8 @@ def activate(request, uid, token):
 
 def profile_page(request, id):
     context = {'menu': get_menu_context()}
-    user = User.objects.filter(id=id)
-    if len(user) == 0:
-        error = "Пользователь не найден!"
-    else:
-        user = user[0]
+    user, error = DB_UserTools.try_find_user_with_id(id)
+    if error is None:
         self = context['self'] = not isinstance(request.user, AnonymousUser) and (user.id == request.user.id)
         context['pagename'] = "Мой профиль" if self else "Профиль"
         context['login'] = user.username
