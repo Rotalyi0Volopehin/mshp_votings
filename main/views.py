@@ -96,6 +96,10 @@ def clear_all_data_page(request): #Developer's tool
 
 @login_required
 def new_voting_page(request):
+    if request.method == "GET":
+        form = main.forms.NewVotingForm()
+        context = { "menu": get_menu_context(), "pagename": "Новое голосование", "ok": True, "form": form }
+        return render(request, "pages/voting_management/new_voting.html", context)
     def body(form, context) -> (bool, str, bool):
         context["menu"] = get_menu_context()
         context["pagename"] = "Новое голосование"
