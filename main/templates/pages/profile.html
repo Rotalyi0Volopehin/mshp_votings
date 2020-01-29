@@ -15,61 +15,71 @@
 <form class="container pt-5">
     <div class="row">
         <div class="col-sm-4">
-            <div class="form-group row">
+
+            <div class="form-group row right_padding">
                 <label class="col-sm-3 col-form-label" for="Name">Логин</label>
                 <input type="text" class="form-control col-sm-9" value="{{ login }}" readonly>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row right_padding">
                 <label class="col-sm-3 col-form-label" for="Name">Имя</label>
                 <input type="text" class="form-control col-sm-9" id="name_tag" value="{{ name }}" {% if not self %} readonly {% endif %}>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row right_padding">
                 <label class="col-sm-3 col-form-label" for="Email">E-mail</label>
                 <input type="email" class="form-control col-sm-9" value="{{ email }}" readonly>
             </div>
-        </div>
-    </div>
 
-    <div class="row pt-3">
-        <div class="col-sm-4">
-            {% if activated %}
-            <div class="text-center alert alert-success" role="alert">Аккаунт верифицирован</div>
-            {% else %}
-            <div class="text-center alert alert-warning" role="alert">Аккаунт не верифицирован</div>
-            {% endif %}
-            {% if self %}
-                <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">Сменить пароль</button>
-            {% endif %}
-        </div>
-    </div>
+            <div class="row pt-3">
+                <div class="col-sm-12">
+                    {% if activated %}
+                        <div class="text-center alert alert-success" role="alert">Аккаунт верифицирован</div>
+                    {% else %}
+                        <div class="text-center alert alert-warning" role="alert">Аккаунт не верифицирован</div>
+                    {% endif %}
+                </div>
+            </div>
 
-    <div class="row pt-4">
-        <div class="col-sm-4">
-            <div class="form-group">
+            <div class="row left_padding right_padding">
+                {% if self %}
+                    <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#changePassword">Сменить пароль</button>
+                {% endif %}
+            </div>
+
+            <div class="form-group pt-3">
                 <label>Создано опросов: {{ createdpolls }}</label> <br>
                 <label>Принято участие: {{ votedpolls }}</label> <br>
                 <label>Дата регистрации: {{ regdate }}</label>
             </div>
+
+            <div class="row left_padding right_padding">
+                {% if self %}
+                    <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#deleteAccount">Удалить аккаунт</button>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="About">О себе</label>
+                <textarea class="form-control" id="About" rows="14" {% if not self %} readonly {% endif %}> {{ about }} </textarea>
+            </div>
+            {% if self %}
+                <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
+            {% endif %}
         </div>
     </div>
 
-    <div class="form-group">
-        <label for="About">О себе</label>
-        <textarea class="form-control" id="About" rows="5" {% if not self %} readonly {% endif %}> {{ about }} </textarea>
-    </div>
-    {% if self %}
-        <button type="button" class="btn btn-primary btn-lg btn-block">Сохранить изменения</button>
-    {% endif %}
 </form>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel"
      aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Сменить пароль</h5>
+                <h5 class="modal-title" id="changePasswordLabel">Сменить пароль</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -97,6 +107,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
                 <button type="button" class="btn btn-primary">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAccount" tabindex="-1" role="dialog" aria-labelledby="deleteAccountLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountLabel">Удалить аккаунт</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Это действие приведёт к необратимым последствиям. Желаете продолжить?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary">Да</button>
             </div>
         </div>
     </div>
