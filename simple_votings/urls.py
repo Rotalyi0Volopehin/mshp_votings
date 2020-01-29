@@ -29,7 +29,6 @@ urlpatterns = [
     path('cad/', views.clear_all_data_page), #страница, удаляющая всю информацию
     path('vm/my_votings/', views.my_votings_page),
     path('vm/new_voting/', views.new_voting_page),
-    path('vm/add_vote_variant/', views.add_vote_variant_page),
     path('vote/<int:id>/', views.vote_page),
     path('search_v/', views.voting_search_page),
     path('voting_info/<int:id>/', views.voting_info_page),

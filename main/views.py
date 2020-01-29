@@ -43,19 +43,24 @@ def time_page(request):
     return render(request, 'pages/time.html', context)
 
 
-def view_func_template(request, html_path, form_class, body):
-    context = { "menu": get_menu_context() }
+def view_func_template(request, html_path, form_class, post_handler, get_handler=None, context=None):
+    if context is None:
+        context = {}
+    context["menu"] = get_menu_context()
     success = ok = False
     error = None
     if request.method == "POST":
         form = form_class(request.POST)
         if form.is_valid():
-            ok, error, success = body(form, context)
+            ok, error, success = post_handler(form=form, context=context)
         else:
             error = "Неверный формат отосланных данных!"
     else:
-        form = form_class()
-        ok = True
+        if get_handler is None:
+            form = form_class()
+            ok = True
+        else:
+            ok, error, success, form = get_handler(context=context)
     context["form"] = form
     context["ok"] = ok
     context["error"] = error
@@ -64,16 +69,16 @@ def view_func_template(request, html_path, form_class, body):
 
 
 def __demo_for_view_func_template(request):
-    def body(form, context) -> (bool, str, bool):
+    def post_handler(form, context) -> (bool, str, bool):
         success = ok = False
         error = None
-        # body code
+        # post_handler code
         return ok, error, success
-    return view_func_template(request, '~html path~', '~form class~', body)
+    return view_func_template(request, '~html path~', '~form class~', post_handler)
 
 
 def registration_page(request):
-    def body(form, context) -> (bool, str, bool):
+    def post_handler(form, context) -> (bool, str, bool):
         success = ok = False
         password1 = form.data["password1"]
         if password1 == form.data["password2"]:
@@ -83,7 +88,7 @@ def registration_page(request):
         else:
             error = "Указанные пароли не совпадают!"
         return ok, error, success
-    return view_func_template(request, "registration/registration.html", main.forms.RegistrationForm, body)
+    return view_func_template(request, "registration/registration.html", main.forms.RegistrationForm, post_handler)
 
 
 def clear_all_data_page(request): #Developer's tool
@@ -96,12 +101,7 @@ def clear_all_data_page(request): #Developer's tool
 
 @login_required
 def new_voting_page(request):
-    if request.method == "GET":
-        form = main.forms.NewVotingForm()
-        context = { "menu": get_menu_context(), "pagename": "Новое голосование", "ok": True, "form": form }
-        return render(request, "pages/voting_management/new_voting.html", context)
-    def body(form, context) -> (bool, str, bool):
-        context["menu"] = get_menu_context()
+    def post_handler(form, context) -> (bool, str, bool):
         context["pagename"] = "Новое голосование"
         author = request.user
         title = form.data["title"]
@@ -112,31 +112,15 @@ def new_voting_page(request):
         ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
         success = ok
         return ok, error, success
-    return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, body)
-
-
-
-@login_required
-def add_vote_variant_page(request):
-    def body(form, context) -> (bool, str, bool):
-        ok = success = False
-        author = request.user
-        voting_title = form.data["voting_title"]
-        description = form.data["description"]
-        voting, error = DB_VotingTools.try_find_voting(author, voting_title)
-        if error is None:
-            ok, error = DB_VotingTools.try_add_vote_variant(author, voting, description)
-            success = ok
-        return ok, error, success
-    return view_func_template(request, "pages/voting_management/add_vote_variant.html", main.forms.AddVoteVariantForm, body)
+    return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, post_handler)
 
 
 @login_required
 def vote_page(request, id):
     voting, error = DB_VotingTools.try_find_voting_with_id(id)
+    vars = []
     if error is None:
         variants = main.models.VoteVariant.objects.filter(voting=voting)[:]
-        vars = []
         for i in range(len(variants)):
             vars.append((i, variants[i].description))
     if request.method == "GET":
@@ -271,45 +255,53 @@ def my_profile_page(request):
 
 @login_required
 def manage_voting_page(request, id):
-    context = {'menu': get_menu_context(), 'pagename': "Работа над голосованием"}
-    voting, error = DB_VotingTools.try_find_voting_with_id(id)
-    if error is None:
-        if voting.author == request.user:
-            addv_lock = voting.started or (voting.type == 2)
-            if (request.method == "POST") and request.POST:
-                form = main.forms.ManageVotingForm(request.POST)
-                ferr = False
-                if form.is_valid():
-                    action = form.data["action"]
-                    if action == "addv":
-                        ok, error = DB_VotingTools.try_add_vote_variant(request.user, voting, form.data["description"])
-                    elif action == "start":
-                        ok, error = DB_VotingTools.try_start_voting(request.user, voting)
-                        if ok:
-                            addv_lock = True
-                    elif action == "stop":
-                        ok, error = DB_VotingTools.try_stop_voting(request.user, voting)
-                    else:
-                        ferr = True
-                else:
-                    ferr = True
-                if ferr:
-                    error = "Неверный формат отосланных данных!"
+    def body(form=None, context=None) -> (bool, str, bool):
+        context["pagename"] = "Работа над голосованием"
+        get_method = form is None
+        if get_method:
+            form = main.forms.ManageVotingForm()
+        ok = success = False
+        voting, error = DB_VotingTools.try_find_voting_with_id(id)
+        if error is None:
+            if voting.author == request.user:
+                addv_lock = voting.started or (voting.type == 2)
+                if not get_method:
+                    ok, error, addv_lock = post_handler(form, context, voting, addv_lock)
+                    success = ok
+                if error is None:
+                    if addv_lock:
+                        form.fields["description"].widget.attrs["readonly"] = True
+                    context["form"] = form
+                    vars = main.models.VoteVariant.objects.filter(voting=voting)[:]
+                    variants = []
+                    for i in range(len(vars)):
+                        variants.append((i, vars[i].description))
+                    context["variants"] = variants
+                context["addv_lock"] = addv_lock
+                context["started"] = voting.started
+                context["completed"] = voting.completed
             else:
-                form = main.forms.ManageVotingForm()
-            if error is None:
-                if addv_lock:
-                    form.fields["description"].widget.attrs["readonly"] = True
-                context["form"] = form
-                vars = main.models.VoteVariant.objects.filter(voting=voting)[:]
-                variants = []
-                for i in range(len(vars)):
-                    variants.append((i, vars[i].description))
-                context["variants"] = variants
-            context["addv_lock"] = addv_lock
-            context["started"] = voting.started
-            context["completed"] = voting.completed
+                error = "У вас нет доступа к этому голосования!"
+        result = (ok, error, success, form) if get_method else (ok, error, success)
+        return result
+    def post_handler(form, context, voting, addv_lock) -> (bool, str, bool):
+        ferr = ok = False
+        error = None
+        if form.is_valid():
+            action = form.data["action"]
+            if action == "addv":
+                ok, error = DB_VotingTools.try_add_vote_variant(request.user, voting, form.data["description"])
+            elif action == "start":
+                ok, error = DB_VotingTools.try_start_voting(request.user, voting)
+                if ok:
+                    addv_lock = True
+            elif action == "stop":
+                ok, error = DB_VotingTools.try_stop_voting(request.user, voting)
+            else:
+                ferr = True
         else:
-            error = "У вас нет доступа к этому голосования!"
-    context["error"] = error
-    return render(request, 'pages/voting_management/manage_voting.html', context)
+            ferr = True
+        if ferr:
+            error = "Неверный формат отосланных данных!"
+        return ok, error, addv_lock
+    return view_func_template(request, "pages/voting_management/manage_voting.html", main.forms.ManageVotingForm, body, get_handler=body)
