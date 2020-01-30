@@ -19,6 +19,10 @@ class CommonFields:
         return forms.CharField(label=label, min_length=1, max_length=32, required=required)
 
     @staticmethod
+    def get_name_field(required, label="Имя"):
+        return forms.CharField(label=label, min_length=1, max_length=64, required=required)
+
+    @staticmethod
     def get_password_field(required, label="Пароль"):
         return forms.CharField(widget=forms.PasswordInput, label=label, min_length=1, max_length=64, required=required)
 
@@ -36,7 +40,7 @@ class RegistrationForm(forms.Form):
     login = CommonFields.get_login_field(True)
     password1 = CommonFields.get_password_field(True)
     password2 = CommonFields.get_password_field(True, "Повторите пароль")
-    name = forms.CharField(label="Имя", min_length=1, max_length=64, required=True)
+    name = CommonFields.get_name_field(True)
     email = forms.CharField(label="E-mail", min_length=1, max_length=64, required=True)
 
 
@@ -69,4 +73,13 @@ class SearchVotingForm(forms.Form):
 
 class ManageVotingForm(forms.Form):
     description = CommonFields.get_description_field(False, label="Описание варианта", attrs={"class": "w-100", "rows": "20"})
+    action = CommonFields.get_invisible_field(forms.CharField, "action_tag", '')
+
+
+class ProfileForm(forms.Form):
+    name = CommonFields.get_name_field(False)
+    about = CommonFields.get_description_field(False, label="О себе")
+    password = CommonFields.get_password_field(False)
+    new_password1 = CommonFields.get_password_field(False)
+    new_password2 = CommonFields.get_password_field(False)
     action = CommonFields.get_invisible_field(forms.CharField, "action_tag", '')

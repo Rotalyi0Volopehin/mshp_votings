@@ -229,23 +229,54 @@ def activate(request, uid, token):
 
 
 def profile_page(request, id):
-    context = {'menu': get_menu_context()}
-    user, error = DB_UserTools.try_find_user_with_id(id)
-    if error is None:
-        self = context['self'] = not isinstance(request.user, AnonymousUser) and (user.id == request.user.id)
-        context['pagename'] = "Мой профиль" if self else "Профиль"
-        context['login'] = user.username
-        context['name'] = user.first_name
-        context['email'] = user.email
-        context['regdate'] = user.date_joined
-        user_data, error = DB_UserTools.try_get_user_data(user)
+    def body(form=None, context=None):
+        ok = success = False
+        user, error = DB_UserTools.try_find_user_with_id(id)
         if error is None:
-            context['createdpolls'] = user_data.created_votings_count
-            context['votedpolls'] = user_data.vote_count
-            context['activated'] = user_data.activated
-            context['about'] = user_data.extra_info
-    context['error'] = error
-    return render(request, 'pages/profile.html', context)
+            user_data, error = DB_UserTools.try_get_user_data(user)
+            if error is None:
+                self = context['self'] = not isinstance(request.user, AnonymousUser) and (user.id == request.user.id)
+                context['pagename'] = "Мой профиль" if self else "Профиль"
+                if self and (form != None):
+                    ok, error, success = post_handler(form, context, user, user_data)
+                context['login'] = user.username
+                context['name'] = user.first_name
+                context['email'] = user.email
+                context['regdate'] = user.date_joined
+                context['createdpolls'] = user_data.created_votings_count
+                context['votedpolls'] = user_data.vote_count
+                context['activated'] = user_data.activated
+                context['about'] = user_data.extra_info
+        else:
+            context["pagename"] = "Профиль"
+        result = [ok, error, success]
+        if form is None:
+            result.append(None)
+        return result
+    def post_handler(form, context, user, user_data):
+        ok = success = ferr = False
+        error = None
+        action = form.data["action"]
+        if action == "save-chan":
+            name = form.data["name"]
+            if 0 < len(name) <= 64:
+                about = form.data["about"]
+                user.first_name = name
+                user.save()
+                user_data.extra_info = about
+                user_data.save()
+            else:
+                ferr = True
+        elif action == "save-pass":
+            pass
+        elif action == "del":
+            pass
+        else:
+            ferr = True
+        if ferr:
+            error = "Неверный формат отосланных данных!"
+        return ok, error, success
+    return view_func_template(request, "pages/profile.html", main.forms.ProfileForm, body, get_handler=body)
 
 
 @login_required
