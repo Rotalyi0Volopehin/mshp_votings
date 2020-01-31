@@ -254,7 +254,7 @@ def profile_page(request, id):
             result.append(None)
         return result
     def post_handler(form, context, user, user_data):
-        ok = success = ferr = False
+        success = ferr = False
         error = None
         action = form.data["action"]
         if action == "save-chan":
@@ -265,17 +265,28 @@ def profile_page(request, id):
                 user.save()
                 user_data.extra_info = about
                 user_data.save()
+                success = True
             else:
                 ferr = True
         elif action == "save-pass":
-            pass
+            password = form.data["password"]
+            if user.check_password(password):
+                new_password = form.data["new_password"]
+                if 0 < len(new_password) <= 64:
+                    user.set_password(new_password)
+                    user.save()
+                    success = True
+                else:
+                    error = "Длина пароля должна быть больше 1, но меньше 65 символов!"
+            else:
+                error = "Текущий пароль не совпадает с указанным!"
         elif action == "del":
             pass
         else:
             ferr = True
         if ferr:
             error = "Неверный формат отосланных данных!"
-        return ok, error, success
+        return success, error, success
     return view_func_template(request, "pages/profile.html", main.forms.ProfileForm, body, get_handler=body)
 
 

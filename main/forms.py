@@ -80,6 +80,5 @@ class ProfileForm(forms.Form):
     name = CommonFields.get_name_field(False)
     about = CommonFields.get_description_field(False, label="О себе")
     password = CommonFields.get_password_field(False)
-    new_password1 = CommonFields.get_password_field(False)
-    new_password2 = CommonFields.get_password_field(False)
+    new_password = CommonFields.get_password_field(False)
     action = CommonFields.get_invisible_field(forms.CharField, "action_tag", '')
