@@ -5,11 +5,11 @@ import main.db_tools.db_search_tools
 
 from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import AnonymousUser, User
 # for email confirmation vvv
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.http import HttpResponse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
@@ -229,6 +229,7 @@ def activate(request, uid, token):
 
 
 def profile_page(request, id):
+    context = {}
     def body(form=None, context=None):
         ok = success = False
         user, error = DB_UserTools.try_find_user_with_id(id)
@@ -281,13 +282,16 @@ def profile_page(request, id):
             else:
                 error = "Текущий пароль не совпадает с указанным!"
         elif action == "del":
-            pass
+            logout(request)
+            user.delete()
+            context["del"] = success = True
         else:
             ferr = True
         if ferr:
             error = "Неверный формат отосланных данных!"
         return success, error, success
-    return view_func_template(request, "pages/profile.html", main.forms.ProfileForm, body, get_handler=body)
+    result = view_func_template(request, "pages/profile.html", main.forms.ProfileForm, body, get_handler=body, context=context)
+    return redirect("/") if "del" in context else result
 
 
 @login_required
