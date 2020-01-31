@@ -16,7 +16,7 @@ class CommonFields:
 
     @staticmethod
     def get_login_field(required, label="Логин"):
-        return forms.CharField(label=label, min_length=1, max_length=32, required=required)
+        return forms.CharField(label=label, min_length=1, max_length=64, required=required)
 
     @staticmethod
     def get_name_field(required, label="Имя"):
