@@ -47,11 +47,13 @@ class RegistrationForm(forms.Form):
 
 class NewVotingForm(forms.Form):
     __tnames = DB_VotingTools.voting_type_names
-    title = CommonFields.get_voting_title_field(True, label="Название", attrs={"class": "form-control col-sm-9"})
+    title = CommonFields.get_voting_title_field(True, label="Название", attrs={"class": "form-control col-sm-9 ml-4"})
     description = CommonFields.get_description_field(False, attrs={"class": "w-100"})
     type = forms.ChoiceField(label="Тип голосования", choices=((0, __tnames[0]), (1, __tnames[1]), (2, __tnames[2])), required=True)
-    show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False)
-    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False)
+    show_votes_before_end = forms.BooleanField(label="Показывать статистику голосов до окончания", required=False,
+            widget=forms.CheckboxInput(attrs={"class": "ml-3"}))
+    anonymous = forms.BooleanField(label="Скрывать соответствие голосов и участников (анонимность)", required=False,
+            widget=forms.CheckboxInput(attrs={"class": "ml-3"}))
 
 
 class AddVoteVariantForm(forms.Form):

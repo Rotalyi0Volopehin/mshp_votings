@@ -5,12 +5,30 @@
         <form method="post" class="card"> {% csrf_token %}
             <div class="card-header">Создание голосования</div>
             <div class="card-body">
-                {% for item in form %}
-                    <div class="row form-group">
-                        <label>{{ item.label }}</label>
-                        {{ item }}
-                    </div>
-                {% endfor %}
+                <div class="row form-group">
+                    <label class="ml-3">Название</label>
+                    <input type="text" name="title" class="form-control col-sm-10 ml-4" maxlength="256" minlength="1" required>
+                </div>
+                <div class="row form-group">
+                    <label class="ml-3">Описание</label>
+                    <textarea name="description" cols="40" rows="10" class="form-control w-100" maxlength="4096" minlength="1"></textarea>
+                </div>
+                <div class="row form-group">
+                    <label class="ml-3">Тип голосования</label>
+                    <select name="type" class="ml-3">
+                        <option value="0">Множество из множества</option>
+                        <option value="1">Один из множества</option>
+                        <option value="2">Дискретное</option>
+                    </select>
+                </div>
+                <div class="row form-group">
+                    <input type="checkbox" name="show_votes_before_end" class="ml-3">
+                    <label class="ml-3">Показывать статистику голосов до окончания</label>
+                </div>
+                <div class="row form-group">
+                    <input type="checkbox" name="anonymous" class="ml-3">
+                    <label class="ml-3">Анонимность</label>
+                </div>
                 <button type="submit" class="btn btn-primary btn-block">Создать новое голосование</button>
             </div>
         </form>

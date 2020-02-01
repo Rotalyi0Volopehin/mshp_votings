@@ -85,8 +85,8 @@ def clear_all_data_page(request): #Developer's tool
 
 @login_required
 def new_voting_page(request):
+    context = {"pagename": "Новое голосование"}
     def post_handler(form, context) -> (bool, str, bool):
-        context["pagename"] = "Новое голосование"
         author = request.user
         title = form.data["title"]
         description = form.data["description"]
@@ -96,7 +96,7 @@ def new_voting_page(request):
         ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
         success = ok
         return ok, error, success
-    return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, post_handler)
+    return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, post_handler, context=context)
 
 
 @login_required
