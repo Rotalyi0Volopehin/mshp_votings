@@ -12,11 +12,17 @@
                     <table class="table table-striped table-bordered">
                         <tr>
                             <th>Название</th>
+                            <th>Тип</th>
                             <th>Дата создания</th>
                         </tr>
                         {% for v in votings %}
                             <tr>
                                 <td> <a href="/manage_voting/{{ v.id }}/"> {{ v.title }} </a> </td>
+                                <td>
+                                    {% if v.type == 0 %} {{ type_names.0 }}
+                                    {% elif v.type == 1 %} {{ type_names.1 }}
+                                    {% else %} {{ type_names.2 }} {% endif %}
+                                </td>
                                 <td> {{ v.date_created|date:"d.m.Y H:i" }} </td>
                             </tr>
                         {% endfor %}

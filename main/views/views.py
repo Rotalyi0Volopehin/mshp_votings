@@ -52,7 +52,7 @@ def view_func_template(request, html_path, form_class, post_handler, get_handler
     return render(request, html_path, context)
 
 
-def __demo_for_view_func_template(request):
+def __demo_of_view_func_template(request):
     def post_handler(form, context) -> (bool, str, bool):
         success = ok = False
         error = None
@@ -180,7 +180,8 @@ def voting_info_page(request, id):
         can_vote = context["can_vote"] = (user != None) and DB_UserTools.can_vote(user, voting)
         if can_vote:
             context["vote_ref"] = "/vote/{}/".format(voting.id)
-    context["voting"] = voting
+        context["voting"] = voting
+        context["voting_type"] = DB_VotingTools.voting_type_names[voting.type]
     context["ok"] = ok
     context["error"] = error
     return render(request, "pages/voting_info.html", context)
@@ -190,6 +191,7 @@ def voting_info_page(request, id):
 def my_votings_page(request):
     votings = DB_VotingTools.get_votings_of_user(request.user)
     context = {"menu": get_menu_context(), "pagename": "Мои голосования", "votings": votings}
+    context["type_names"] = DB_VotingTools.voting_type_names
     return render(request, "pages/voting_management/my_votings.html", context)
 
 

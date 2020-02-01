@@ -22,7 +22,7 @@
                     <input type="text" class="{{ info_data_class }} text-primary" value={{ voting.author.username }}
                            onclick="window.open('/profile/{{ voting.author.id }}/', '_blank')" readonly>
                 {% else %}
-                    <input type="text" class="{{ info_data_class }}" value="$_del" readonly>
+                    <input type="text" class="{{ info_data_class }} text-warning" value="$_del" readonly>
                 {% endif %}
             </div>
             <div class="{{ info_row_class }}">
@@ -39,7 +39,7 @@
             </div> {% endif %}
             <div class="{{ info_row_class }}">
                 <label class="{{ info_label_class }}">Тип</label>
-                <input type="text" class="{{ info_data_class }}" value={{ voting.type }} readonly>
+                <input type="text" class="{{ info_data_class }}" value="{{ voting_type }}" readonly>
             </div>
             <div class="{{ info_row_class }}">
                 <label class="{{ info_label_class }}">Статус</label>
