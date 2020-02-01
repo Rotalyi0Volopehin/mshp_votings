@@ -74,13 +74,14 @@
                 <div class="col pl-0">
                     <p class="text-right mb-1">{{ createdpolls }}</p>
                     <p class="text-right mb-1">{{ votedpolls }}</p>
-                    <p class="text-right mb-1">{{ regdate }} (GMT)</p>
+                    <p class="text-right mb-1">{{ regdate|date:"d.m.Y H:i" }}</p>
                 </div>
             </div>
 
             {% if self %}
             <div class="row left_padding right_padding">
-                <button type="button" class="btn btn-secondary btn-block" style="height: 42px;" data-toggle="modal" data-target="#deleteAccount">Удалить аккаунт</button>
+                <button type="button" class="btn btn-secondary btn-block" style="height: 42px;" data-toggle="modal"
+                        data-target="#deleteAccount">Удалить аккаунт</button>
             </div>
             {% endif %}
         </div>
@@ -91,7 +92,8 @@
                 <textarea class="form-control" id="About" rows="14" {% if not self %} readonly {% endif %} name="about">{{ about }}</textarea>
             </div>
             {% if self %}
-            <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="action_tag.value = 'save-chan'" style="height: 42px;">Сохранить изменения</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" onclick="action_tag.value = 'save-chan'"
+                    style="height: 42px;">Сохранить изменения</button>
             {% endif %}
         </div>
     </div>

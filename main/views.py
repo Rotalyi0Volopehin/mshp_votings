@@ -178,10 +178,7 @@ def voting_search_page(request):
         anonymous_option = main.db_tools.db_search_tools.SearchFilterOption(anonymous_option)
         filter = main.db_tools.db_search_tools.VotingSearchFilter(started_option, completed_option, show_votes_before_end_option, anonymous_option)
         votings, end = main.db_tools.db_search_tools.DB_SearchTools.search_for_voting(voting_title, author_login, filter, offset, page_size)
-        result = []
-        for voting in votings:
-            result.append(DB_VotingTools.form_voting_ref(voting, "voting_info"))
-        context["result"] = result
+        context["votings"] = votings
         context["prev_page"] = offset > 0
         context["next_page"] = not end
         return True, None, True
@@ -207,10 +204,7 @@ def voting_info_page(request, id):
 @login_required
 def my_votings_page(request):
     votings = DB_VotingTools.get_votings_of_user(request.user)
-    refs = []
-    for voting in votings:
-        refs.append(DB_VotingTools.form_voting_ref(voting, "manage_voting"))
-    context = {"menu": get_menu_context(), "pagename": "Мои голосования", "refs": refs}
+    context = {"menu": get_menu_context(), "pagename": "Мои голосования", "votings": votings}
     return render(request, "pages/voting_management/my_votings.html", context)
 
 
@@ -243,8 +237,7 @@ def profile_page(request, id):
                 context['login'] = user.username
                 context['name'] = user.first_name
                 context['email'] = user.email
-                dt = user.date_joined
-                context['regdate'] = "{:0>2}.{:0>2}.{:0>4} {:0>2}:{:0>2}".format(dt.day, dt.month, dt.year, dt.hour, dt.minute)
+                context['regdate'] = user.date_joined
                 context['createdpolls'] = user_data.created_votings_count
                 context['votedpolls'] = user_data.vote_count
                 context['activated'] = user_data.activated

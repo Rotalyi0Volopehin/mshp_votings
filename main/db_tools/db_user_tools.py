@@ -21,6 +21,8 @@ class DB_UserTools:
             return False, "Здесь нет уязвимости!"
         if len(User.objects.filter(username=login)) > 0:
             return False, "Пользователь с данным логином уже существует!"
+        if login == "$_del":
+            return False, "Логин не может быть '$_del'!"
         if not is_email_valid(email):
             return False, "E-mail некорректен!"
         if len(User.objects.filter(email=email)) > 0:

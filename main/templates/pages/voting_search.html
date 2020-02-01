@@ -30,18 +30,21 @@
             {% endif %}
         {% else %}
             {% if success %}
-                {% if result %}
+                {% if votings %}
                     <table border="1">
                         <tr>
                             <th>Название</th>
-                            <th>Автор</th>
+                            <th>Логин автора</th>
                             <th>Дата создания</th>
                         </tr>
-                        {% for ref in result %}
+                        {% for v in votings %}
                             <tr>
-                                <td> <a href={{ ref.0 }}> {{ ref.1 }} </a> </td>
-                                <td> <a href={{ ref.2 }}> {{ ref.3 }} </a> </td>
-                                <td> {{ ref.4 }} </td>
+                                <td> <a href="/voting_info/{{ v.id }}/"> {{ v.title }} </a> </td>
+                                <td>
+                                    {% if v.author %} <a href="/profile/{{ v.author.id }}/"> {{ v.author.username }} </a>
+                                    {% else %} $_del {% endif %}
+                                </td>
+                                <td> {{ v.date_created|date:"d.m.Y H:i" }} </td>
                             </tr>
                         {% endfor %}
                     </table>

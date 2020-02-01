@@ -71,14 +71,6 @@ class DB_VotingTools:
         return votings[:]
 
     @staticmethod
-    def form_voting_ref(voting, url) -> (str, str, str, str, datetime.datetime):
-        if not isinstance(voting, Voting):
-            Exceptions.throw(Exceptions.argument_type)
-        url = "/{}/{}/".format(url, voting.id)
-        author_ref = "/profile/{}/".format(voting.author.id)
-        return url, voting.title, author_ref, voting.author.username, voting.date_created
-
-    @staticmethod
     def try_add_vote_variant(author, voting, description) -> (bool, str):
         if not (isinstance(author, User), isinstance(voting, Voting) and isinstance(description, str)):
             Exceptions.throw(Exceptions.argument_type)
@@ -140,7 +132,7 @@ class DB_VotingTools:
         if not (isinstance(voting, Voting) and (user is None or isinstance(user, User))):
             Exceptions.throw(Exceptions.argument_type)
         info = ["Информация о голосовании:"]
-        info.append("Логин автора : " + voting.author.username)
+        info.append("Логин автора : " + ("$_del" if voting.author is None else voting.author.username))
         info.append("Название : " + voting.title)
         info.append("Дата и время создания : " + str(voting.date_created))
         info.append("Тип : " + str(voting.type))

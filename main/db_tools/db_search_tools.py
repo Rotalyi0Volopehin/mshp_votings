@@ -65,7 +65,7 @@ class DB_SearchTools:
         if author_login != None:
             author = DB_UserTools.find_user(author_login)
             if author is None:
-                return []
+                return [], True
             votings = votings.filter(author=author)
         votings = filter.filter(votings)
         until = min(offset + count, len(votings))
