@@ -170,7 +170,7 @@ def voting_search_page(request):
 
 
 def voting_info_page(request, id):
-    context = {}
+    context = {"menu": get_menu_context(), "pagename": "Информация о голосовании"}
     ok = False
     voting, error = DB_VotingTools.try_find_voting_with_id(id)
     if error is None:
@@ -180,6 +180,7 @@ def voting_info_page(request, id):
         can_vote = context["can_vote"] = (user != None) and DB_UserTools.can_vote(user, voting)
         if can_vote:
             context["vote_ref"] = "/vote/{}/".format(voting.id)
+    context["voting"] = voting
     context["ok"] = ok
     context["error"] = error
     return render(request, "pages/voting_info.html", context)

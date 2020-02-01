@@ -1,25 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация о голосовании</title>
-</head>
-<body>
-    <p>
-        {% if not ok %}
-            {% if error %}
-                {{ error }}
-            {% else %}
-                Что-то пошло не так
-            {% endif %}
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+{% if error %} <div class="text-center alert alert-danger" role="alert">{{ error }}</div> {% else %}
+
+<div class="card">
+    <div class="card-header">
+        {{ pagename }}
+        {% if can_vote %}<a class="float-right" href={{ vote_ref }}>Голосовать</a>{% endif %}
+    </div>
+    <div class="card-body row">
+        <div class="container w-50 col">
+            {% with info_row_class="form-group row right_padding mb-1" info_label_class="col-sm-5 col-form-label text-right pr-4" info_data_class="form-control col-sm-5" %}
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Название</label>
+                <input type="text" class="{{ info_data_class }}" value={{ voting.title }} readonly>
+            </div>
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Логин автора</label>
+                {% if voting.author %}
+                    <input type="text" class="{{ info_data_class }} text-primary" value={{ voting.author.username }}
+                           onclick="window.open('/profile/{{ voting.author.id }}/', '_blank')" readonly>
+                {% else %}
+                    <input type="text" class="{{ info_data_class }}" value="$_del" readonly>
+                {% endif %}
+            </div>
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Дата создания</label>
+                <input type="text" class="{{ info_data_class }}" value="{{ voting.date_created|date:'d.m.Y H:i' }}" readonly>
+            </div>
+            {% if voting.started %} <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Дата начала</label>
+                <input type="text" class="{{ info_data_class }}" value="{{ voting.date_started|date:'d.m.Y H:i' }}" readonly>
+            </div> {% endif %}
+            {% if voting.completed %} <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Дата завершения</label>
+                <input type="text" class="{{ info_data_class }}" value="{{ voting.date_stopped|date:'d.m.Y H:i' }}" readonly>
+            </div> {% endif %}
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Тип</label>
+                <input type="text" class="{{ info_data_class }}" value={{ voting.type }} readonly>
+            </div>
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Статус</label>
+                <input type="text" class="{{ info_data_class }}" readonly
+                       value="{% if voting.completed %}Завершено{% elif voting.started %}Идёт{% else %}Ещё не начато{% endif %}">
+            </div>
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Статистика</label>
+                <input type="text" class="{{ info_data_class }}" readonly
+                       value="{% if voting.show_votes_before_end %}Открыта{% else %}Скрывается{% endif %} до окончания">
+            </div>
+            <div class="{{ info_row_class }}">
+                <label class="{{ info_label_class }}">Анонимность</label>
+                <input type="text" class="{{ info_data_class }}" value="{% if voting.anonymous %}ВКЛ{% else %}ВЫКЛ{% endif %}." readonly>
+            </div>
+            {% endwith %}
+        </div>
+
+        <div class="card w-50">
+            <label class="ml-4">Варианты</label>
+            <div class="card-body">
+                <label class="text-warning">TODO - add display of variants</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    {% if not ok %}
+        {% if error %}
+            {{ error }}
         {% else %}
-            {% if info %}
-                {% for info_line in info %}
-                    {{ info_line }} <br>
-                {% endfor %}
-            {% endif %}
+            Что-то пошло не так
         {% endif %}
-    </p>
-    {% if can_vote %}<a href={{ vote_ref }}>Голосовать</a>{% endif %}
-</body>
-</html>
+    {% else %}
+        {% if info %}
+            {% for info_line in info %}
+                {{ info_line }} <br>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+</p>
+
+{% endif %}
+
+{% endblock %}
