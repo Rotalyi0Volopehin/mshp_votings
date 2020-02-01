@@ -15,7 +15,7 @@ class DB_VotingTools:
                 isinstance(type_, int) and isinstance(show_votes_before_end, bool) and isinstance(anonymous, bool)):
             Exceptions.throw(Exceptions.argument_type)
         if (type_ < 0) or (type_ > 2):
-            Exceptions.throw(Exceptions.argument, "argument \"type_\" must be integer from 0 to 2")
+            Exceptions.throw(Exceptions.argument, "argument 'type_' must be integer from 0 to 2")
         if len(title) == 0:
             return False, "Здесь нет уязвимости!"
         ok, error = DB_UserTools.check_user_activation_required(author)
@@ -35,6 +35,14 @@ class DB_VotingTools:
         user_data.created_votings_count += 1
         user_data.save()
         return True, None
+
+    @staticmethod
+    def get_name_of_voting_type(type):
+        if not isinstance(type, int):
+            Exceptions.throw(Exceptions.argument_type)
+        if (type < 0) or (type > 2):
+            Exceptions.throw(Exceptions.argument, "argument 'type_' must be integer from 0 to 2")
+        return "Множество из множества" if type == 0 else ("Один из множества" if type == 1 else "Дискретное")
 
     @staticmethod
     def clear_voting_list():
@@ -135,7 +143,7 @@ class DB_VotingTools:
         info.append("Логин автора : " + ("$_del" if voting.author is None else voting.author.username))
         info.append("Название : " + voting.title)
         info.append("Дата и время создания : " + str(voting.date_created))
-        info.append("Тип : " + str(voting.type))
+        info.append("Тип : " + DB_VotingTools.get_name_of_voting_type(voting.type))
         info.append("Статус : ")
         if voting.completed:
             info[-1] += "завершено"
@@ -199,7 +207,8 @@ class DB_VotingTools:
             return False, "Длина голоса не совпадает с количеством вариантов голоса!"
         if voting.type != 0:
             if yes_var != 1:
-                return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(voting.type)
+                return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(
+                        DB_VotingTools.get_name_of_voting_type(voting.type))
         if len(VoteFact.objects.filter(user=user, voting=voting)) > 0:
             return False, "Вы уже проголосовали!"
         # TODO - если 2 пользователя проголосуют одновременно, vote_fact_count увеличится лишь на 1 голос из-за наложения; надо починить
