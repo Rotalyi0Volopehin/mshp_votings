@@ -25,7 +25,7 @@ class UserData(models.Model):
 
 
 class Voting(models.Model):
-    author = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    author = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     title = models.TextField(default='')
     description = models.TextField(default='')
     type = models.IntegerField(default=0)
@@ -33,9 +33,9 @@ class Voting(models.Model):
     anonymous = models.BooleanField(default=True)
     started = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
-    date_created = models.DateTimeField(default=datetime.datetime.now(), blank=True)
-    date_started = models.DateTimeField(default=datetime.datetime.now(), blank=True)
-    date_stopped = models.DateTimeField(default=datetime.datetime.now(), blank=True)
+    date_created = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    date_started = models.DateTimeField(default=datetime.datetime.now, blank=True)
+    date_stopped = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
 
 class VoteVariant(models.Model):
@@ -45,12 +45,12 @@ class VoteVariant(models.Model):
 
 
 class VoteFact(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
     answer = models.BigIntegerField(default=0)
 
 
 class VotingAbuse(models.Model):
-    abuser = models.ForeignKey(to=User, on_delete=models.SET(get_sentinel_user))
+    abuser = models.ForeignKey(to=User, on_delete=models.SET_NULL, null=True)
     voting = models.ForeignKey(to=Voting, on_delete=models.CASCADE)
     description = models.TextField(default='')
