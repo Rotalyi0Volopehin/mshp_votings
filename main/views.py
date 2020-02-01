@@ -1,4 +1,3 @@
-import datetime
 import main.forms
 import main.models
 import main.db_tools.db_search_tools
@@ -19,7 +18,6 @@ from main.db_tools.tokens import account_activation_token
 def get_menu_context():
     return [
         {'url': '/', 'name': 'Главная'},
-        {'url': '/time/', 'name': 'Текущее время'},
         {'url': '/search_v/', 'name': 'Поиск голосований'}
     ]
 
@@ -32,15 +30,6 @@ def index_page(request):
         'menu': get_menu_context()
     }
     return render(request, 'pages/index.html', context)
-
-
-def time_page(request):
-    context = {
-        'pagename': 'Текущее время',
-        'time': datetime.datetime.now().time(),
-        'menu': get_menu_context()
-    }
-    return render(request, 'pages/time.html', context)
 
 
 def view_func_template(request, html_path, form_class, post_handler, get_handler=None, context=None):
