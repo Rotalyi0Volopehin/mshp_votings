@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main import views
+from main.views import views
+from main.views import activation_view
 from django.contrib.auth import views as auth_views
-from main.views import get_menu_context
+from main.views.views import get_menu_context
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,7 +32,7 @@ urlpatterns = [
     path('vote/<int:id>/', views.vote_page),
     path('search_v/', views.voting_search_page),
     path('voting_info/<int:id>/', views.voting_info_page),
-    path('activate/<str:uid>/<str:token>/', views.activate, name='activate'),
+    path('activate/<str:uid>/<str:token>/', activation_view.activate, name='activate'),
     path('profile/<int:id>/', views.profile_page),
     path('my_profile/', views.my_profile_page),
     path('manage_voting/<int:id>/', views.manage_voting_page),

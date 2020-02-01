@@ -16,7 +16,7 @@
                         </tr>
                         {% for v in votings %}
                             <tr>
-                                <td> <a href="/voting_info/{{ v.id }}/"> {{ v.title }} </a> </td>
+                                <td> <a href="/manage_voting/{{ v.id }}/"> {{ v.title }} </a> </td>
                                 <td> {{ v.date_created|date:"d.m.Y H:i" }} </td>
                             </tr>
                         {% endfor %}
