@@ -243,7 +243,8 @@ def profile_page(request, id):
                 context['login'] = user.username
                 context['name'] = user.first_name
                 context['email'] = user.email
-                context['regdate'] = user.date_joined
+                dt = user.date_joined
+                context['regdate'] = "{:0>2}.{:0>2}.{:0>4} {:0>2}:{:0>2}".format(dt.day, dt.month, dt.year, dt.hour, dt.minute)
                 context['createdpolls'] = user_data.created_votings_count
                 context['votedpolls'] = user_data.vote_count
                 context['activated'] = user_data.activated
