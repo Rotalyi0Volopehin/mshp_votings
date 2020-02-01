@@ -1,33 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Новое голосование</title>
-</head>
-<body>
-    <form method="post"> {% csrf_token %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
-        {% endfor %}
-        <input type="submit" value="Создать новое голосование">
-    </form>
-    <p>
-        {% if not ok %}
-            {% if error %}
-                {{ error }}
-            {% else %}
-                Что-то пошло не так
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form method="post" class="card"> {% csrf_token %}
+            <div class="card-header">Создание голосования</div>
+            <div class="card-body">
+                {% for item in form %}
+                    <div class="row form-group">
+                        <label>{{ item.label }}</label>
+                        {{ item }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary btn-block">Создать новое голосование</button>
+            </div>
+        </form>
+        {% if ok %}
+            {% if success %}
+                <div class="text-center alert alert-success" role="alert">Голосование успешно создано</div>
             {% endif %}
         {% else %}
-            {% if success %}
-                Голосование успешно создано
-            {% endif %}
+            <div class="text-center alert alert-danger" role="alert">
+                {% if error %} {{ error }} {% else %} Что-то пошло не так {% endif %}
+            </div>
         {% endif %}
-    </p>
-</body>
-</html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->
+    </div>
+{% endblock %}

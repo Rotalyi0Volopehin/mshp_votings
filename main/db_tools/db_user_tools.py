@@ -36,12 +36,12 @@ class DB_UserTools:
 
     @staticmethod
     def __ask_for_email_confirmation(user, request):
-        subject = "Активация аккаунта онлайн голосований"
+        subject = "Верификация аккаунта онлайн голосований"
         current_site = get_current_site(request)
         token = account_activation_token.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         activation_link = "{0}/activate/{1}/{2}/".format(current_site, uid, token)
-        message = "Activation link:\n" + activation_link
+        message = "Ссылка для верификации аккаунта:\n" + activation_link
         email = EmailMessage(subject, message, to=[user.email])
         email.send()
 
