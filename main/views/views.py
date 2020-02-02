@@ -62,17 +62,13 @@ def __demo_of_view_func_template(request):
 
 
 def registration_page(request):
+    context = {"pagename": "Регистрация"}
     def post_handler(form, context) -> (bool, str, bool):
-        success = ok = False
-        password1 = form.data["password1"]
-        if password1 == form.data["password2"]:
-            login_ = form.data["login"]
-            ok, error = DB_UserTools.try_register_user(login_, password1, form.data["name"], form.data["email"], request)
-            success = ok
-        else:
-            error = "Указанные пароли не совпадают!"
-        return ok, error, success
-    return view_func_template(request, "registration/registration.html", main.forms.RegistrationForm, post_handler)
+        password = form.data["password1"]
+        login_ = form.data["login"]
+        ok, error = DB_UserTools.try_register_user(login_, password, form.data["name"], form.data["email"], request)
+        return ok, error, ok
+    return view_func_template(request, "registration/registration.html", main.forms.RegistrationForm, post_handler, context=context)
 
 
 def clear_all_data_page(request): #Developer's tool

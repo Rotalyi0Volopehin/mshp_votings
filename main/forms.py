@@ -16,16 +16,16 @@ class CommonFields:
         return forms.CharField(widget=forms.Textarea(attrs=attrs), label=label, min_length=1, max_length=4096, required=required)
 
     @staticmethod
-    def get_login_field(required, label="Логин"):
-        return forms.CharField(label=label, min_length=1, max_length=64, required=required)
+    def get_login_field(required, label="Логин", attrs={}):
+        return forms.CharField(label=label, min_length=1, max_length=64, required=required, widget=forms.TextInput(attrs=attrs))
 
     @staticmethod
-    def get_name_field(required, label="Имя"):
-        return forms.CharField(label=label, min_length=1, max_length=64, required=required)
+    def get_name_field(required, label="Имя", attrs={}):
+        return forms.CharField(label=label, min_length=1, max_length=64, required=required, widget=forms.TextInput(attrs=attrs))
 
     @staticmethod
-    def get_password_field(required, label="Пароль"):
-        return forms.CharField(widget=forms.PasswordInput, label=label, min_length=1, max_length=64, required=required)
+    def get_password_field(required, label="Пароль", attrs={}):
+        return forms.CharField(widget=forms.PasswordInput(attrs=attrs), label=label, min_length=1, max_length=64, required=required)
 
     @staticmethod
     def get_filter_option_field(label):
@@ -38,11 +38,11 @@ class CommonFields:
 
 
 class RegistrationForm(forms.Form):
-    login = CommonFields.get_login_field(True)
-    password1 = CommonFields.get_password_field(True)
-    password2 = CommonFields.get_password_field(True, "Повторите пароль")
-    name = CommonFields.get_name_field(True)
-    email = forms.CharField(label="E-mail", min_length=1, max_length=64, required=True)
+    login = CommonFields.get_login_field(True, attrs={"class": "form-control"})
+    password1 = CommonFields.get_password_field(True, attrs={"class": "form-control"})
+    password2 = CommonFields.get_password_field(True, "Повторите пароль", attrs={"class": "form-control"})
+    name = CommonFields.get_name_field(True, attrs={"class": "form-control"})
+    email = forms.CharField(label="E-mail", min_length=1, max_length=64, required=True, widget=forms.TextInput(attrs={"class": "form-control"}))
 
 
 class NewVotingForm(forms.Form):

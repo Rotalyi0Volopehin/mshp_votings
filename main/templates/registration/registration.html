@@ -1,33 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-</head>
-<body>
-    <form method="post"> {% csrf_token %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
-        {% endfor %}
-        <input type="submit" value="Зарегистрироваться">
-    </form>
-    <p>
-        {% if not ok %}
-            {% if error %}
-                {{ error }}
-            {% else %}
-                Что-то пошло не так
-            {% endif %}
-        {% else %}
-            {% if success %}
-                Вы были успешно зарегистрированы
-            {% endif %}
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<script>
+    function check_pw() {
+        if (id_password1.value != id_password2.value) {
+            reg_button.disabled = true;
+            reg_button.hidden = true;
+            pw_warning.hidden = false;
+        }
+    }
+    function close_pw_warning() {
+        reg_button.disabled = false;
+        pw_warning.hidden = true;
+        reg_button.hidden = false;
+    }
+</script>
+
+<div class="card w-50 mt-5 mx-auto">
+    <div class="card-header font-weight-bold">{{ pagename }}</div>
+    <div class="card-body">
+        <form action="/registration/" method="POST">
+            {% csrf_token %}
+            <div class="container">
+                <div class="form-group">
+                    {% for item in form %}
+                        <div class="row">
+                            <p class="col-5 mr-4 mt-1 text-right">{{ item.label }}</p>
+                            <div class="col form-group">{{ item }}</div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="row mt-3">
+                        <div class="col" align="center">
+                            <button type="submit" class="btn btn-primary" onclick="check_pw()" id="reg_button">Зарегистрироваться</button>
+                        </div>
+
+                        <div class="alert alert-danger w-100" role="alert" hidden id="pw_warning">
+                            Пароли не совпадают!
+                            <button type="button" class="close" aria-label="Close" onclick="close_pw_warning()">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>
+<div class="text-center">
+    {% if not ok %}
+    {% if error %}
+    <div class="alert alert-danger mt-5 w-50 mx-auto" role="alert">
+        {{ error }}
+    </div>
+    {% else %}
+    <div class="alert alert-danger mt-5 w-50 mx-auto" role="alert">
+        Что-то пошло не так
+    </div>
+    {% endif %}
+    {% else %}
+        {% if success %}
+            <div class="alert alert-success mt-5 w-50 mx-auto" role="alert">Вы были успешно зарегистрированы</div>
+            <div class="alert alert-secondary w-50 mx-auto" role="alert">На указанный E-mail была отправлена ссылка для верификации</div>
         {% endif %}
-    </p>
-</body>
-</html>
-<!--
-#временно !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--->
+    {% endif %}
+</div>
+</p>
+
+{% endblock %}
