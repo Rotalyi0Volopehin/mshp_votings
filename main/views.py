@@ -20,7 +20,8 @@ def get_menu_context():
     return [
         {'url': '/', 'name': 'Главная'},
         {'url': '/time/', 'name': 'Текущее время'},
-        {'url': '/search_v/', 'name': 'Поиск голосований'}
+        {'url': '/search_v/', 'name': 'Поиск голосований'},
+        {'url': '/voting/', 'name': 'Опросы'},
     ]
 
 
@@ -34,13 +35,11 @@ def index_page(request):
     return render(request, 'pages/index.html', context)
 
 
-def time_page(request):
+def vote_page(request):
     context = {
-        'pagename': 'Текущее время',
-        'time': datetime.datetime.now().time(),
         'menu': get_menu_context()
     }
-    return render(request, 'pages/time.html', context)
+    return render(request, 'pages/vote.html', context)
 
 
 def view_func_template(request, html_path, form_class, body):
@@ -241,3 +240,4 @@ def activate(request, uid, token):
                 login(request, user)
             return render(request, 'pages/registration/activation.html')
         return HttpResponse('Activation link is invalid!')
+

@@ -5,8 +5,8 @@
         <ul class="navbar-nav mr-auto">
             {% block menu %}
                 {% for item in menu %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ item.url }}">{{ item.name }}</a>
+                    <li class="nav-item {% if request.path ==  item.url %}active{% endif %}">
+                        <a class="nav-link" {% if request.path !=  item.url %}  href="{{ item.url }}" {% endif %}>{{ item.name }}</a>
                     </li>
                 {% endfor %}
             {% endblock %}
