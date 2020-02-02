@@ -1,6 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
+
 <script>
     let vars = [];
     function build_answer() {
@@ -12,24 +13,28 @@
     }
 </script>
 
-<div class="container">
-    <h3> {{ voting_title }} </h3>
-    <form method="post"> {% csrf_token %}
-        {% for var in vars %}
-            <input type="checkbox" id="var_{{var.0}}">
-            <script>vars.push(var_{{var.0}})</script>
-            <input value={{ var.1 }} readonly> <br>
-        {% endfor %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}<br>
-        {% endfor %}
-        <input type="submit" onclick="build_answer()" value="Проголосовать">
-    </form>
-    {% if not ok %}
-        <div class="text-center alert alert-danger" role="alert">{% if error %}{{ error }}{% else %}Что-то пошло не так{% endif %}</div>
-    {% else %}
-        {% if success %}<div class="text-center alert alert-success" role="alert">Вы успешно проголосовали</div>{% endif %}
-    {% endif %}
+<div class="card mb-3">
+    <div class="card-header">voting_title</div>
+    <div class="card-body">
+        <form method="post"> {% csrf_token %}
+            {% for var in vars %}
+                <input type="checkbox" id="var_{{var.0}}">
+                <script>vars.push(var_{{var.0}})</script>
+                <input value={{ var.1 }} readonly> <br>
+            {% endfor %}
+            {% for item in form %}
+                <label>{{ item.label }}</label>
+                {{ item }}<br>
+            {% endfor %}
+            <input class="btn btn-primary" type="submit" onclick="build_answer()" value="Проголосовать">
+        </form>
+    </div>
 </div>
+
+{% if not ok %}
+    <div class="text-center alert alert-danger" role="alert">{% if error %}{{ error }}{% else %}Что-то пошло не так{% endif %}</div>
+{% else %}
+    {% if success %}<div class="text-center alert alert-success w-25" role="alert">Вы успешно проголосовали</div>{% endif %}
+{% endif %}
+
 {% endblock %}
