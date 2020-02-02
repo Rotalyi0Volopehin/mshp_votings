@@ -109,8 +109,7 @@ def vote_page(request, id):
             vars.append((i, variants[i].description))
     if request.method == "GET":
         form = main.forms.VoteForm()
-        context = { "menu": get_menu_context(), "pagename": "Голосование", "form": form }
-        form.fields["answer"].widget.attrs["value"] = "0" * len(vars)
+        context = {"pagename": "Голосование", "form": form, "voting_title": voting.title}
         context["vars"] = vars
         context["error"] = error
         context["ok"] = error is None

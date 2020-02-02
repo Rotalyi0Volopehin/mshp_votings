@@ -1,36 +1,35 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-    <script>
-        function switch_(i) {
-            value = answer_tag.value;
-            bit = value.charAt(i);
-            if (bit == "0") {
-                bit = "1";
-            } else {
-                bit = "0";
-            }
-            value = value.substr(0, i) + bit + value.substr(i + 1);
-            answer_tag.value = value;
-        }
-    </script>
+<script>
+    let vars = [];
+    function build_answer() {
+        let answer = "";
+        vars.forEach(function(item, index, array) {
+            answer += Number(item.checked);
+        });
+        answer_tag.value = answer;
+    }
+</script>
 
-    <div class="container">
-        <form method="post"> {% csrf_token %}
-            {% for var in vars %}
-                <input type="checkbox" onclick="switch_({{var.0}})">
-                <input value={{ var.1 }} readonly> <br>
-            {% endfor %}
-            {% for item in form %}
-                <label>{{ item.label }}</label>
-                {{ item }}<br>
-            {% endfor %}
-            <input type="submit" value="Проголосовать">
-        </form>
-        {% if not ok %}
-            <div class="text-center alert alert-danger" role="alert">{% if error %}{{ error }}{% else %}Что-то пошло не так{% endif %}</div>
-        {% else %}
-            {% if success %}<div class="text-center alert alert-success" role="alert">Вы успешно проголосовали</div>{% endif %}
-        {% endif %}
-    </div>
+<div class="container">
+    <h3> {{ voting_title }} </h3>
+    <form method="post"> {% csrf_token %}
+        {% for var in vars %}
+            <input type="checkbox" id="var_{{var.0}}">
+            <script>vars.push(var_{{var.0}})</script>
+            <input value={{ var.1 }} readonly> <br>
+        {% endfor %}
+        {% for item in form %}
+            <label>{{ item.label }}</label>
+            {{ item }}<br>
+        {% endfor %}
+        <input type="submit" onclick="build_answer()" value="Проголосовать">
+    </form>
+    {% if not ok %}
+        <div class="text-center alert alert-danger" role="alert">{% if error %}{{ error }}{% else %}Что-то пошло не так{% endif %}</div>
+    {% else %}
+        {% if success %}<div class="text-center alert alert-success" role="alert">Вы успешно проголосовали</div>{% endif %}
+    {% endif %}
+</div>
 {% endblock %}
