@@ -182,6 +182,29 @@ def voting_info_page(request, id):
             context["vote_ref"] = "/vote/{}/".format(voting.id)
         context["voting"] = voting
         context["voting_type"] = DB_VotingTools.voting_type_names[voting.type]
+        if len(voting.description) > 0:
+            context["description"] = voting.description
+        vars = main.models.VoteVariant.objects.filter(voting=voting)[:]
+        if len(vars) > 0:
+            show_votes = context["show_votes"] = voting.completed or (voting.started and voting.show_votes_before_end)
+            involved = False
+            if user != None:
+                vote_fact = main.models.VoteFact.objects.filter(user=user, voting=voting)
+                if len(vote_fact) == 1:
+                    vote_fact = vote_fact[0]
+                    answer = vote_fact.answer
+                    involved = True
+            context["involved"] = involved
+            variants = []
+            for i in range(len(vars)):
+                var = vars[i]
+                variant = [i, var.description, involved and (answer & 1)]
+                if involved:
+                    answer >>= 1
+                if show_votes:
+                    variant.append(var.vote_fact_count)
+                variants.append(variant)
+            context["variants"] = variants
     context["ok"] = ok
     context["error"] = error
     return render(request, "pages/voting_info.html", context)

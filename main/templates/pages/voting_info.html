@@ -11,7 +11,7 @@
     </div>
     <div class="card-body row">
         <div class="container w-50 col">
-            {% with info_row_class="form-group row right_padding mb-1" info_label_class="col-sm-5 col-form-label text-right pr-4" info_data_class="form-control col-sm-5" %}
+            {% with info_row_class="form-group row right_padding mb-1" info_label_class="col-sm-5 col-form-label text-right pr-4" info_data_class="form-control col-sm-6" %}
             <div class="{{ info_row_class }}">
                 <label class="{{ info_label_class }}">Название</label>
                 <input type="text" class="{{ info_data_class }}" value={{ voting.title }} readonly>
@@ -47,41 +47,56 @@
                        value="{% if voting.completed %}Завершено{% elif voting.started %}Идёт{% else %}Ещё не начато{% endif %}">
             </div>
             <div class="{{ info_row_class }}">
-                <label class="{{ info_label_class }}">Статистика</label>
+                <label class="{{ info_label_class }}">Статистика голосов</label>
                 <input type="text" class="{{ info_data_class }}" readonly
-                       value="{% if voting.show_votes_before_end %}Открыта{% else %}Скрывается{% endif %} до окончания">
+                       value="{% if voting.show_votes_before_end %}Открыта ещё{% else %}Скрывается{% endif %} до окончания">
             </div>
             <div class="{{ info_row_class }}">
                 <label class="{{ info_label_class }}">Анонимность</label>
                 <input type="text" class="{{ info_data_class }}" value="{% if voting.anonymous %}ВКЛ{% else %}ВЫКЛ{% endif %}." readonly>
             </div>
+            {% if description %} <button type="button" class="btn btn-secondary btn-block mt-3" data-toggle="modal"
+                    data-target="#description_panel">Описание</button> {% endif %}
             {% endwith %}
         </div>
 
         <div class="card w-50">
             <label class="ml-4">Варианты</label>
-            <div class="card-body">
-                <label class="text-warning">TODO - add display of variants</label>
-            </div>
+            {% if variants %}
+            <table class="card-body table table-striped table-bordered">
+                <tr>
+                    <th>#</th>
+                    <th class="w-100">Описание</th>
+                    {% if show_votes %} <th class="text-nowrap">Кол-во голосов</th> {% endif %}
+                </tr>
+                {% for var in variants %}
+                    <tr>
+                        {% if var.2 %} <td class="alert alert-success">{{ var.0 }}</td>
+                        {% else %} <td>{{ var.0 }}</td> {% endif %}
+                        <td>{{ var.1 }}</td>
+                        {% if show_votes %} <td>{{ var.3 }}</td> {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+            {% if involved %} <div class="alert alert-success float-bottom">Вы принимали участие</div> {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
 
-<p>
-    {% if not ok %}
-        {% if error %}
-            {{ error }}
-        {% else %}
-            Что-то пошло не так
-        {% endif %}
-    {% else %}
-        {% if info %}
-            {% for info_line in info %}
-                {{ info_line }} <br>
-            {% endfor %}
-        {% endif %}
-    {% endif %}
-</p>
+<div class="modal fade" id="description_panel" tabindex="-1" role="dialog" aria-labelledby="description_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="description_label">Описание</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <textarea class="modal-body form-control" style="height: 320px" readonly>{{ description }}</textarea>
+        </div>
+    </div>
+</div>
 
 {% endif %}
 
