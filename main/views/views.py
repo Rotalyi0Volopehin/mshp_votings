@@ -1,6 +1,7 @@
 import main.forms
 import main.models
 import main.db_tools.db_search_tools
+import simple_votings.settings
 
 from main.db_tools.db_user_tools import DB_UserTools
 from main.db_tools.db_voting_tools import DB_VotingTools
@@ -67,6 +68,8 @@ def registration_page(request):
 
 
 def clear_all_data_page(request): #Developer's tool
+    if not simple_votings.settings.DEBUG or True:
+        return redirect('/')
     DB_VotingTools.clear_vote_fact_list()
     DB_VotingTools.clear_vote_variant_list()
     DB_VotingTools.clear_voting_list()
