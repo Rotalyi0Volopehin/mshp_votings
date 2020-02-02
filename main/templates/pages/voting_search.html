@@ -9,6 +9,13 @@
     function inc_offset() {
         offset_tag.value = Number(offset_tag.value) + {{ page_size }};
     }
+    function select_option(select_tag, option) {
+        if ((option >= 0) && (option <= 1)) {
+            select_tag.selectedIndex = option;
+        } else {
+            select_tag.selectedIndex = 2;
+        }
+    }
 </script>
 
 <div class="card mx-center my-5">
@@ -16,59 +23,59 @@
     <div class="card-body">
         <form method="post"> {% csrf_token %}
             <!--form items-->
-            <div class="mx-auto">
-                <div class="bold mx-auto font-weight-bold">Логин автора</div>
-                <div class="py-2">
-                    <input type="text" name="author_login" class="form-control col-sm-9 ml-4" style="height: 45px" maxlength="64" minlength="1">
-                </div>
+            <div class="form-group row right_padding mb-1">
+                <div class="col-sm-3 col-form-label text-right pr-4">Логин автора</div>
+                <input type="text" name="author_login" class="form-control col-sm-8" style="height: 45px" maxlength="64" minlength="1">
             </div>
 
-            <div class="mx-auto">
-                <div class="bold mx-auto font-weight-bold">Название голосования</div>
-                <div class="py-2">
-                    <input type="text" name="voting_title" class="form-control col-sm-9 ml-4" maxlength="256" minlength="1">
-                </div>
+            <div class="form-group row right_padding mb-1">
+                <div class="col-sm-3 col-form-label text-right pr-4">Название голосования</div>
+                <input type="text" name="voting_title" class="form-control col-sm-8" maxlength="256" minlength="1">
             </div>
 
-            <button type="button" class="btn btn-secondary dropdown-toggle" onclick="filters.hidden = !filters.hidden">Фильтры</button>
-            <button type="submit" class="btn btn-primary">Искать</button>
+            <button type="button" class="btn btn-secondary dropdown-toggle ml-5" onclick="filters.hidden = !filters.hidden">Фильтры</button>
+            <button type="submit" class="btn btn-primary btn-lg float-right w-25 mr-5" onclick="offset_tag.value = '0'">Искать</button>
 
             <div class="card mt-3" id="filters" hidden>
-                {% with filter_row_class="card-body form-group row right_padding mb-1" filter_label_class="col-sm-5 col-form-label text-right pr-4" filter_select_class="custom-select form-control col-sm-6" %}
+{% with filter_row_class="card-body form-group row right_padding mb-1" filter_label_class="col-sm-8 col-form-label text-right pr-4" filter_select_class="custom-select form-control col-sm-3" %}
                 <div class="{{ filter_row_class }}">
                     <label class="{{ filter_label_class }}">Фильтрация начатых</label>
-                    <select name="started_option" class="{{ filter_select_class }}">
+                    <select name="started_option" class="{{ filter_select_class }}" id="started_option_tag">
                         <option value="0">--- (0)</option>
                         <option value="1">исключение (1)</option>
                         <option value="-1">исключение иных (-1)</option>
                     </select>
+                    <script>select_option(started_option_tag, {{ started_filter }})</script>
                 </div>
 
                 <div class="{{ filter_row_class }}">
                     <label class="{{ filter_label_class }}">Фильтрация законченных</label>
-                    <select name="completed_option" class="{{ filter_select_class }}">
+                    <select name="completed_option" class="{{ filter_select_class }}" id="stopped_option_tag">
                         <option value="0" selected="">--- (0)</option>
                         <option value="1">исключение (1)</option>
                         <option value="-1">исключение иных (-1)</option>
                     </select>
+                    <script>select_option(stopped_option_tag, {{ completed_filter }})</script>
                 </div>
 
                 <div class="{{ filter_row_class }}">
                     <label class="{{ filter_label_class }}">Фильтрация показывающих статистику до завершения</label>
-                    <select name="show_votes_before_end_option" class="{{ filter_select_class }}">
+                    <select name="show_votes_before_end_option" class="{{ filter_select_class }}" id="show_vote_option_tag">
                         <option value="0" selected="">--- (0)</option>
                         <option value="1">исключение (1)</option>
                         <option value="-1">исключение иных (-1)</option>
                     </select>
+                    <script>select_option(show_vote_option_tag, {{ show_votes_before_end_filter }})</script>
                 </div>
 
                 <div class="{{ filter_row_class }}">
                     <label class="{{ filter_label_class }}">Фильтрация анонимных</label>
-                    <select name="anonymous_option" class="{{ filter_select_class }}">
+                    <select name="anonymous_option" class="{{ filter_select_class }}" id="anonymous_option_tag">
                         <option value="0" selected="">--- (0)</option>
                         <option value="1">исключение (1)</option>
                         <option value="-1">исключение иных (-1)</option>
                     </select>
+                    <script>select_option(anonymous_option_tag, {{ anonymous_filter }})</script>
                 </div>
                 {% endwith %}
             </div>
@@ -104,17 +111,15 @@
                 </table>
 
                 <div class="container my-4">
-                    {% if prev_page %}
-                    <input type="submit" value="Назад" onclick="dec_offset()">
-                    {% else %} Назад {% endif %}
+                    <button type="submit" onclick="dec_offset()" class="btn btn-secondary"
+                            {% if not prev_page %}disabled{% endif %}>Назад</button>
                     |
-                    {% if next_page %}
-                    <input type="submit" value="Вперёд" onclick="inc_offset()">
-                    {% else %} Вперёд {% endif %}
+                    <button type="submit" onclick="inc_offset()" class="btn btn-secondary"
+                            {% if not next_page %}disabled{% endif %}>Вперёд</button>
                 </div>
                 {% else %}
 
-                <p>Ничего не найдено</p>
+                <div class="alert alert-warning">Ничего не найдено</div>
                 {% endif %}
                 {% endif %}
                 {% endif %}

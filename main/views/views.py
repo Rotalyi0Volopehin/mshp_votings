@@ -138,7 +138,8 @@ def vote_page(request, id):
 
 def voting_search_page(request):
     page_size = 8
-    context = {"offset": '0', "page_size": page_size}
+    context = {"offset": '0', "page_size": page_size, "pagename": "Поиск голосований",
+               "started_filter": 0, "completed_filter": 0, "show_votes_before_end_filter": 0, "anonymous_filter": 0}
     def body(form, context) -> (bool, str, bool):
         context["offset"] = offset = form.data["offset"]
         offset = int(offset) if str.isdigit(offset) else 0
@@ -148,13 +149,13 @@ def voting_search_page(request):
             author_login = None
         if len(voting_title) == 0:
             voting_title = None
-        started_option = int(form.data["started_option"])
+        context["started_filter"] = started_option = int(form.data["started_option"])
         started_option = main.db_tools.db_search_tools.SearchFilterOption(started_option)
-        completed_option = int(form.data["completed_option"])
+        context["completed_filter"] = completed_option = int(form.data["completed_option"])
         completed_option = main.db_tools.db_search_tools.SearchFilterOption(completed_option)
-        show_votes_before_end_option = int(form.data["show_votes_before_end_option"])
+        context["show_votes_before_end_filter"] = show_votes_before_end_option = int(form.data["show_votes_before_end_option"])
         show_votes_before_end_option = main.db_tools.db_search_tools.SearchFilterOption(show_votes_before_end_option)
-        anonymous_option = int(form.data["anonymous_option"])
+        context["anonymous_filter"] = anonymous_option = int(form.data["anonymous_option"])
         anonymous_option = main.db_tools.db_search_tools.SearchFilterOption(anonymous_option)
         filter = main.db_tools.db_search_tools.VotingSearchFilter(started_option, completed_option, show_votes_before_end_option, anonymous_option)
         votings, end = main.db_tools.db_search_tools.DB_SearchTools.search_for_voting(voting_title, author_login, filter, offset, page_size)
