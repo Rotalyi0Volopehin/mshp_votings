@@ -3,6 +3,7 @@ import datetime
 from main.models import Voting
 from main.models import VoteVariant
 from main.models import VoteFact
+from main.models import VotingAbuse
 from django.contrib.auth.models import User
 from main.db_tools.db_user_tools import DB_UserTools
 from exceptions import Exceptions
@@ -206,3 +207,12 @@ class DB_VotingTools:
     @staticmethod
     def clear_vote_fact_list():
         VoteFact.objects.all().delete()
+
+    @staticmethod
+    def try_add_abuse(abuser, voting, description) -> (bool, str):
+        ok, error = DB_UserTools.check_user_activation_required(abuser)
+        if not ok:
+            return False, error
+        abuse = VotingAbuse(abuser=abuser, voting=voting, description=description)
+        abuse.save()
+        return True, None

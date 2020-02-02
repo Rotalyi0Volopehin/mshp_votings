@@ -222,7 +222,7 @@ def report_page(request):
         form = main.forms.AbuseForm(request.POST)
         context["form"] = form
         if form.is_valid():
-            pass
+            DB_VotingTools.try_add_abuse()
         else:
             error = "Здесь нет уязвимости!"
     else:
