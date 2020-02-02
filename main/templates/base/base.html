@@ -8,8 +8,7 @@
     <title>{{ pagename }} - Simple votings</title>
 
     {% bootstrap_css %}
-    <link href="https://getbootstrap.com/docs/4.1/examples/sticky-footer-navbar/sticky-footer-navbar.css"
-          rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/4.1/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
     {% block extra_css %} {% endblock %}
 </head>
 
@@ -26,7 +25,7 @@
     <footer class="footer">
         {% block footer %}
             <div class="container text-right pr-0">
-                <span class="text-muted">&copy; ШП, {% now "Y" %}</span>
+                <span class="text-muted">&copy; ШП, {% now "Y" %}</span><!-nocopyright-->
             </div>
         {% endblock %}
     </footer>
