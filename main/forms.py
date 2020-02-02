@@ -28,9 +28,13 @@ class CommonFields:
         return forms.CharField(widget=forms.PasswordInput(attrs=attrs), label=label, min_length=1, max_length=64, required=required)
 
     @staticmethod
-    def get_filter_option_field(label):
-        return forms.ChoiceField(label=label, required=False,
-                choices=[(0, "--- (0)"), (1, "исключение (1)"), (-1, "исключение иных (-1)")])
+    def get_filter_option_field(label, attrs=None):
+        if attrs is None:
+            return forms.ChoiceField(widget=forms.Select, label=label, required=False,
+                    choices=[(0, "--- (0)"), (1, "исключение (1)"), (-1, "исключение иных (-1)")])
+        return forms.ChoiceField(widget=forms.Select(attrs=attrs), label=label, required=False,
+                                 choices=[(0, "--- (0)"), (1, "исключение (1)"), (-1, "исключение иных (-1)")])
+
 
     @staticmethod
     def get_invisible_field(type_, id, value=''):
@@ -64,12 +68,13 @@ class VoteForm(forms.Form):
 
 
 class SearchVotingForm(forms.Form):
-    author_login = CommonFields.get_login_field(False, "Логин автора")
-    voting_title = CommonFields.get_voting_title_field(False)
-    started_option = CommonFields.get_filter_option_field("Фильтрация начатых")
-    completed_option = CommonFields.get_filter_option_field("Фильтрация законченных")
-    show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтрация показывающих статистику до завершения")
-    anonymous_option = CommonFields.get_filter_option_field("Фильтрация анонимных")
+    author_login = CommonFields.get_login_field(False, "Логин автора", attrs={"class": "form-control col-sm-9 ml-4", "style": "height: 45px"})
+    voting_title = CommonFields.get_voting_title_field(False, attrs={"class": "form-control col-sm-9 ml-4"})
+    started_option = CommonFields.get_filter_option_field("Фильтрация начатых", attrs={"class": "custom-select col-sm-9 ml-4"})
+    completed_option = CommonFields.get_filter_option_field("Фильтрация законченных", attrs={"class": "custom-select col-sm-9 ml-4"})
+    show_votes_before_end_option = CommonFields.get_filter_option_field("Фильтрация показывающих статистику до завершения",
+            attrs={"class": "custom-select col-sm-9 ml-4"} )
+    anonymous_option = CommonFields.get_filter_option_field("Фильтрация анонимных", attrs={"class": "custom-select col-sm-9 ml-4"} )
     offset = CommonFields.get_invisible_field(forms.IntegerField, "offset_tag", 0)
 
 

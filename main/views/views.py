@@ -137,10 +137,10 @@ def vote_page(request, id):
 
 
 def voting_search_page(request):
-    page_size = 16
+    page_size = 8
+    context = {"offset": '0', "page_size": page_size}
     def body(form, context) -> (bool, str, bool):
-        context["page_size"] = page_size
-        offset = form.data["offset"]
+        context["offset"] = offset = form.data["offset"]
         offset = int(offset) if str.isdigit(offset) else 0
         author_login = form.data["author_login"]
         voting_title = form.data["voting_title"]
@@ -162,7 +162,7 @@ def voting_search_page(request):
         context["prev_page"] = offset > 0
         context["next_page"] = not end
         return True, None, True
-    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm, body)
+    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm, body, context=context)
 
 
 def voting_info_page(request, id):

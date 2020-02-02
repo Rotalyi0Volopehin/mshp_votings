@@ -64,11 +64,13 @@
             <label class="ml-4">Варианты</label>
             {% if variants %}
             <table class="card-body table table-striped table-bordered">
+                <thead class="thead-dark">
                 <tr>
                     <th>#</th>
                     <th class="w-100">Описание</th>
                     {% if show_votes %} <th class="text-nowrap">Кол-во голосов</th> {% endif %}
                 </tr>
+                </thead>
                 {% for var in variants %}
                     <tr>
                         {% if var.2 %} <td class="alert alert-success">{{ var.0 }}</td>

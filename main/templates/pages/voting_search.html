@@ -1,65 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Поиск голосований</title>
-    <script>
-        function dec_offset() {
-            "usestrict";
-            offset_tag.value = Number(offset_tag.value) - {{ page_size }};
-        }
-        function inc_offset() {
-            "usestrict";
-            offset_tag.value = Number(offset_tag.value) + {{ page_size }};
-        }
-    </script>
-</head>
-<body>
-    <form method="post"> {% csrf_token %}
-        {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
-        {% endfor %}
-        <input type="submit" value="Искать">
-        {% if not ok %}
-            {% if error %}
-                {{ error }}
-            {% else %}
-                <p>Что-то пошло не так</p>
-            {% endif %}
-        {% else %}
-            {% if success %}
+{% extends 'base/base.html' %}
+
+
+{% block content %}
+<script>
+    function dec_offset() {
+        offset_tag.value = Number(offset_tag.value) - {{ page_size }};
+    }
+    function inc_offset() {
+        offset_tag.value = Number(offset_tag.value) + {{ page_size }};
+    }
+</script>
+
+<div class="card mx-center my-5">
+    <h5 class="card-header text-center">Поиск голосования</h5>
+    <div class="card-body">
+        <form method="post"> {% csrf_token %}
+            <!--form items-->
+            <div class="mx-auto">
+                <div class="bold mx-auto font-weight-bold">Логин автора</div>
+                <div class="py-2">
+                    <input type="text" name="author_login" class="form-control col-sm-9 ml-4" style="height: 45px" maxlength="64" minlength="1">
+                </div>
+            </div>
+
+            <div class="mx-auto">
+                <div class="bold mx-auto font-weight-bold">Название голосования</div>
+                <div class="py-2">
+                    <input type="text" name="voting_title" class="form-control col-sm-9 ml-4" maxlength="256" minlength="1">
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary dropdown-toggle" onclick="filters.hidden = !filters.hidden">Фильтры</button>
+            <button type="submit" class="btn btn-primary">Искать</button>
+
+            <div class="card mt-3" id="filters" hidden>
+                {% with filter_row_class="card-body form-group row right_padding mb-1" filter_label_class="col-sm-5 col-form-label text-right pr-4" filter_select_class="custom-select form-control col-sm-6" %}
+                <div class="{{ filter_row_class }}">
+                    <label class="{{ filter_label_class }}">Фильтрация начатых</label>
+                    <select name="started_option" class="{{ filter_select_class }}">
+                        <option value="0">--- (0)</option>
+                        <option value="1">исключение (1)</option>
+                        <option value="-1">исключение иных (-1)</option>
+                    </select>
+                </div>
+
+                <div class="{{ filter_row_class }}">
+                    <label class="{{ filter_label_class }}">Фильтрация законченных</label>
+                    <select name="completed_option" class="{{ filter_select_class }}">
+                        <option value="0" selected="">--- (0)</option>
+                        <option value="1">исключение (1)</option>
+                        <option value="-1">исключение иных (-1)</option>
+                    </select>
+                </div>
+
+                <div class="{{ filter_row_class }}">
+                    <label class="{{ filter_label_class }}">Фильтрация показывающих статистику до завершения</label>
+                    <select name="show_votes_before_end_option" class="{{ filter_select_class }}">
+                        <option value="0" selected="">--- (0)</option>
+                        <option value="1">исключение (1)</option>
+                        <option value="-1">исключение иных (-1)</option>
+                    </select>
+                </div>
+
+                <div class="{{ filter_row_class }}">
+                    <label class="{{ filter_label_class }}">Фильтрация анонимных</label>
+                    <select name="anonymous_option" class="{{ filter_select_class }}">
+                        <option value="0" selected="">--- (0)</option>
+                        <option value="1">исключение (1)</option>
+                        <option value="-1">исключение иных (-1)</option>
+                    </select>
+                </div>
+                {% endwith %}
+            </div>
+
+            <input type="hidden" name="offset" value="{{ offset }}" id="offset_tag">
+            <!--end form items-->
+
+            <div class="col px-md-5 mt-3">
+                {% if not ok %}
+                <div class="alert alert-danger" role="alert">{% if error %}{{ error }}{% else %}Что-то пошло не так{% endif %}</div>
+                {% else %}
+
+                {% if success %}
                 {% if votings %}
-                    <table border="1">
-                        <tr>
-                            <th>Название</th>
-                            <th>Логин автора</th>
-                            <th>Дата создания</th>
-                        </tr>
-                        {% for v in votings %}
-                            <tr>
-                                <td> <a href="/voting_info/{{ v.id }}/"> {{ v.title }} </a> </td>
-                                <td>
-                                    {% if v.author %} <a href="/profile/{{ v.author.id }}/"> {{ v.author.username }} </a>
-                                    {% else %} $_del {% endif %}
-                                </td>
-                                <td> {{ v.date_created|date:"d.m.Y H:i" }} </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                <table class="table table-striped table-bordered" border="1">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Название</th>
+                        <th>Логин автора</th>
+                        <th>Дата создания</th>
+                    </tr>
+                    </thead>
+                    {% for v in votings %}
+                    <tr>
+                        <td><a href="/voting_info/{{ v.id }}/"> {{ v.title }} </a></td>
+                        <td>
+                            {% if v.author %} <a href="/profile/{{ v.author.id }}/"> {{ v.author.username }} </a>
+                            {% else %} $_del {% endif %}
+                        </td>
+                        <td> {{ v.date_created|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                <div class="container my-4">
                     {% if prev_page %}
-                        <input type="submit" value="Назад" onclick="dec_offset()">
+                    <input type="submit" value="Назад" onclick="dec_offset()">
                     {% else %} Назад {% endif %}
                     |
                     {% if next_page %}
-                        <input type="submit" value="Вперёд" onclick="inc_offset()">
+                    <input type="submit" value="Вперёд" onclick="inc_offset()">
                     {% else %} Вперёд {% endif %}
+                </div>
                 {% else %}
-                    <p>Ничего не найдено</p>
+
+                <p>Ничего не найдено</p>
                 {% endif %}
-            {% endif %}
-        {% endif %}
-    </form>
-</body>
-</html>
+                {% endif %}
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
