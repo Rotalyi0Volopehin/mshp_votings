@@ -154,17 +154,17 @@ class DB_VotingTools:
             if yes_var != 1:
                 return False, "Тип голосования '{}' подразумевает голос ровно за 1 вариант!".format(
                         DB_VotingTools.voting_type_names[voting.type])
+        # TODO - если 2 пользователя проголосуют одновременно, vote_fact_count увеличится лишь на 1 голос из-за наложения; надо починить
+        if voting.anonymous:
+            bin_answer = 0
+        vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
         if len(VoteFact.objects.filter(user=user, voting=voting)) > 0:
             return False, "Вы уже проголосовали!"
-        # TODO - если 2 пользователя проголосуют одновременно, vote_fact_count увеличится лишь на 1 голос из-за наложения; надо починить
+        vote_fact.save()
         for i in range(len(answers)):
             if answers[i]:
                 variants[i].vote_fact_count += 1
                 variants[i].save()
-        if voting.anonymous:
-            bin_answer = 0
-        vote_fact = VoteFact(user=user, voting=voting, answer=bin_answer)
-        vote_fact.save()
         user_data, _ = DB_UserTools.try_get_user_data(user)
         user_data.vote_count += 1
         user_data.save()
