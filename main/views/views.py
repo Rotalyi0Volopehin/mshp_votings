@@ -175,7 +175,6 @@ def voting_info_page(request, id):
     voting, error = DB_VotingTools.try_find_voting_with_id(id)
     if error is None:
         user = None if isinstance(request.user, AnonymousUser) else request.user
-        context["info"] = DB_VotingTools.get_voting_info(voting, user)
         ok = True
         can_vote = context["can_vote"] = (user != None) and DB_UserTools.can_vote(user, voting)
         if can_vote:

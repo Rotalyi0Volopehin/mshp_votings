@@ -130,55 +130,6 @@ class DB_VotingTools:
         return True, None
 
     @staticmethod
-    def get_voting_info(voting, user=None) -> [str]:
-        if not (isinstance(voting, Voting) and (user is None or isinstance(user, User))):
-            Exceptions.throw(Exceptions.argument_type)
-        info = ["Информация о голосовании:"]
-        info.append("Логин автора : " + ("$_del" if voting.author is None else voting.author.username))
-        info.append("Название : " + voting.title)
-        info.append("Дата и время создания : " + str(voting.date_created))
-        info.append("Тип : " + DB_VotingTools.voting_type_names[voting.type])
-        info.append("Статус : ")
-        if voting.completed:
-            info[-1] += "завершено"
-            info.append("Дата и время завершения : " + str(voting.date_stopped))
-        elif voting.started:
-            info[-1] += "идёт"
-        else:
-            info[-1] += "ещё не начато"
-        if voting.started:
-            info.append("Дата и время начала : " + str(voting.date_started))
-        vote_variants = VoteVariant.objects.filter(voting=voting)
-        if (user != None) and voting.started:
-            vote_fact = VoteFact.objects.filter(user=user, voting=voting)
-            vote_fact_count = len(vote_fact)
-            if vote_fact_count > 1:
-                return ["Вы проголосовали {} раз в этом голосовании! Вы хакер?".format(vote_fact_count)]
-            elif vote_fact_count == 1:
-                vote_fact = vote_fact[0]
-                info.append("Вы принимали участие в этом голосовании")
-        info.append("Открытая статистика голосов до окончания голосования : " +
-                    ("вкл." if voting.show_votes_before_end else "выкл."))
-        info.append("Анонимность голосования : " + ("вкл." if voting.anonymous else "выкл."))
-        if len(vote_variants) == 0:
-            info.append("Вариантов голоса нет")
-        else:
-            info.append("Варианты голоса:")
-            show_votes = voting.completed or (voting.started and voting.show_votes_before_end)
-            show_answers = (user != None) and voting.started and (vote_fact_count == 1) and not voting.anonymous
-            if show_answers:
-                bin_answer = vote_fact.answer
-            for vote_variant in vote_variants:
-                info.append("- " + vote_variant.description)
-                if show_votes:
-                    info.append(str(vote_variant.vote_fact_count) + " голос(а/ов)")
-                if show_answers:
-                    if bin_answer & 1:
-                        info.append("Ваш голос")
-                    bin_answer >>= 1
-        return info
-
-    @staticmethod
     def try_vote(user, voting, answers) -> (bool, str):
         if not (isinstance(user, User) and isinstance(voting, Voting) and isinstance(answers, list)):
             Exceptions.throw(Exceptions.argument_type)
