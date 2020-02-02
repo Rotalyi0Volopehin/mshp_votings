@@ -1,11 +1,12 @@
 {% extends 'base/base.html' %}
 
+{% block content %}
+
 {% if error %}
 {{ error }}
 {% else %}
 
-{% block content %}
-<form class="container pt-5" method="post"> {% csrf_token %}
+<form class="container py-5" method="post"> {% csrf_token %}
     <div class="row">
         <div class="card w-25">
             <div class="card-header">Варианты</div>
@@ -42,6 +43,7 @@
     </div>
     <script> action_tag.value = "" </script>
 </form>
-{% endblock %}
 
 {% endif %}
+
+{% endblock %}

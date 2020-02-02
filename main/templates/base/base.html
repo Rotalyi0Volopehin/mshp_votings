@@ -1,47 +1,38 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>{{ pagename }} - Simple votings</title>
 
-        <link rel="stylesheet" crossorigin="anonymous"
-              href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh">
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    </head>
+{% load bootstrap4 %}
 
-    <body>
-        <div class="align-items-center p-3 px-md-4 mb-3 bg-info border-bottom">
-            <nav>
-                <a class="p-3 text-white bg-secondary" href="#">Главное меню</a>
-                <a class="p-3 text-dark bg-success" href="#">Личный кабинет</a>
-                <a class="p-3 text-dark bg-primary" href="#">Ваши голосования</a>
-                <a class="p-3 text-dark bg-info" href="#">Список голосований</a>
-            </nav>
-        </div>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ pagename }} - Simple votings</title>
 
-        <header>
-            {% include 'base/menu.html' %}
-        </header>
+    {% bootstrap_css %}
+    <link href="https://getbootstrap.com/docs/4.1/examples/sticky-footer-navbar/sticky-footer-navbar.css"
+          rel="stylesheet">
+    {% block extra_css %} {% endblock %}
+</head>
 
-        <main role="main" class="container">
-            {% block content %} {% endblock %}
-        </main>
+<body>
+    <header>
+        {% include 'base/menu.html' %}
+    </header>
 
-        <footer class="fixed-bottom border-top border-secondary bg-light">
-                <div class="footer-copyright text-center py-2">
-                    <a  class="col-md-4" href="#">О сайте</a>
-                    <a  class="col-md-4" href="#">Помощь</a>
-                    <a  class="col-md-4" href="#">Контакты</a>
-                    <a  class="col-md-4" href="#">Правила сайта</a>
-                </div>
-                <p class="float-right mr-5">© «Школа программистов» 2019-2020</p>
-        </footer>
+    <main role="main" class="container">
+        {% bootstrap_messages %}
+        {% block content %} {% endblock %}
+    </main>
 
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    </body>
+    <footer class="footer">
+        {% block footer %}
+            <div class="container text-right pr-0">
+                <span class="text-muted">&copy; ШП, {% now "Y" %}</span>
+            </div>
+        {% endblock %}
+    </footer>
+
+    {% block extra_js %}
+        {% bootstrap_javascript jquery='full' %}
+    {% endblock %}
+</body>
 </html>
