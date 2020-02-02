@@ -74,7 +74,7 @@ class SearchVotingForm(forms.Form):
 
 
 class ManageVotingForm(forms.Form):
-    description = CommonFields.get_description_field(False, label="Описание варианта", attrs={"class": "w-100", "rows": "20"})
+    description = CommonFields.get_description_field(False, label="Описание варианта", attrs={"class": "w-100", "rows": "20", "style": "resize: none;"})
     action = CommonFields.get_invisible_field(forms.CharField, "action_tag", '')
 
 
