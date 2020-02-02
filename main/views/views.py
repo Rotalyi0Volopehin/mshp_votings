@@ -18,12 +18,7 @@ def get_menu_context():
 
 
 def index_page(request):
-    context = {
-        'pagename': 'Главная',
-        'author': 'Andrew',
-        'pages': 4,
-        'menu': get_menu_context()
-    }
+    context = {'pagename': 'Главная', 'menu': get_menu_context()}
     return render(request, 'pages/index.html', context)
 
 
@@ -295,6 +290,7 @@ def manage_voting_page(request, id):
         ok = success = False
         voting, error = DB_VotingTools.try_find_voting_with_id(id)
         if error is None:
+            context["voting"] = voting
             if voting.author == request.user:
                 addv_lock = voting.started or (voting.type == 2)
                 if not get_method:
@@ -310,8 +306,6 @@ def manage_voting_page(request, id):
                         variants.append((i, vars[i].description))
                     context["variants"] = variants
                 context["addv_lock"] = addv_lock
-                context["started"] = voting.started
-                context["completed"] = voting.completed
             else:
                 error = "У вас нет доступа к этому голосования!"
         result = (ok, error, success, form) if get_method else (ok, error, success)

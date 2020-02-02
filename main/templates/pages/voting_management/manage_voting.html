@@ -29,16 +29,15 @@
         <div class="card w-25">
             <div class="card-header">Проведение</div>
             <div class="card-body">
-                {% if completed %}
+                {% if voting.completed %}
                     <div class="text-center alert alert-info" role="alert">Голосование завершено</div>
+                {% elif voting.started %}
+                    <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'stop'">Завершить</button>
                 {% else %}
-                    {% if started %}
-                        <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'stop'">Завершить</button>
-                    {% else %}
-                        <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'start'">Начать</button>
-                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-block" onclick="action_tag.value = 'start'">Начать</button>
                 {% endif %}
             </div>
+            <a class="card-footer text-center" href="/voting_info/{{ voting.id }}/">Информация</a>
         </div>
     </div>
     <script> action_tag.value = "" </script>
