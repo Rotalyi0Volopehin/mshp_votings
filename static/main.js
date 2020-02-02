@@ -23,6 +23,15 @@ function is_active() {
     }
 }
 
+function voting_search() {
+    'use strict';
+    let voting_num = voting_id.value
+    if (voting_num != '') {
+        document.location.href = '/vm/' + String(voting_num);
+    }
+}
+
+
 function card_creator() {
     let container = document.getElementById("card_container");
     for (let i = 0; i < array.length; i++) {
