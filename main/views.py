@@ -32,6 +32,7 @@ def index_page(request):
         'pages': 4,
         'menu': get_menu_context()
     }
+    voting_search_page(request)
     return render(request, 'pages/index.html', context)
 
 
@@ -197,7 +198,7 @@ def voting_search_page(request):
         context["prev_page"] = offset > 0
         context["next_page"] = not end
         return True, None, True
-    return view_func_template(request, "pages/voting_search.html", main.forms.SearchVotingForm_, body)
+    return view_func_template(request, "pages/index.html", main.forms.SearchVotingForm_, body)
 
 
 def voting_info_page_ext(request, id):
@@ -241,3 +242,10 @@ def activate(request, uid, token):
             return render(request, 'pages/registration/activation.html')
         return HttpResponse('Activation link is invalid!')
 
+def time_page(request):
+    context = {
+        'pagename': 'Текущее время',
+        'time': datetime.datetime.now().time(),
+        'menu': get_menu_context()
+    }
+    return render(request, 'pages/time.html', context)

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', to_expand);
+//document.addEventListener('DOMContentLoaded', to_expand);
 
 function is_active() {
     'use strict';
@@ -27,7 +27,7 @@ function voting_search() {
     'use strict';
     let voting_num = voting_id.value
     if (voting_num != '') {
-        document.location.href = '/vm/' + String(voting_num);
+        document.location.href = '/voting_info/' + String(voting_num);
     }
 }
 
@@ -37,10 +37,20 @@ function card_creator() {
     for (let i = 0; i < array.length; i++) {
            container.innerHTML += '<div class="card" style="width: 18rem;">';
            container.innerHTML += '<div class="card-body">';
-           container.innerHTML += '<h5 class="card-title">Vote name</h5>';
+           container.innerHTML += '<h5 class="card-title"> </h5>';
            container.innerHTML += '<p class="card-text">Some text on the card about vote content.</p>';
            container.innerHTML += '<a href="#" class="btn btn-primary">More information</a>';
            container.innerHTML += '</div>';
            container.innerHTML += '</div>';
     }
+}
+
+function dec_offset() {
+    "usestrict";
+    offset_tag.value = Number(offset_tag.value) - {{ page_size }};
+}
+
+function inc_offset() {
+    "usestrict";
+    offset_tag.value = Number(offset_tag.value) + {{ page_size }};
 }

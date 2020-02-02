@@ -1,4 +1,5 @@
 links.txt
+index_js.txt
 css/
 # Created by https://www.gitignore.io/api/linux,macos,python,django,windows,virtualenv,pycharm+all
 # Edit at https://www.gitignore.io/?templates=linux,macos,python,django,windows,virtualenv,pycharm+all
@@ -12,6 +13,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media
+
+### SQLite - Sync ###
+node_modules/
+
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
