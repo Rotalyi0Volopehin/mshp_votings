@@ -1,32 +1,44 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Жалоба</title>
-</head>
+{% extends 'base/base.html' %}
+
+
+{% block content %}
 <body>
-<form method="post">
-    {% csrf_token %}
-    {% for item in form %}
-    <label>{{ item.label }}</label>
-    {{ item }}
-    <br>
-    {% endfor %}
-    <input type="submit" value="Отправить">
-</form>
-<p> Команда ms103 рассматривает жалобы на ролики и пользователей, а также проверяет, соответствует ли контент принципам
-    сообщества.
-<p> Если в ходе проверки выясняется, что нарушения есть, специалисты принимают необходимые меры.
-<p> Если пользователь часто нарушает правила, его аккаунт может быть заблокирован.
+<div class="container">
 
-<p>
+    <div class="row pt-5">
+        <div class="col border-top border-secondary border-bottom pt-4 pb-4">
+            <form method="post">
+                {% csrf_token %}
+                {% for item in form %}
+                <label>{{ item.label }}</label>
+                {{ item }}
+                <br>
+                {% endfor %}
+                <input type="submit" class="btn btn-primary" value="Отправить">
+            </form>
+        </div>
+        <div class="col border-top border-secondary border-bottom pt-4 pb-4">
+            <div class="discussion-form-container mt-4">
 
-    {% if yes != 0 %}
+                <p> Команда ms103 рассматривает жалобы на голосования и пользователей, а также проверяет, соответствует ли
+                    контент принципам
+                    сообщества.
+                <p> Если в ходе проверки выясняется, что нарушения есть, специалисты принимают необходимые меры.
+                <p> Если пользователь часто нарушает правила, его аккаунт может быть заблокирован.
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+{% if success == True %}
+<p class="text-center text-primary">
     Жалоба отправлена!
-    {% else %}
-
-    {% endif %}
 </p>
 
-</body>
-</html>
+
+{% else %}
+
+{% endif %}
+
+{% endblock %}
