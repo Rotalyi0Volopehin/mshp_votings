@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Поиск голосований</title>
+{% extends 'base/base.html' %}
+
+
+{% block content %}
     <script>
         function dec_offset() {
             "usestrict";
@@ -13,30 +12,39 @@
             offset_tag.value = Number(offset_tag.value) + {{ page_size }};
         }
     </script>
-</head>
 <body>
+<div class="card  mx-center">
+     <h5 class="card-header text-center">Поиск голосования</h5>
+    <div class="card-body">
     <form method="post"> {% csrf_token %}
         {% for item in form %}
-            <label>{{ item.label }}</label>
-            {{ item }}
-            <br>
+        <div class="mx-auto">
+            <div class="bold mx-auto font-weight-bold">{{ item.label }}</div>
+            <div class="py-2">{{ item }}</div>
+        </div>
         {% endfor %}
-        <input type="submit" value="Искать">
-        {% if not ok %}
+        <input type="submit" class="btn btn-primary mb-2" value="Искать"></div>
+        <div class="col px-md-5">{% if not ok %}
             {% if error %}
+                <div class="alert alert-danger" role="alert">
                 {{ error }}
+                </div>
             {% else %}
+                <div class="alert alert-warning" role="alert">
                 <p>Что-то пошло не так</p>
+                </div>
             {% endif %}
         {% else %}
             {% if success %}
                 {% if votings %}
-                    <table border="1">
+                    <table class="table my-auto mt-1" border="1">
+                        <thead class="thead-dark">
                         <tr>
                             <th>Название</th>
                             <th>Логин автора</th>
                             <th>Дата создания</th>
                         </tr>
+                        </thead>
                         {% for v in votings %}
                             <tr>
                                 <td> <a href="/voting_info/{{ v.id }}/"> {{ v.title }} </a> </td>
@@ -61,5 +69,8 @@
             {% endif %}
         {% endif %}
     </form>
+    </div>
+</div>
 </body>
-</html>
+
+{% endblock %}
