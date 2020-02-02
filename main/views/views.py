@@ -96,7 +96,8 @@ def new_voting_page(request):
         ok, error = DB_VotingTools.try_create_voting(author, title, description, type_, show_votes_before_end, anonymous)
         success = ok
         return ok, error, success
-    return view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, post_handler, context=context)
+    result = view_func_template(request, "pages/voting_management/new_voting.html", main.forms.NewVotingForm, post_handler, context=context)
+    return redirect("/vm/my_votings/") if context["success"] else result
 
 
 @login_required

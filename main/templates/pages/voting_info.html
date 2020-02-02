@@ -6,8 +6,8 @@
 
 <div class="card">
     <div class="card-header">
-        {{ pagename }}
-        {% if can_vote %}<a class="float-right" href={{ vote_ref }}>Голосовать</a>{% endif %}
+        <label class="font-weight-bold">{{ pagename }}</label>
+        {% if can_vote %}<a class="btn btn-primary float-right" href={{ vote_ref }}>Голосовать</a>{% endif %}
     </div>
     <div class="card-body row">
         <div class="container w-50 col">
